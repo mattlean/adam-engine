@@ -35,37 +35,46 @@ window.onload = function() {
 			ctx.fillStyle = '#ff0000';
 		} else if(val === 1) {
 			ctx.fillStyle = '#00ff00';
-		} else {
+		} else if(val === 2){
 			ctx.fillStyle = '#0000ff';
+		} else {
+			ctx.fillStyle = '#000000';
 		}
 		ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
 		ctx.strokeStyle = '#000';
 		ctx.strokeRect(x * cellSize, y * cellSize, cellSize, cellSize);
 	}
 
+	function clearMatchesXAxis(startX, startY, length, board) {
+		console.log(startX, startY, length);
+		for(var i = startX; i < startX + length; ++i) {
+			board[startY][i] = 3;
+		}
+	}
+
 	function match(board) {
-		var count = 0;
+		var count = 1;
 		var prevVal = -1;
 		for(var j = 0; j < boardSize; ++j) {
 			for(var i = 0; i < boardSize; ++i) {
 				var currVal = board[j][i];
-				//console.log(currVal);
 				if(currVal === prevVal) {
 					++count;
-					//console.log(count);
 				} else {
-					if(count >= 2) {
-						console.log('x:' + i + ', ' + 'y:' + j + ', ' + 'count:' + count);
+					if(count >= 3) {
+						//console.log('x:' + i + ', ' + 'y:' + j + ', ' + 'count:' + count);
+						clearMatchesXAxis(i - count, j, count, board);
 					}
-					count = 0;
-					//console.log(count);
+					count = 1;
 				}
 				prevVal = currVal;
 			}
-			if(count >= 2) {
-				console.log('x:' + i + ', ' + 'y:' + j + ', ' + 'count:' + count);
+			if(count >= 3) {
+				//console.log('x:' + i + ', ' + 'y:' + j + ', ' + 'count:' + count);
+				clearMatchesXAxis(boardSize - count, j, count, board);
 			}
-			count = 0;
+			count = 1;
+			prevVal = -1;
 		}
 	}
 
@@ -90,6 +99,6 @@ window.onload = function() {
 	/* Input */
 	window.onmousedown = function(evt) {
 		var key = evt.which;
-		console.log(key);
+		//console.log(key);
 	}
 };
