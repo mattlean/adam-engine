@@ -6,6 +6,7 @@ window.onload = function() {
 	var cellSize = 10; //determines cell size. cell is always a square.
 	var direction;
 	var game_loop;
+	var food;
 
 	var snake_array;
 
@@ -19,15 +20,30 @@ window.onload = function() {
 		}
 	}
 
+	function create_food() {
+		food = {
+			x: Math.round(Math.random() * (canvasWidth - cellSize)/cellSize),
+			y: Math.round(Math.random() * (canvasHeight - cellSize)/cellSize)
+		};
+	}
+
 	/* Start Game */
 	function init() {
 		direction = 'right'; //default direction is right
 		create_snake();
+		create_food();
 		if(typeof game_loop !== 'undefined') clearInterval(game_loop);
 		game_loop = setInterval(draw, 60);
 	}
 
 	init();
+
+	function draw_cell(x, y) {
+		ctx.fillStyle = '#00ff00';
+		ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+		ctx.strokeStyle = '#fff';
+		ctx.strokeRect(x * cellSize, y * cellSize, cellSize, cellSize);
+	}
 
 	function draw() {
 		//draw the background to clear previous frame
@@ -55,19 +71,24 @@ window.onload = function() {
 			return;
 		}
 
-		var tail = snake_array.pop(); //pop the tail of the snake
-		tail.x = newX;
-		tail.y = newY;
+		if(newX === food.x && newY === food.y) {
+			var tail = {x: newX, y: newY};
+			create_food();
+		} else {
+			var tail = snake_array.pop(); //pop the tail of the snake
+			tail.x = newX;
+			tail.y = newY;
+		}
+
 		snake_array.unshift(tail); //add the new head of the snake in front of the curr head
 		
 		//draw the snake
 		for(var i = 0; i < snake_array.length; ++i) {
 			var snakeCell = snake_array[i];
-			ctx.fillStyle = '#00ff00';
-			ctx.fillRect(snakeCell.x * cellSize, snakeCell.y * cellSize, cellSize, cellSize);
-			ctx.strokeStyle = '#fff';
-			ctx.strokeRect(snakeCell.x * cellSize, snakeCell.y * cellSize, cellSize, cellSize);
+			draw_cell(snakeCell.x, snakeCell.y);
 		}
+
+		draw_cell(food.x, food.y);
 	}
 
 	/* Input */
