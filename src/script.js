@@ -7,6 +7,16 @@ window.onload = function() {
 	var cellSize = 40; //determines cell size. cell is always a square.
 	var boardSize = 8; //determines board size. at the moment the board is always square.
 	var board = [];
+	var board = [
+	[1, 2, 0, 1, 2, 2, 2, 0],
+	[2, 0, 0, 2, 1, 2, 2, 0],
+	[1, 0, 1, 0, 2, 2, 1, 2],
+	[1, 2, 1, 1, 0, 0, 2, 1],
+	[1, 2, 2, 1, 2, 2, 0, 0],
+	[0, 0, 1, 2, 2, 2, 1, 0],
+	[1, 2, 0, 0, 2, 2, 2, 0],
+	[0, 1, 0, 0, 1, 1, 2, 2]
+	];
 	var score;
 
 	function generateJewel() {
@@ -15,13 +25,13 @@ window.onload = function() {
 
 	/* Start Game */
 	function init() {
-		for(var i = 0; i < boardSize; ++i) {
+		/*for(var i = 0; i < boardSize; ++i) {
 			var temp = [];
 			for(var j = 0; j < boardSize; ++j) {
 				temp.push(generateJewel());
 			}
 			board.push(temp);
-		}
+		}*/
 		console.log(board);
 		score = 0;
 		if(typeof game_loop !== 'undefined') clearInterval(game_loop);
@@ -37,22 +47,39 @@ window.onload = function() {
 			ctx.fillStyle = '#00ff00';
 		} else if(val === 2){
 			ctx.fillStyle = '#0000ff';
+		} else if(val === 4) {
+			ctx.fillStyle = '#fff';
 		} else {
-			ctx.fillStyle = '#000000';
+			ctx.fillStyle = '#000';
 		}
 		ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
 		ctx.strokeStyle = '#000';
 		ctx.strokeRect(x * cellSize, y * cellSize, cellSize, cellSize);
 	}
 
-	function clearMatchesXAxis(startX, startY, length, board) {
+	function clearMatchesXAxis(startX, startY, length) {
 		console.log(startX, startY, length);
 		for(var i = startX; i < startX + length; ++i) {
+			console.log('test');
 			board[startY][i] = 3;
 		}
 	}
 
-	function match(board) {
+	function tileSlideDown() {
+		for(var x = 0; x < boardSize; ++x) {
+			for(var y = boardSize - 1; y >= 0; --y) {
+				var deepestY = -1;
+				if(board[y][x] === 3) {
+					var deepestY = y;
+				} else if(deepestY) {
+					board[deepestY][x] = board[y][x];
+					y = boardSize; //restart iteration through column
+				}
+			}
+		}
+	}
+
+	function match() {
 		var count = 1;
 		var prevVal = -1;
 		for(var j = 0; j < boardSize; ++j) {
@@ -63,7 +90,7 @@ window.onload = function() {
 				} else {
 					if(count >= 3) {
 						//console.log('x:' + i + ', ' + 'y:' + j + ', ' + 'count:' + count);
-						clearMatchesXAxis(i - count, j, count, board);
+						clearMatchesXAxis(i - count, j, count);
 					}
 					count = 1;
 				}
@@ -71,7 +98,7 @@ window.onload = function() {
 			}
 			if(count >= 3) {
 				//console.log('x:' + i + ', ' + 'y:' + j + ', ' + 'count:' + count);
-				clearMatchesXAxis(boardSize - count, j, count, board);
+				clearMatchesXAxis(boardSize - count, j, count);
 			}
 			count = 1;
 			prevVal = -1;
@@ -83,9 +110,9 @@ window.onload = function() {
 		ctx.fillStyle = '#fff';
 		ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-		for(var i = 0; i < boardSize; ++i) {
-			for(var j = 0; j < boardSize; ++j) {
-				drawJewel(i, j, board[j][i]);
+		for(var y = 0; y < boardSize; ++y) {
+			for(var x = 0; x < boardSize; ++x) {
+				drawJewel(x, y, board[y][x]);
 			}
 		}
 
@@ -94,7 +121,8 @@ window.onload = function() {
 		ctx.fillText(score_text, canvasWidth - 155, 15);
 	}
 
-	match(board);
+	match();
+	//tileSlideDown();
 
 	/* Input */
 	window.onmousedown = function(evt) {
