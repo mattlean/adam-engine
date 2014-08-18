@@ -3,8 +3,9 @@ window.onload = function() {
 	var ctx = canvas.getContext('2d');
 	var canvasWidth = canvas.width;
 	var canvasHeight = canvas.height;
-	var cellWidth = 10;
-	var direction = 'right'; //default direction
+	var cellSize = 10; //determines cell size. cell is always a square.
+	var direction;
+	var game_loop;
 
 	var snake_array;
 
@@ -18,7 +19,15 @@ window.onload = function() {
 		}
 	}
 
-	create_snake();
+	/* Start Game */
+	function init() {
+		direction = 'right'; //default direction is right
+		create_snake();
+		if(typeof game_loop !== 'undefined') clearInterval(game_loop);
+		game_loop = setInterval(draw, 60);
+	}
+
+	init();
 
 	function draw() {
 		//draw the background to clear previous frame
@@ -40,9 +49,9 @@ window.onload = function() {
 			++newY;
 		}
 
-		//If the snake hits a wall restart the game
-		if(newX === -1 || newX === canvasWidth/cellWidth || newY === -1 || newY === canvasHeight/cellWidth) {
-			//Restart the game here
+		//if the snake hits a wall restart the game
+		if(newX === -1 || newX === canvasWidth/cellSize || newY === -1 || newY === canvasHeight/cellSize) {
+			init();
 			return;
 		}
 
@@ -55,9 +64,9 @@ window.onload = function() {
 		for(var i = 0; i < snake_array.length; ++i) {
 			var snakeCell = snake_array[i];
 			ctx.fillStyle = '#00ff00';
-			ctx.fillRect(snakeCell.x * cellWidth, snakeCell.y * cellWidth, cellWidth, cellWidth);
+			ctx.fillRect(snakeCell.x * cellSize, snakeCell.y * cellSize, cellSize, cellSize);
 			ctx.strokeStyle = '#fff';
-			ctx.strokeRect(snakeCell.x * cellWidth, snakeCell.y * cellWidth, cellWidth, cellWidth);
+			ctx.strokeRect(snakeCell.x * cellSize, snakeCell.y * cellSize, cellSize, cellSize);
 		}
 	}
 
@@ -74,8 +83,4 @@ window.onload = function() {
 			direction = 'down';
 		}
 	};
-
-	draw();
-
-	var game_loop = setInterval(draw, 60);
 };
