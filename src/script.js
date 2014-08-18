@@ -7,7 +7,7 @@ window.onload = function() {
 	var direction;
 	var game_loop;
 	var food;
-
+	var score;
 	var snake_array;
 
 	function create_snake() {
@@ -32,6 +32,7 @@ window.onload = function() {
 		direction = 'right'; //default direction is right
 		create_snake();
 		create_food();
+		score = 0;
 		if(typeof game_loop !== 'undefined') clearInterval(game_loop);
 		game_loop = setInterval(draw, 60);
 	}
@@ -43,6 +44,14 @@ window.onload = function() {
 		ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
 		ctx.strokeStyle = '#fff';
 		ctx.strokeRect(x * cellSize, y * cellSize, cellSize, cellSize);
+	}
+
+	function check_collision(x, y, snake_array) {
+		for(var i = 0; i < snake_array.length; ++i) {
+			if((snake_array[i].x === x) && (snake_array[i].y === y)) {
+				return true;
+			}
+		}
 	}
 
 	function draw() {
@@ -66,20 +75,21 @@ window.onload = function() {
 		}
 
 		//if the snake hits a wall restart the game
-		if(newX === -1 || newX === canvasWidth/cellSize || newY === -1 || newY === canvasHeight/cellSize) {
+		if(newX === -1 || newX === canvasWidth/cellSize || newY === -1 || newY === canvasHeight/cellSize || check_collision(newX, newY, snake_array)) {
 			init();
 			return;
 		}
 
+		//manages snake growth and movement
 		if(newX === food.x && newY === food.y) {
-			var tail = {x: newX, y: newY};
+			var tail = {x: newX, y: newY}; //not really using the tail, but unshift takes "tail" so the var is named "tail"
+			++score;
 			create_food();
 		} else {
 			var tail = snake_array.pop(); //pop the tail of the snake
 			tail.x = newX;
 			tail.y = newY;
 		}
-
 		snake_array.unshift(tail); //add the new head of the snake in front of the curr head
 		
 		//draw the snake
@@ -89,6 +99,10 @@ window.onload = function() {
 		}
 
 		draw_cell(food.x, food.y);
+
+		var score_text = 'Score: ' + score;
+		ctx.fillStyle = '#000';
+		ctx.fillText(score_text, 5, canvasHeight - 5);
 	}
 
 	/* Input */
