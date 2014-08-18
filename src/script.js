@@ -3,35 +3,21 @@ window.onload = function() {
 	var ctx = canvas.getContext('2d');
 	var canvasWidth = canvas.width;
 	var canvasHeight = canvas.height;
-	var cellSize = 10; //determines cell size. cell is always a square.
-	var direction;
 	var game_loop;
-	var food;
+	var cellSize = 40; //determines cell size. cell is always a square.
+	var board = [];
 	var score;
-	var snake_array;
 
-	function create_snake() {
-		var length = 5;
-		snake_array = [];
-		//builds snake_array from the head (right-most snake cell when the game starts)
-		//to tail (left-most snake cell when the game starts)
-		for(var i = length-1; i >= 0; --i) {
-			snake_array.push({x: i, y:0});
-		}
-	}
-
-	function create_food() {
-		food = {
-			x: Math.round(Math.random() * (canvasWidth - cellSize)/cellSize),
-			y: Math.round(Math.random() * (canvasHeight - cellSize)/cellSize)
-		};
+	function generateJewel() {
+		return Math.floor(Math.random() * 2);
 	}
 
 	/* Start Game */
 	function init() {
-		direction = 'right'; //default direction is right
-		create_snake();
-		create_food();
+		for(var i = 0; i < 10; ++i) {
+			board.push([generateJewel(), generateJewel(), generateJewel(), generateJewel(), generateJewel(), generateJewel(), generateJewel(), generateJewel()]);
+		}
+		console.log(board);
 		score = 0;
 		if(typeof game_loop !== 'undefined') clearInterval(game_loop);
 		game_loop = setInterval(draw, 60);
@@ -39,19 +25,15 @@ window.onload = function() {
 
 	init();
 
-	function draw_cell(x, y) {
-		ctx.fillStyle = '#00ff00';
-		ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
-		ctx.strokeStyle = '#fff';
-		ctx.strokeRect(x * cellSize, y * cellSize, cellSize, cellSize);
-	}
-
-	function check_collision(x, y, snake_array) {
-		for(var i = 0; i < snake_array.length; ++i) {
-			if((snake_array[i].x === x) && (snake_array[i].y === y)) {
-				return true;
-			}
+	function drawJewel(x, y, val) {
+		if(val === 0) {
+			ctx.fillStyle = '#ff0000';
+		} else {
+			ctx.fillStyle = '#0000ff';
 		}
+		ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+		ctx.strokeStyle = '#000';
+		ctx.strokeRect(x * cellSize, y * cellSize, cellSize, cellSize);
 	}
 
 	function draw() {
@@ -59,54 +41,19 @@ window.onload = function() {
 		ctx.fillStyle = '#fff';
 		ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-		//move the snake
-		//get snake head's current x and y pos
-		var newX = snake_array[0].x;
-		var newY = snake_array[0].y;
-		//manages direction of snake
-		if(direction === 'right') {
-			++newX;
-		} else if(direction === 'left') {
-			--newX;
-		} else if(direction === 'up') {
-			--newY;
-		} else if(direction === 'down') {
-			++newY;
+		for(var i = 0; i < board[0].length; ++i) {
+			for(var j = 0; j < 8; ++j) {
+				drawJewel(i, j, board[i][j]);
+			}
 		}
-
-		//if the snake hits a wall restart the game
-		if(newX === -1 || newX === canvasWidth/cellSize || newY === -1 || newY === canvasHeight/cellSize || check_collision(newX, newY, snake_array)) {
-			init();
-			return;
-		}
-
-		//manages snake growth and movement
-		if(newX === food.x && newY === food.y) {
-			var tail = {x: newX, y: newY}; //not really using the tail, but unshift takes "tail" so the var is named "tail"
-			++score;
-			create_food();
-		} else {
-			var tail = snake_array.pop(); //pop the tail of the snake
-			tail.x = newX;
-			tail.y = newY;
-		}
-		snake_array.unshift(tail); //add the new head of the snake in front of the curr head
-		
-		//draw the snake
-		for(var i = 0; i < snake_array.length; ++i) {
-			var snakeCell = snake_array[i];
-			draw_cell(snakeCell.x, snakeCell.y);
-		}
-
-		draw_cell(food.x, food.y);
 
 		var score_text = 'Score: ' + score;
 		ctx.fillStyle = '#000';
-		ctx.fillText(score_text, 5, canvasHeight - 5);
+		ctx.fillText(score_text, canvasWidth - 155, 15);
 	}
 
 	/* Input */
-	window.onkeydown = function(evt) {
+	/*window.onkeydown = function(evt) {
 		var key = evt.which;
 		if((key === 37) && (direction !== 'right')) {
 			direction = 'left';
@@ -118,4 +65,9 @@ window.onload = function() {
 			direction = 'down';
 		}
 	};
+
+	window.onmousedown = function(evt) {
+		var key = evt.which;
+		console.log(key);
+	}*/
 };
