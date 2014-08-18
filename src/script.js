@@ -9,7 +9,7 @@ window.onload = function() {
 	var score;
 
 	function generateJewel() {
-		return Math.floor(Math.random() * 2);
+		return Math.floor(Math.random() * 3);
 	}
 
 	/* Start Game */
@@ -28,6 +28,8 @@ window.onload = function() {
 	function drawJewel(x, y, val) {
 		if(val === 0) {
 			ctx.fillStyle = '#ff0000';
+		} else if(val === 1) {
+			ctx.fillStyle = '#00ff00';
 		} else {
 			ctx.fillStyle = '#0000ff';
 		}
@@ -43,7 +45,7 @@ window.onload = function() {
 
 		for(var i = 0; i < board[0].length; ++i) {
 			for(var j = 0; j < 8; ++j) {
-				drawJewel(i, j, board[i][j]);
+				drawJewel(j, i, board[i][j]);
 			}
 		}
 
@@ -53,21 +55,8 @@ window.onload = function() {
 	}
 
 	/* Input */
-	/*window.onkeydown = function(evt) {
-		var key = evt.which;
-		if((key === 37) && (direction !== 'right')) {
-			direction = 'left';
-		} else if((key === 39) && (direction !== 'left')) {
-			direction = 'right';
-		} else if((key === 38) && (direction !== 'down')) {
-			direction = 'up';
-		} else if((key === 40) && (direction !== 'up')) {
-			direction = 'down';
-		}
-	};
-
 	window.onmousedown = function(evt) {
 		var key = evt.which;
 		console.log(key);
-	}*/
+	}
 };
