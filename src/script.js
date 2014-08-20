@@ -67,7 +67,7 @@ window.onload = function() {
 	function tileSlideDown() {
 		for(var x = 0; x < boardSize; ++x) {
 			var emptyCells = [];
-			for(var y = boardSize - 1; y > 0; --y) {
+			for(var y = boardSize - 1; y >= 0; --y) {
 				//console.log(board[y][x]);
 				if(board[y][x] === 3) {
 					emptyCells.unshift({'x': x, 'y': y});
