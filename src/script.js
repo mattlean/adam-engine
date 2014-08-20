@@ -25,6 +25,7 @@ window.onload = function() {
 
 	/* Start Game */
 	function init() {
+		//initialize board with randomly generated jewels
 		/*for(var y = 0; y < boardSize; ++y) {
 			var temp = [];
 			for(var x = 0; x < boardSize; ++x) {
@@ -32,6 +33,7 @@ window.onload = function() {
 			}
 			board.push(temp);
 		}*/
+
 		console.log(board);
 		score = 0;
 		if(typeof game_loop !== 'undefined') clearInterval(game_loop);
@@ -75,7 +77,7 @@ window.onload = function() {
 		for(var y = 0; y < boardSize; ++y) {
 			for(var x = 0; x < boardSize; ++x) {
 				var currVal = board[y][x];
-				if(currVal === prevVal) {
+				if((currVal === prevVal) && (currVal != 3)) {
 					++count;
 				} else {
 					if(count >= 3) {
@@ -100,7 +102,7 @@ window.onload = function() {
 		for(var x = 0; x < boardSize; ++x) {
 			for(var y = 0; y < boardSize; ++y) {
 				var currVal = board[y][x];
-				if(currVal === prevVal) {
+				if((currVal === prevVal) && (currVal != 3)) {
 					++count;
 				} else {
 					if(count >= 3) {
@@ -191,10 +193,13 @@ window.onload = function() {
 		ctx.fillText(score_text, canvasWidth - 155, 15);
 	}
 
-	var matchFound = match();
-	jewelSlideDown();
-	//fillGaps();
+	var matchFound = -1;
+	while(matchFound = match()){
+		jewelSlideDown();
+		fillGaps();
+	}
 	console.log(matchFound);
+
 
 	/* Input */
 	window.onmousedown = function(evt) {
