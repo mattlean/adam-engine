@@ -60,22 +60,27 @@ window.onload = function() {
 	function clearMatchesXAxis(startX, startY, length) {
 		console.log(startX, startY, length);
 		for(var i = startX; i < startX + length; ++i) {
-			console.log('test');
 			board[startY][i] = 3;
 		}
 	}
 
 	function tileSlideDown() {
 		for(var x = 0; x < boardSize; ++x) {
-			for(var y = boardSize - 1; y >= 0; --y) {
-				var deepestY = -1;
+			var emptyCells = [];
+			for(var y = boardSize - 1; y > 0; --y) {
+				//console.log(board[y][x]);
 				if(board[y][x] === 3) {
-					var deepestY = y;
-				} else if(deepestY) {
-					board[deepestY][x] = board[y][x];
-					y = boardSize; //restart iteration through column
+					emptyCells.unshift({'x': x, 'y': y});
+				} else if(emptyCells.length) {
+					var deepestEmptyCell = emptyCells.pop();
+					board[deepestEmptyCell.y][deepestEmptyCell.x] = board[y][x];
+					board[y][x] = 3;
+					emptyCells.unshift({'x': x, 'y': y});
 				}
 			}
+			console.log('column' + x);
+			console.log(emptyCells);
+			emptyCells = [];
 		}
 	}
 
@@ -122,7 +127,7 @@ window.onload = function() {
 	}
 
 	match();
-	//tileSlideDown();
+	tileSlideDown();
 
 	/* Input */
 	window.onmousedown = function(evt) {
