@@ -40,18 +40,20 @@ window.onload = function() {
 
 	init();
 
-	function clearMatchesXAxis(startX, startY, length) {
+	function clearMatchesXAxis(startX, startY, length, boardClearMarked) {
 		//console.log(startX, startY, length);
 		for(var i = startX; i < startX + length; ++i) {
-			board[startY][i] = 3;
+			boardClearMarked[startY][i] = 1;
 		}
+		return boardClearMarked;
 	}
 
-	function clearMatchesYAxis(startX, startY, length) {
+	function clearMatchesYAxis(startX, startY, length, boardClearMarked) {
 		//console.log(startX, startY, length);
 		for(var i = startY; i < startY + length; ++i) {
-			board[i][startX] = 3;
+			boardClearMarked[i][startX] = 1;
 		}
+		return boardClearMarked;
 	}
 
 	function match() {
@@ -59,8 +61,18 @@ window.onload = function() {
 		var prevVal = -1;
 		var matchFound = 0;
 
+		//initialize boardClearMarked which tells game which tiles should be deleted
+		var boardClearMarked = [];
+		for(var y = 0; y < boardSize; ++y) {
+			var temp = [];
+			for(var x = 0; x < boardSize; ++x) {
+				temp.push(0);
+			}
+			boardClearMarked.push(temp);
+		}
+
 		//check matches in each row on x-axis
-		/*for(var y = 0; y < boardSize; ++y) {
+		for(var y = 0; y < boardSize; ++y) {
 			for(var x = 0; x < boardSize; ++x) {
 				var currVal = board[y][x];
 				if(currVal === prevVal) {
@@ -69,7 +81,7 @@ window.onload = function() {
 					if(count >= 3) {
 						//console.log('x:' + x + ', ' + 'y:' + x + ', ' + 'count:' + count);
 						matchFound = 1;
-						clearMatchesXAxis(x - count, y, count);
+						boardClearMarked = clearMatchesXAxis(x - count, y, count, boardClearMarked);
 					}
 					count = 1;
 				}
@@ -78,11 +90,11 @@ window.onload = function() {
 			if(count >= 3) {
 				//console.log('x:' + i + ', ' + 'y:' + x + ', ' + 'count:' + count);
 				matchFound = 1;
-				clearMatchesXAxis(boardSize - count, y, count);
+				boardClearMarked = clearMatchesXAxis(boardSize - count, y, count, boardClearMarked);
 			}
 			count = 1;
 			prevVal = -1;
-		}*/
+		}
 
 		//check matches in each row on y-axis
 		for(var x = 0; x < boardSize; ++x) {
@@ -93,7 +105,7 @@ window.onload = function() {
 				} else {
 					if(count >= 3) {
 						matchFound = 1;
-						clearMatchesYAxis(x, y - count, count);
+						boardClearMarked = clearMatchesYAxis(x, y - count, count, boardClearMarked);
 					}
 					count = 1;
 				}
@@ -101,10 +113,19 @@ window.onload = function() {
 			}
 			if(count >= 3) {
 				matchFound = 1;
-				clearMatchesYAxis(x, boardSize - count, count);
+				boardClearMarked = clearMatchesYAxis(x, boardSize - count, count, boardClearMarked);
 			}
 			count = 1;
 			prevVal = -1;
+		}
+
+		//delete matched tilesets from board
+		for(var y = 0; y < boardSize; ++y) {
+			for(var x = 0; x < boardSize; ++x) {
+				if(boardClearMarked[y][x] === 1) {
+					board[y][x] = 3;
+				}
+			}
 		}
 
 		return matchFound;
@@ -171,7 +192,7 @@ window.onload = function() {
 	}
 
 	var matchFound = match();
-	//jewelSlideDown();
+	jewelSlideDown();
 	//fillGaps();
 	console.log(matchFound);
 
