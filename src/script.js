@@ -29,6 +29,10 @@ window.onload = function() {
 	];*/
 	var verifyBoard = [];
 	var selectedCells = [];
+	var cellsToAnimate = [];
+	var clickCtrl = 1;
+	var speed = 1;
+	var prevY;
 	var score;
 
 	function generateJewel() {
@@ -239,6 +243,13 @@ window.onload = function() {
 		verifyBoard[selectedCells[0].y][selectedCells[0].x] = verifyBoard[selectedCells[1].y][selectedCells[1].x];
 		verifyBoard[selectedCells[1].y][selectedCells[1].x] = temp;
 		if(match(verifyBoard)) {
+			clearInterval(game_loop);
+			cellsToAnimate = selectedCells.slice();
+			console.log(cellsToAnimate);
+			prevY = selectedCells[0].y * cellSize;
+			game_loop = setInterval(function() {
+				drawSwap(cellsToAnimate);
+			}, 60);
 			board = copyBoard(board, verifyBoard);
 			jewelSlideDown();
 			fillGaps();
@@ -249,77 +260,124 @@ window.onload = function() {
 		}
 	}
 
-	/* Input */
-	window.onmousedown = function(evt) {
-		var key = evt.which;
+	function animateJewel(x, y, val) {
+		if(val === 0) {
+			ctx.fillStyle = '#ff0000';
+		} else if(val === 1) {
+			ctx.fillStyle = '#00ff00';
+		} else if(val === 2){
+			ctx.fillStyle = '#0000ff';
+		} else if(val === 4) {
+			ctx.fillStyle = '#fff';
+		} else {
+			ctx.fillStyle = '#000';
+		}
+		console.log(val);
+		ctx.fillRect(x * cellSize, y, cellSize, cellSize);
+		ctx.strokeStyle = '#000';
+		ctx.strokeRect(x * cellSize, y, cellSize, cellSize);
+	}
 
-		if(key === 1) {
-			var x = evt.pageX - canvas.offsetLeft;
-			var y = evt.pageY - canvas.offsetTop;
-			var mouseCoord = { 'x': x, 'y': y };
-
-			if((mouseCoord.x >= 0) && (mouseCoord.x <= 320) && (mouseCoord.y >= 0) && (mouseCoord.y <= 320)) {
-				var clickedCell = {};
-
-				if((mouseCoord.x / 40) <= 1) {
-					clickedCell.x = 0;
-				} else if((mouseCoord.x / 40) <= 2) {
-					clickedCell.x = 1;
-				} else if((mouseCoord.x / 40) <= 3) {
-					clickedCell.x = 2;
-				} else if((mouseCoord.x / 40) <= 4) {
-					clickedCell.x = 3;
-				} else if((mouseCoord.x / 40) <= 5) {
-					clickedCell.x = 4;
-				} else if((mouseCoord.x / 40) <= 6) {
-					clickedCell.x = 5;
-				} else if((mouseCoord.x / 40) <= 7) {
-					clickedCell.x = 6;
-				} else if((mouseCoord.x / 40) <= 8) {
-					clickedCell.x = 7;
-				}
-
-				if((mouseCoord.y / 40) <= 1) {
-					clickedCell.y = 0;
-				} else if((mouseCoord.y / 40) <= 2) {
-					clickedCell.y = 1;
-				} else if((mouseCoord.y / 40) <= 3) {
-					clickedCell.y = 2;
-				} else if((mouseCoord.y / 40) <= 4) {
-					clickedCell.y = 3;
-				} else if((mouseCoord.y / 40) <= 5) {
-					clickedCell.y = 4;
-				} else if((mouseCoord.y / 40) <= 6) {
-					clickedCell.y = 5;
-				} else if((mouseCoord.y / 40) <= 7) {
-					clickedCell.y = 6;
-				} else if((mouseCoord.y / 40) <= 8) {
-					clickedCell.y = 7;
-				}
-
-				if(selectedCells.length === 0) {
-					selectedCells.push(clickedCell);
-				} else if(selectedCells.length === 1) {
-					selectedCells.push(clickedCell);
-					var firstCell = selectedCells[0];
-					var secondCell = selectedCells[1];
-					drawJewel(secondCell.x, secondCell.y, board[secondCell.y][secondCell.x], true);
-					if(secondCell.y === firstCell.y) {
-						if(secondCell.x + 1 === firstCell.x) {
-							swapJewels();
-						} else if(secondCell.x - 1 === firstCell.x) {
-							swapJewels();
-						}
-					} else if(secondCell.x === firstCell.x) {
-						if(secondCell.y + 1 === firstCell.y) {
-							swapJewels();
-						} else if(secondCell.y - 1 === firstCell.y) {
-							swapJewels();
-						}
-					}
-					selectedCells = [];
+	function drawSwap(cellsToAnimate) {
+		//draw the background to clear previous frame
+		ctx.fillStyle = '#fff';
+		ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+		console.log(cellsToAnimate);
+		for(var y = 0; y < boardSize; ++y) {
+			for(var x = 0; x < boardSize; ++x) {
+				if(!(((cellsToAnimate[0].x === x) && (cellsToAnimate[0].y === y)) || ((cellsToAnimate[1].x === x) && (cellsToAnimate[1].y === y)))) {
+					drawJewel(x, y, board[y][x], false);
+				} else if((cellsToAnimate[0].x === x) && (cellsToAnimate[0].y === y)) {
+					prevY = prevY + speed;
+					console.log(prevY);
+					console.log(board[y][x]);
+					animateJewel(x, prevY, board[cellsToAnimate[0].y][cellsToAnimate[0].x]);
 				}
 			}
 		}
+
+		var score_text = 'Score: ' + score;
+		ctx.fillStyle = '#000';
+		ctx.fillText(score_text, canvasWidth - 155, 15);
+	}
+
+	/* Input */
+	function cellClick(evt, clickCtrl) {
+		if(clickCtrl) {
+			var key = evt.which;
+
+			if(key === 1) {
+				var x = evt.pageX - canvas.offsetLeft;
+				var y = evt.pageY - canvas.offsetTop;
+				var mouseCoord = { 'x': x, 'y': y };
+
+				if((mouseCoord.x >= 0) && (mouseCoord.x <= 320) && (mouseCoord.y >= 0) && (mouseCoord.y <= 320)) {
+					var clickedCell = {};
+
+					if((mouseCoord.x / 40) <= 1) {
+						clickedCell.x = 0;
+					} else if((mouseCoord.x / 40) <= 2) {
+						clickedCell.x = 1;
+					} else if((mouseCoord.x / 40) <= 3) {
+						clickedCell.x = 2;
+					} else if((mouseCoord.x / 40) <= 4) {
+						clickedCell.x = 3;
+					} else if((mouseCoord.x / 40) <= 5) {
+						clickedCell.x = 4;
+					} else if((mouseCoord.x / 40) <= 6) {
+						clickedCell.x = 5;
+					} else if((mouseCoord.x / 40) <= 7) {
+						clickedCell.x = 6;
+					} else if((mouseCoord.x / 40) <= 8) {
+						clickedCell.x = 7;
+					}
+
+					if((mouseCoord.y / 40) <= 1) {
+						clickedCell.y = 0;
+					} else if((mouseCoord.y / 40) <= 2) {
+						clickedCell.y = 1;
+					} else if((mouseCoord.y / 40) <= 3) {
+						clickedCell.y = 2;
+					} else if((mouseCoord.y / 40) <= 4) {
+						clickedCell.y = 3;
+					} else if((mouseCoord.y / 40) <= 5) {
+						clickedCell.y = 4;
+					} else if((mouseCoord.y / 40) <= 6) {
+						clickedCell.y = 5;
+					} else if((mouseCoord.y / 40) <= 7) {
+						clickedCell.y = 6;
+					} else if((mouseCoord.y / 40) <= 8) {
+						clickedCell.y = 7;
+					}
+
+					if(selectedCells.length === 0) {
+						selectedCells.push(clickedCell);
+					} else if(selectedCells.length === 1) {
+						selectedCells.push(clickedCell);
+						var firstCell = selectedCells[0];
+						var secondCell = selectedCells[1];
+						drawJewel(secondCell.x, secondCell.y, board[secondCell.y][secondCell.x], true);
+						if(secondCell.y === firstCell.y) {
+							if(secondCell.x + 1 === firstCell.x) {
+								swapJewels();
+							} else if(secondCell.x - 1 === firstCell.x) {
+								swapJewels();
+							}
+						} else if(secondCell.x === firstCell.x) {
+							if(secondCell.y + 1 === firstCell.y) {
+								swapJewels();
+							} else if(secondCell.y - 1 === firstCell.y) {
+								swapJewels();
+							}
+						}
+						selectedCells = [];
+					}
+				}
+			}
+		}
+	}
+
+	window.onmousedown = function(evt) {
+		cellClick(evt, clickCtrl);
 	}
 };
