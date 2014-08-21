@@ -215,33 +215,32 @@ window.onload = function() {
 		ctx.fillText(score_text, canvasWidth - 155, 15);
 	}
 
-	var matchFound = -1;
-	//match(board);
-	//jewelSlideDown();
-	while(matchFound = match(board)){
-		jewelSlideDown();
-		fillGaps();
+	function matchCycle() {
+		var matchFound = -1;
+		console.log('called');
+		while(matchFound = match(board)){
+			jewelSlideDown();
+			fillGaps();
+		}
 	}
+
+	matchCycle();
 	verifyBoard = copyBoard(verifyBoard, board);
-	console.log(verifyBoard);
 
 	function swapJewels() {
-		console.log(verifyBoard);
 		var temp = verifyBoard[selectedCells[0].y][selectedCells[0].x];
-		console.log(verifyBoard[selectedCells[0].y][selectedCells[0].x]);
-		console.log(verifyBoard[selectedCells[1].y][selectedCells[1].x]);
 		verifyBoard[selectedCells[0].y][selectedCells[0].x] = verifyBoard[selectedCells[1].y][selectedCells[1].x];
 		verifyBoard[selectedCells[1].y][selectedCells[1].x] = temp;
-		console.log(verifyBoard[selectedCells[0].y][selectedCells[0].x]);
-		console.log(verifyBoard[selectedCells[1].y][selectedCells[1].x]);
-		console.log(verifyBoard);
 		if(match(verifyBoard)) {
 			console.log('yes');
 			board = copyBoard(board, verifyBoard);
+			jewelSlideDown();
+			fillGaps();
+			matchCycle();
+			verifyBoard = copyBoard(verifyBoard, board);
 		} else {
 			console.log('no');
 			verifyBoard = copyBoard(verifyBoard, board);
-			console.log(verifyBoard);
 		}
 	}
 
@@ -296,6 +295,7 @@ window.onload = function() {
 
 				if(selectedCells.length === 0) {
 					selectedCells.push(clickedCell);
+					console.log(selectedCells);
 				} else if(selectedCells.length === 1) {
 					selectedCells.push(clickedCell);
 					var firstCell = selectedCells[0];
@@ -314,6 +314,7 @@ window.onload = function() {
 							swapJewels();
 						}
 					}
+					console.log(selectedCells);
 					selectedCells = [];
 				}
 			}
