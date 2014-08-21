@@ -253,9 +253,11 @@ window.onload = function() {
 					selectedCells.push(clickedCell);
 				} else if(selectedCells.length === 1) {
 					selectedCells.push(clickedCell);
-					var temp = board[selectedCells[0].y][selectedCells[0].x];
-					board[selectedCells[0].y][selectedCells[0].x] = board[selectedCells[1].y][selectedCells[1].x];
-					board[selectedCells[1].y][selectedCells[1].x] = temp;
+					if(((selectedCells[1].x >= (selectedCells[0].x - 1)) && (selectedCells[1].x <= (selectedCells[0].x + 1))) && ((selectedCells[1].y >= (selectedCells[0].y - 1)) && (selectedCells[1].y <= (selectedCells[0].y + 1)))) {
+						var temp = board[selectedCells[0].y][selectedCells[0].x];
+						board[selectedCells[0].y][selectedCells[0].x] = board[selectedCells[1].y][selectedCells[1].x];
+						board[selectedCells[1].y][selectedCells[1].x] = temp;
+					}
 					selectedCells = [];
 				}
 			}
