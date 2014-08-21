@@ -32,6 +32,7 @@ window.onload = function() {
 	var cellsToAnimate = [];
 	var clickCtrl = 1;
 	var speed = 1;
+	var prevX;
 	var prevY;
 	var score;
 
@@ -235,7 +236,7 @@ window.onload = function() {
 		}
 	}
 
-	function animateJewel(x, y, val) {
+	function animateJewel(x, y, val, direction) {
 		if(val === 0) {
 			ctx.fillStyle = '#ff0000';
 		} else if(val === 1) {
@@ -247,17 +248,17 @@ window.onload = function() {
 		} else {
 			ctx.fillStyle = '#000';
 		}
-		ctx.fillRect(x * cellSize, y, cellSize, cellSize);
+		ctx.fillRect(x, y, cellSize, cellSize);
 		ctx.lineWidth = 1;
 		ctx.strokeStyle = '#fff';
-		ctx.strokeRect(x * cellSize, y, cellSize, cellSize);
+		ctx.strokeRect(x, y, cellSize, cellSize);
 	}
 
-	function drawSwap(cellsToAnimate) {
+	function drawSwap(cellsToAnimate, direction) {
 		//draw the background to clear previous frame
 		ctx.fillStyle = '#fff';
 		ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-		console.log(cellsToAnimate);
+		//console.log(cellsToAnimate);
 		for(var y = 0; y < boardSize; ++y) {
 			for(var x = 0; x < boardSize; ++x) {
 				if(!(((cellsToAnimate[0].x === x) && (cellsToAnimate[0].y === y)) || ((cellsToAnimate[1].x === x) && (cellsToAnimate[1].y === y)))) {
@@ -269,13 +270,21 @@ window.onload = function() {
 				}
 			}
 
-			prevY += speed;
-			console.log(verifyBoard[cellsToAnimate[0].y][cellsToAnimate[0].x]);
-			animateJewel(cellsToAnimate[0].x, prevY, board[cellsToAnimate[0].y][cellsToAnimate[0].x]);
+			if(direction === 'left') {
+				prevX -= speed;
+			} else if(direction === 'right') {
+				prevX += speed;
+			} else if(direction === 'up') {
+				prevY -= speed;
+			} else if(direction === 'down') {
+				prevY += speed;
+			}
+			//console.log(verifyBoard[cellsToAnimate[0].y][cellsToAnimate[0].x]);
+			animateJewel(prevX, prevY, board[cellsToAnimate[0].y][cellsToAnimate[0].x]);
 		}
 	}
 
-	function swapJewels() {
+	function swapJewels(direction) {
 		var temp = verifyBoard[selectedCells[0].y][selectedCells[0].x];
 		verifyBoard[selectedCells[0].y][selectedCells[0].x] = verifyBoard[selectedCells[1].y][selectedCells[1].x];
 		verifyBoard[selectedCells[1].y][selectedCells[1].x] = temp;
@@ -283,9 +292,10 @@ window.onload = function() {
 			clearInterval(game_loop);
 			cellsToAnimate = selectedCells.slice();
 			console.log(cellsToAnimate);
+			prevX = selectedCells[0].x * cellSize;
 			prevY = selectedCells[0].y * cellSize;
 			game_loop = setInterval(function() {
-				drawSwap(cellsToAnimate);
+				drawSwap(cellsToAnimate, direction);
 			}, 60);
 		} else {
 			verifyBoard = copyBoard(verifyBoard, board);
@@ -298,7 +308,6 @@ window.onload = function() {
 		fillGaps();
 		matchCycle();
 		verifyBoard = copyBoard(verifyBoard, board);
-		console.log('test');
 		game_loop = setInterval(draw, 60);
 	}
 
@@ -361,15 +370,15 @@ window.onload = function() {
 						drawJewel(secondCell.x, secondCell.y, board[secondCell.y][secondCell.x], true);
 						if(secondCell.y === firstCell.y) {
 							if(secondCell.x + 1 === firstCell.x) {
-								swapJewels();
+								swapJewels('left');
 							} else if(secondCell.x - 1 === firstCell.x) {
-								swapJewels();
+								swapJewels('right');
 							}
 						} else if(secondCell.x === firstCell.x) {
 							if(secondCell.y + 1 === firstCell.y) {
-								swapJewels();
+								swapJewels('up');
 							} else if(secondCell.y - 1 === firstCell.y) {
-								swapJewels();
+								swapJewels('down');
 							}
 						}
 						selectedCells = [];
