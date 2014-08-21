@@ -151,7 +151,7 @@ window.onload = function() {
 		}
 	}
 
-	function drawJewel(x, y, val) {
+	function drawJewel(x, y, val, highlight) {
 		if(val === 0) {
 			ctx.fillStyle = '#ff0000';
 		} else if(val === 1) {
@@ -164,7 +164,11 @@ window.onload = function() {
 			ctx.fillStyle = '#000';
 		}
 		ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
-		ctx.strokeStyle = '#000';
+		if(highlight) {
+			ctx.strokeStyle = '#ff69b4';
+		} else {
+			ctx.strokeStyle = '#000';
+		}
 		ctx.strokeRect(x * cellSize, y * cellSize, cellSize, cellSize);
 	}
 
@@ -185,8 +189,12 @@ window.onload = function() {
 
 		for(var y = 0; y < boardSize; ++y) {
 			for(var x = 0; x < boardSize; ++x) {
-				drawJewel(x, y, board[y][x]);
+				drawJewel(x, y, board[y][x], false);
 			}
+		}
+
+		if(selectedCells.length != 0) {
+			drawJewel(selectedCells[0].x, selectedCells[0].y, board[selectedCells[0].y][selectedCells[0].x], true);
 		}
 
 		var score_text = 'Score: ' + score;
@@ -195,10 +203,10 @@ window.onload = function() {
 	}
 
 	var matchFound = -1;
-	while(matchFound = match()){
+	/*while(matchFound = match()){
 		jewelSlideDown();
 		fillGaps();
-	}
+	}*/
 
 	/* Input */
 	window.onmousedown = function(evt) {
@@ -253,11 +261,22 @@ window.onload = function() {
 					selectedCells.push(clickedCell);
 				} else if(selectedCells.length === 1) {
 					selectedCells.push(clickedCell);
-					if(((selectedCells[1].x >= (selectedCells[0].x - 1)) && (selectedCells[1].x <= (selectedCells[0].x + 1))) && ((selectedCells[1].y >= (selectedCells[0].y - 1)) && (selectedCells[1].y <= (selectedCells[0].y + 1)))) {
-						var temp = board[selectedCells[0].y][selectedCells[0].x];
-						board[selectedCells[0].y][selectedCells[0].x] = board[selectedCells[1].y][selectedCells[1].x];
-						board[selectedCells[1].y][selectedCells[1].x] = temp;
+					drawJewel(selectedCells[1].x, selectedCells[1].y, board[selectedCells[1].y][selectedCells[1].x], true);
+					/*var firstCell = selectedCells[0];
+					var secondCell = selectedCells[1];
+					if(secondCell.y === firstCell.y) {
+						if(secondCell.x === firstCell.x) {
+
+						}
 					}
+
+					if(((selectedCells[1].x >= (selectedCells[0].x - 1)) && (selectedCells[1].x <= (selectedCells[0].x + 1))) && ((selectedCells[1].y >= (selectedCells[0].y - 1)) && (selectedCells[1].y <= (selectedCells[0].y + 1)))) {
+						if(selectedCells[1].x >= 1) {
+							var temp = board[selectedCells[0].y][selectedCells[0].x];
+							board[selectedCells[0].y][selectedCells[0].x] = board[selectedCells[1].y][selectedCells[1].x];
+							board[selectedCells[1].y][selectedCells[1].x] = temp;
+						}
+					}*/
 					selectedCells = [];
 				}
 			}
