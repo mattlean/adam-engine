@@ -26,8 +26,13 @@ window.onload = function() {
 	}
 
 	function copyBoard(boardCopy, boardSource) {
-		for(var i = 0; i < boardSource.length; ++i) {
-			boardCopy[i] = boardSource[i].slice();
+		boardCopy = [];
+		for(var y = 0; y < boardSource.length; ++y) {
+			var temp = [];
+			for(var x = 0; x < boardSource.length; ++x) {
+				temp.push(boardSource[y][x]);
+			}
+			boardCopy.push(temp);
 		}
 		return boardCopy;
 	}
@@ -85,7 +90,7 @@ window.onload = function() {
 		//check matches in each row on x-axis
 		for(var y = 0; y < boardSize; ++y) {
 			for(var x = 0; x < boardSize; ++x) {
-				var currVal = board[y][x];
+				var currVal = inputBoard[y][x];
 				if((currVal === prevVal) && (currVal != 3)) {
 					++count;
 				} else {
@@ -110,7 +115,7 @@ window.onload = function() {
 		//check matches in each row on y-axis
 		for(var x = 0; x < boardSize; ++x) {
 			for(var y = 0; y < boardSize; ++y) {
-				var currVal = board[y][x];
+				var currVal = inputBoard[y][x];
 				if((currVal === prevVal) && (currVal != 3)) {
 					++count;
 				} else {
@@ -218,22 +223,17 @@ window.onload = function() {
 		fillGaps();
 	}
 	verifyBoard = copyBoard(verifyBoard, board);
-	//console.log(verifyBoard);
+	console.log(verifyBoard);
 
 	function swapJewels() {
-		verifyBoard[0][0] = 4;
-		verifyBoard[0][1] = 4;
-		console.log(verifyBoard[0][0]);
 		console.log(verifyBoard);
-
 		var temp = verifyBoard[selectedCells[0].y][selectedCells[0].x];
-		console.log(verifyBoard[selectedCells[1].y][selectedCells[1].x]);
 		console.log(verifyBoard[selectedCells[0].y][selectedCells[0].x]);
+		console.log(verifyBoard[selectedCells[1].y][selectedCells[1].x]);
 		verifyBoard[selectedCells[0].y][selectedCells[0].x] = verifyBoard[selectedCells[1].y][selectedCells[1].x];
 		verifyBoard[selectedCells[1].y][selectedCells[1].x] = temp;
 		console.log(verifyBoard[selectedCells[0].y][selectedCells[0].x]);
 		console.log(verifyBoard[selectedCells[1].y][selectedCells[1].x]);
-
 		console.log(verifyBoard);
 		if(match(verifyBoard)) {
 			console.log('yes');
@@ -241,7 +241,7 @@ window.onload = function() {
 		} else {
 			console.log('no');
 			verifyBoard = copyBoard(verifyBoard, board);
-			//console.log(verifyBoard);
+			console.log(verifyBoard);
 		}
 	}
 
