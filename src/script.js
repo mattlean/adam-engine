@@ -17,11 +17,19 @@ window.onload = function() {
 	[1, 2, 0, 0, 2, 2, 2, 0],
 	[0, 1, 0, 0, 1, 1, 2, 2]
 	];
+	var verifyBoard = [];
 	var selectedCells = [];
 	var score;
 
 	function generateJewel() {
 		return Math.floor(Math.random() * 3);
+	}
+
+	function copyBoard(boardCopy, boardSource) {
+		for(var i = 0; i < boardSource.length; ++i) {
+			boardCopy[i] = boardSource[i].slice();
+		}
+		return boardCopy;
 	}
 
 	/* Start Game */
@@ -59,7 +67,7 @@ window.onload = function() {
 		return boardClearMarked;
 	}
 
-	function match() {
+	function match(inputBoard) {
 		var count = 1;
 		var prevVal = -1;
 		var matchFound = 0;
@@ -126,7 +134,7 @@ window.onload = function() {
 		for(var y = 0; y < boardSize; ++y) {
 			for(var x = 0; x < boardSize; ++x) {
 				if(boardClearMarked[y][x] === 1) {
-					board[y][x] = 3;
+					inputBoard[y][x] = 3;
 				}
 			}
 		}
@@ -203,15 +211,38 @@ window.onload = function() {
 	}
 
 	var matchFound = -1;
-	while(matchFound = match()){
+	//match(board);
+	//jewelSlideDown();
+	while(matchFound = match(board)){
 		jewelSlideDown();
 		fillGaps();
 	}
+	verifyBoard = copyBoard(verifyBoard, board);
+	//console.log(verifyBoard);
 
 	function swapJewels() {
-		var temp = board[selectedCells[0].y][selectedCells[0].x];
-		board[selectedCells[0].y][selectedCells[0].x] = board[selectedCells[1].y][selectedCells[1].x];
-		board[selectedCells[1].y][selectedCells[1].x] = temp;
+		verifyBoard[0][0] = 4;
+		verifyBoard[0][1] = 4;
+		console.log(verifyBoard[0][0]);
+		console.log(verifyBoard);
+
+		var temp = verifyBoard[selectedCells[0].y][selectedCells[0].x];
+		console.log(verifyBoard[selectedCells[1].y][selectedCells[1].x]);
+		console.log(verifyBoard[selectedCells[0].y][selectedCells[0].x]);
+		verifyBoard[selectedCells[0].y][selectedCells[0].x] = verifyBoard[selectedCells[1].y][selectedCells[1].x];
+		verifyBoard[selectedCells[1].y][selectedCells[1].x] = temp;
+		console.log(verifyBoard[selectedCells[0].y][selectedCells[0].x]);
+		console.log(verifyBoard[selectedCells[1].y][selectedCells[1].x]);
+
+		console.log(verifyBoard);
+		if(match(verifyBoard)) {
+			console.log('yes');
+			board = copyBoard(board, verifyBoard);
+		} else {
+			console.log('no');
+			verifyBoard = copyBoard(verifyBoard, board);
+			//console.log(verifyBoard);
+		}
 	}
 
 	/* Input */
@@ -267,9 +298,9 @@ window.onload = function() {
 					selectedCells.push(clickedCell);
 				} else if(selectedCells.length === 1) {
 					selectedCells.push(clickedCell);
-					drawJewel(selectedCells[1].x, selectedCells[1].y, board[selectedCells[1].y][selectedCells[1].x], true);
 					var firstCell = selectedCells[0];
 					var secondCell = selectedCells[1];
+					drawJewel(secondCell.x, secondCell.y, board[secondCell.y][secondCell.x], true);
 					if(secondCell.y === firstCell.y) {
 						if(secondCell.x + 1 === firstCell.x) {
 							swapJewels();
