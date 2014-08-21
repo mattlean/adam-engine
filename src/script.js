@@ -198,12 +198,56 @@ window.onload = function() {
 		jewelSlideDown();
 		fillGaps();
 	}
-	console.log(matchFound);
-
 
 	/* Input */
 	window.onmousedown = function(evt) {
 		var key = evt.which;
 		//console.log(key);
+		if(key === 1) {
+			var x = evt.pageX - canvas.offsetLeft;
+			var y = evt.pageY - canvas.offsetTop;
+			var mouseCoord = { 'x': x, 'y': y };
+			var selectedCell = {};
+
+			if((mouseCoord.x >= 0) && (mouseCoord.x <= 320) && (mouseCoord.y >= 0) && (mouseCoord.y <= 320)) {
+				//console.log(mouseCoord);
+				if((mouseCoord.x / 40) <= 1) {
+					selectedCell.x = 0;
+				} else if((mouseCoord.x / 40) <= 2) {
+					selectedCell.x = 1;
+				} else if((mouseCoord.x / 40) <= 3) {
+					selectedCell.x = 2;
+				} else if((mouseCoord.x / 40) <= 4) {
+					selectedCell.x = 3;
+				} else if((mouseCoord.x / 40) <= 5) {
+					selectedCell.x = 4;
+				} else if((mouseCoord.x / 40) <= 6) {
+					selectedCell.x = 5;
+				} else if((mouseCoord.x / 40) <= 7) {
+					selectedCell.x = 6;
+				} else if((mouseCoord.x / 40) <= 8) {
+					selectedCell.x = 7;
+				}
+
+				if((mouseCoord.y / 40) <= 1) {
+					selectedCell.y = 0;
+				} else if((mouseCoord.y / 40) <= 2) {
+					selectedCell.y = 1;
+				} else if((mouseCoord.y / 40) <= 3) {
+					selectedCell.y = 2;
+				} else if((mouseCoord.y / 40) <= 4) {
+					selectedCell.y = 3;
+				} else if((mouseCoord.y / 40) <= 5) {
+					selectedCell.y = 4;
+				} else if((mouseCoord.y / 40) <= 6) {
+					selectedCell.y = 5;
+				} else if((mouseCoord.y / 40) <= 7) {
+					selectedCell.y = 6;
+				} else if((mouseCoord.y / 40) <= 8) {
+					selectedCell.y = 7;
+				}
+				console.log(selectedCell);
+			}
+		}
 	}
 };
