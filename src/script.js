@@ -6,8 +6,8 @@ window.onload = function() {
 	var game_loop;
 	var cellSize = 40; //determines cell size. cell is always a square.
 	var boardSize = 8; //determines board size. at the moment the board is always square.
-	//var board = [];
-	var board = [
+	var board = [];
+	/*var board = [
 	[1, 2, 0, 1, 2, 2, 2, 0],
 	[2, 0, 0, 2, 1, 2, 2, 0],
 	[1, 0, 1, 0, 2, 2, 1, 2],
@@ -16,7 +16,17 @@ window.onload = function() {
 	[0, 0, 1, 2, 2, 2, 1, 0],
 	[1, 2, 0, 0, 2, 2, 2, 0],
 	[0, 1, 0, 0, 1, 1, 2, 2]
-	];
+	];*/
+	/*var board = [
+	[1, 2, 2, 0, 0, 2, 0, 2],
+	[1, 1, 2, 2, 0, 2, 0, 2],
+	[0, 2, 1, 2, 2, 0, 2, 0],
+	[1, 2, 2, 0, 0, 1, 0, 1],
+	[2, 1, 2, 2, 1, 0, 2, 0],
+	[1, 2, 0, 1, 2, 0, 1, 2],
+	[1, 2, 2, 1, 2, 2, 1, 1],
+	[0, 1, 1, 0, 1, 1, 2, 2]
+	];*/
 	var verifyBoard = [];
 	var selectedCells = [];
 	var score;
@@ -40,15 +50,15 @@ window.onload = function() {
 	/* Start Game */
 	function init() {
 		//initialize board with randomly generated jewels
-		/*for(var y = 0; y < boardSize; ++y) {
+		for(var y = 0; y < boardSize; ++y) {
 			var temp = [];
 			for(var x = 0; x < boardSize; ++x) {
 				temp.push(generateJewel());
 			}
 			board.push(temp);
-		}*/
+		}
 
-		console.log(board);
+		//console.log(board);
 		score = 0;
 		if(typeof game_loop !== 'undefined') clearInterval(game_loop);
 		game_loop = setInterval(draw, 60);
@@ -57,7 +67,6 @@ window.onload = function() {
 	init();
 
 	function clearMatchesXAxis(startX, startY, length, boardClearMarked) {
-		//console.log(startX, startY, length);
 		for(var i = startX; i < startX + length; ++i) {
 			boardClearMarked[startY][i] = 1;
 		}
@@ -65,7 +74,6 @@ window.onload = function() {
 	}
 
 	function clearMatchesYAxis(startX, startY, length, boardClearMarked) {
-		//console.log(startX, startY, length);
 		for(var i = startY; i < startY + length; ++i) {
 			boardClearMarked[i][startX] = 1;
 		}
@@ -217,7 +225,6 @@ window.onload = function() {
 
 	function matchCycle() {
 		var matchFound = -1;
-		console.log('called');
 		while(matchFound = match(board)){
 			jewelSlideDown();
 			fillGaps();
@@ -232,14 +239,12 @@ window.onload = function() {
 		verifyBoard[selectedCells[0].y][selectedCells[0].x] = verifyBoard[selectedCells[1].y][selectedCells[1].x];
 		verifyBoard[selectedCells[1].y][selectedCells[1].x] = temp;
 		if(match(verifyBoard)) {
-			console.log('yes');
 			board = copyBoard(board, verifyBoard);
 			jewelSlideDown();
 			fillGaps();
 			matchCycle();
 			verifyBoard = copyBoard(verifyBoard, board);
 		} else {
-			console.log('no');
 			verifyBoard = copyBoard(verifyBoard, board);
 		}
 	}
@@ -247,7 +252,7 @@ window.onload = function() {
 	/* Input */
 	window.onmousedown = function(evt) {
 		var key = evt.which;
-		//console.log(key);
+
 		if(key === 1) {
 			var x = evt.pageX - canvas.offsetLeft;
 			var y = evt.pageY - canvas.offsetTop;
@@ -256,7 +261,6 @@ window.onload = function() {
 			if((mouseCoord.x >= 0) && (mouseCoord.x <= 320) && (mouseCoord.y >= 0) && (mouseCoord.y <= 320)) {
 				var clickedCell = {};
 
-				//console.log(mouseCoord);
 				if((mouseCoord.x / 40) <= 1) {
 					clickedCell.x = 0;
 				} else if((mouseCoord.x / 40) <= 2) {
@@ -295,7 +299,6 @@ window.onload = function() {
 
 				if(selectedCells.length === 0) {
 					selectedCells.push(clickedCell);
-					console.log(selectedCells);
 				} else if(selectedCells.length === 1) {
 					selectedCells.push(clickedCell);
 					var firstCell = selectedCells[0];
@@ -314,7 +317,6 @@ window.onload = function() {
 							swapJewels();
 						}
 					}
-					console.log(selectedCells);
 					selectedCells = [];
 				}
 			}
