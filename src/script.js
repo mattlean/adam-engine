@@ -203,10 +203,16 @@ window.onload = function() {
 	}
 
 	var matchFound = -1;
-	/*while(matchFound = match()){
+	while(matchFound = match()){
 		jewelSlideDown();
 		fillGaps();
-	}*/
+	}
+
+	function swapJewels() {
+		var temp = board[selectedCells[0].y][selectedCells[0].x];
+		board[selectedCells[0].y][selectedCells[0].x] = board[selectedCells[1].y][selectedCells[1].x];
+		board[selectedCells[1].y][selectedCells[1].x] = temp;
+	}
 
 	/* Input */
 	window.onmousedown = function(evt) {
@@ -262,21 +268,21 @@ window.onload = function() {
 				} else if(selectedCells.length === 1) {
 					selectedCells.push(clickedCell);
 					drawJewel(selectedCells[1].x, selectedCells[1].y, board[selectedCells[1].y][selectedCells[1].x], true);
-					/*var firstCell = selectedCells[0];
+					var firstCell = selectedCells[0];
 					var secondCell = selectedCells[1];
 					if(secondCell.y === firstCell.y) {
-						if(secondCell.x === firstCell.x) {
-
+						if(secondCell.x + 1 === firstCell.x) {
+							swapJewels();
+						} else if(secondCell.x - 1 === firstCell.x) {
+							swapJewels();
+						}
+					} else if(secondCell.x === firstCell.x) {
+						if(secondCell.y + 1 === firstCell.y) {
+							swapJewels();
+						} else if(secondCell.y - 1 === firstCell.y) {
+							swapJewels();
 						}
 					}
-
-					if(((selectedCells[1].x >= (selectedCells[0].x - 1)) && (selectedCells[1].x <= (selectedCells[0].x + 1))) && ((selectedCells[1].y >= (selectedCells[0].y - 1)) && (selectedCells[1].y <= (selectedCells[0].y + 1)))) {
-						if(selectedCells[1].x >= 1) {
-							var temp = board[selectedCells[0].y][selectedCells[0].x];
-							board[selectedCells[0].y][selectedCells[0].x] = board[selectedCells[1].y][selectedCells[1].x];
-							board[selectedCells[1].y][selectedCells[1].x] = temp;
-						}
-					}*/
 					selectedCells = [];
 				}
 			}
