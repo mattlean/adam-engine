@@ -32,6 +32,7 @@ window.onload = function() {
 	var cellsToAnimate = [];
 	var score = 0;
 	var time = 0;
+	var tubeTime = 100;
 	var clickCtrl = 0; //controls state of click availability
 	var imgs = {}; //dictionary of images
 	var imgsLoaded = 0;
@@ -337,16 +338,19 @@ window.onload = function() {
 		ctx.fillStyle = FONTCOLOR;
 		ctx.fillText(txtScore, canvasWidth - 155, 20);
 		var seconds = Math.ceil(time / 60);
-		var txtTime = 'Time: ' + seconds;
+		/*var txtTime = 'Time: ' + seconds;
 		if(time <= 0) {
 			clearInterval(game_loop);
 			clickCtrl = 2;
 			game_loop = setInterval(draw_timeup, FRAMERATE);
 		}
-		ctx.fillText(txtTime, canvasWidth - 155, 40);
+		ctx.fillText(txtTime, canvasWidth - 155, 40);*/
 
+		var tubeSegment = 147 / 60;
+		var tubeStartLevel = 143 + ((60 * tubeSegment) - (seconds * tubeSegment));
+		var tubeEndLevel = 147 - ((60 * tubeSegment) - (seconds * tubeSegment));
 		ctx.fillStyle = '#8cc63e';
-		ctx.fillRect(386, 143, 28, 147);
+		ctx.fillRect(386, tubeStartLevel, 28, tubeEndLevel);
 		ctx.drawImage(imgs['timer'], 375, 110, 50, 187);
 		time -= 1;
 	}
