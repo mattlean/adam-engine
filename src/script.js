@@ -31,6 +31,8 @@ window.onload = function() {
 	var selectedCells = [];
 	var cellsToAnimate = [];
 	var score = 0;
+	var time = 0;
+	var clickCtrl = 1; //controls state of click availability
 
 	/* Constants */
 	const SPEED = 1; //speed in which the jewels move
@@ -44,6 +46,7 @@ window.onload = function() {
 	const SPECIAL = 6;
 	const BGCOLOR = '#2463aa';
 	const FONTCOLOR = '#fff';
+	const STARTTIME = 100; //60 seconds
 
 	function generateJewel() {
 		return Math.floor(Math.random() * 6);
@@ -71,9 +74,12 @@ window.onload = function() {
 		matchCycle(board, false);
 		verifyBoard = copyBoard(board);
 		score = 0;
+		time = STARTTIME;
+		ctx.textAlign = 'start';
+		ctx.font = "1.2em Helvetica";
 		//console.log(board);
 		if(typeof game_loop !== 'undefined') clearInterval(game_loop);
-		game_loop = setInterval(draw, 60);
+		game_loop = setInterval(draw, 1000 / 60);
 	}
 
 	function match(inputBoard, trackScore) {
@@ -159,7 +165,6 @@ window.onload = function() {
 				}
 			}
 		}
-		console.log(score);
 		return matchFound;
 	}
 
@@ -258,7 +263,17 @@ window.onload = function() {
 
 		var txtScore = 'Score: ' + score;
 		ctx.fillStyle = FONTCOLOR;
-		ctx.fillText(txtScore, canvasWidth - 155, 15);
+		ctx.fillText(txtScore, canvasWidth - 155, 20);
+		var seconds = Math.ceil(time / 60);
+		var txtTime = 'Time: ' + seconds;
+		if(time <= 0) {
+			clearInterval(game_loop);
+			clickCtrl = 0;
+			console.log('Finish');
+			game_loop = setInterval(draw_timeup, 1000 / 60);
+		}
+		ctx.fillText(txtTime, canvasWidth - 155, 40);
+		time -= 1;
 	}
 
 	function swapJewels(direction) {
@@ -280,82 +295,100 @@ window.onload = function() {
 		score += count * 10;
 	}
 
+	function draw_timeup() {
+		//draw the background to clear previous frame
+		ctx.fillStyle = BGCOLOR;
+		ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+		ctx.textAlign = 'center';
+		ctx.font = "1.5em Helvetica";
+
+		var txtFinal = 'Your final score:';
+		ctx.fillStyle = FONTCOLOR;
+		ctx.fillText(txtFinal, canvasWidth / 2, 120);
+
+		ctx.font = "2em Helvetica";
+		ctx.fillStyle = FONTCOLOR;
+		ctx.fillText(score, canvasWidth / 2, canvasHeight / 2);
+	}
+
 	/* Input */
-	function cellClick(evt) {
-		var key = evt.which;
+	function cellClick(evt, clickCtrl) {
+		if(clickCtrl) {
+			var key = evt.which;
+			if(key === 1) {
+				var x = evt.pageX - canvas.offsetLeft;
+				var y = evt.pageY - canvas.offsetTop;
+				var mouseCoord = { 'x': x, 'y': y };
 
-		if(key === 1) {
-			var x = evt.pageX - canvas.offsetLeft;
-			var y = evt.pageY - canvas.offsetTop;
-			var mouseCoord = { 'x': x, 'y': y };
+				if((mouseCoord.x >= 0) && (mouseCoord.x <= 320) && (mouseCoord.y >= 0) && (mouseCoord.y <= 320)) {
+					var clickedCell = {};
 
-			if((mouseCoord.x >= 0) && (mouseCoord.x <= 320) && (mouseCoord.y >= 0) && (mouseCoord.y <= 320)) {
-				var clickedCell = {};
-
-				if((mouseCoord.x / 40) <= 1) {
-					clickedCell.x = 0;
-				} else if((mouseCoord.x / 40) <= 2) {
-					clickedCell.x = 1;
-				} else if((mouseCoord.x / 40) <= 3) {
-					clickedCell.x = 2;
-				} else if((mouseCoord.x / 40) <= 4) {
-					clickedCell.x = 3;
-				} else if((mouseCoord.x / 40) <= 5) {
-					clickedCell.x = 4;
-				} else if((mouseCoord.x / 40) <= 6) {
-					clickedCell.x = 5;
-				} else if((mouseCoord.x / 40) <= 7) {
-					clickedCell.x = 6;
-				} else if((mouseCoord.x / 40) <= 8) {
-					clickedCell.x = 7;
-				}
-
-				if((mouseCoord.y / 40) <= 1) {
-					clickedCell.y = 0;
-				} else if((mouseCoord.y / 40) <= 2) {
-					clickedCell.y = 1;
-				} else if((mouseCoord.y / 40) <= 3) {
-					clickedCell.y = 2;
-				} else if((mouseCoord.y / 40) <= 4) {
-					clickedCell.y = 3;
-				} else if((mouseCoord.y / 40) <= 5) {
-					clickedCell.y = 4;
-				} else if((mouseCoord.y / 40) <= 6) {
-					clickedCell.y = 5;
-				} else if((mouseCoord.y / 40) <= 7) {
-					clickedCell.y = 6;
-				} else if((mouseCoord.y / 40) <= 8) {
-					clickedCell.y = 7;
-				}
-
-				if(selectedCells.length === 0) {
-					selectedCells.push(clickedCell);
-				} else if(selectedCells.length === 1) {
-					selectedCells.push(clickedCell);
-					var firstCell = selectedCells[0];
-					var secondCell = selectedCells[1];
-					drawJewel(secondCell.x, secondCell.y, board[secondCell.y][secondCell.x], true);
-					if(secondCell.y === firstCell.y) {
-						if(secondCell.x + 1 === firstCell.x) {
-							swapJewels();
-						} else if(secondCell.x - 1 === firstCell.x) {
-							swapJewels();
-						}
-					} else if(secondCell.x === firstCell.x) {
-						if(secondCell.y + 1 === firstCell.y) {
-							swapJewels();
-						} else if(secondCell.y - 1 === firstCell.y) {
-							swapJewels();
-						}
+					if((mouseCoord.x / 40) <= 1) {
+						clickedCell.x = 0;
+					} else if((mouseCoord.x / 40) <= 2) {
+						clickedCell.x = 1;
+					} else if((mouseCoord.x / 40) <= 3) {
+						clickedCell.x = 2;
+					} else if((mouseCoord.x / 40) <= 4) {
+						clickedCell.x = 3;
+					} else if((mouseCoord.x / 40) <= 5) {
+						clickedCell.x = 4;
+					} else if((mouseCoord.x / 40) <= 6) {
+						clickedCell.x = 5;
+					} else if((mouseCoord.x / 40) <= 7) {
+						clickedCell.x = 6;
+					} else if((mouseCoord.x / 40) <= 8) {
+						clickedCell.x = 7;
 					}
-					selectedCells = [];
+
+					if((mouseCoord.y / 40) <= 1) {
+						clickedCell.y = 0;
+					} else if((mouseCoord.y / 40) <= 2) {
+						clickedCell.y = 1;
+					} else if((mouseCoord.y / 40) <= 3) {
+						clickedCell.y = 2;
+					} else if((mouseCoord.y / 40) <= 4) {
+						clickedCell.y = 3;
+					} else if((mouseCoord.y / 40) <= 5) {
+						clickedCell.y = 4;
+					} else if((mouseCoord.y / 40) <= 6) {
+						clickedCell.y = 5;
+					} else if((mouseCoord.y / 40) <= 7) {
+						clickedCell.y = 6;
+					} else if((mouseCoord.y / 40) <= 8) {
+						clickedCell.y = 7;
+					}
+
+					if(selectedCells.length === 0) {
+						selectedCells.push(clickedCell);
+					} else if(selectedCells.length === 1) {
+						selectedCells.push(clickedCell);
+						var firstCell = selectedCells[0];
+						var secondCell = selectedCells[1];
+						drawJewel(secondCell.x, secondCell.y, board[secondCell.y][secondCell.x], true);
+						if(secondCell.y === firstCell.y) {
+							if(secondCell.x + 1 === firstCell.x) {
+								swapJewels();
+							} else if(secondCell.x - 1 === firstCell.x) {
+								swapJewels();
+							}
+						} else if(secondCell.x === firstCell.x) {
+							if(secondCell.y + 1 === firstCell.y) {
+								swapJewels();
+							} else if(secondCell.y - 1 === firstCell.y) {
+								swapJewels();
+							}
+						}
+						selectedCells = [];
+					}
 				}
 			}
 		}
 	}
 
 	window.onmousedown = function(evt) {
-		cellClick(evt);
+		cellClick(evt, clickCtrl);
 	}
 
 	/* "main()" */
