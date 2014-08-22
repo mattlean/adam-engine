@@ -32,7 +32,7 @@ window.onload = function() {
 	var cellsToAnimate = [];
 	var score = 0;
 	var time = 0;
-	var clickCtrl = 1; //controls state of click availability
+	var clickCtrl = 0; //controls state of click availability
 
 	/* Constants */
 	const SPEED = 1; //speed in which the jewels move
@@ -46,7 +46,7 @@ window.onload = function() {
 	const SPECIAL = 6;
 	const BGCOLOR = '#2463aa';
 	const FONTCOLOR = '#fff';
-	const STARTTIME = 100; //60 seconds
+	const STARTTIME = 3600; //60 seconds
 
 	function generateJewel() {
 		return Math.floor(Math.random() * 6);
@@ -62,6 +62,8 @@ window.onload = function() {
 
 	/* Start Game */
 	function init() {
+		board = [];
+
 		//initialize board with randomly generated jewels
 		for(var y = 0; y < boardSize; ++y) {
 			var temp = [];
@@ -76,10 +78,11 @@ window.onload = function() {
 		score = 0;
 		time = STARTTIME;
 		ctx.textAlign = 'start';
-		ctx.font = "1.2em Helvetica";
+		ctx.font = '1.2em Helvetica';
 		//console.log(board);
 		if(typeof game_loop !== 'undefined') clearInterval(game_loop);
 		game_loop = setInterval(draw, 1000 / 60);
+		clickCtrl = 1;
 	}
 
 	function match(inputBoard, trackScore) {
@@ -268,7 +271,7 @@ window.onload = function() {
 		var txtTime = 'Time: ' + seconds;
 		if(time <= 0) {
 			clearInterval(game_loop);
-			clickCtrl = 0;
+			clickCtrl = 2;
 			console.log('Finish');
 			game_loop = setInterval(draw_timeup, 1000 / 60);
 		}
@@ -301,26 +304,36 @@ window.onload = function() {
 		ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
 		ctx.textAlign = 'center';
-		ctx.font = "1.5em Helvetica";
+		ctx.font = '1.5em Helvetica';
 
 		var txtFinal = 'Your final score:';
 		ctx.fillStyle = FONTCOLOR;
-		ctx.fillText(txtFinal, canvasWidth / 2, 120);
+		ctx.fillText(txtFinal, canvasWidth / 2, (canvasHeight / 2) - 40);
 
-		ctx.font = "2em Helvetica";
-		ctx.fillStyle = FONTCOLOR;
+		ctx.font = '2em Helvetica';
 		ctx.fillText(score, canvasWidth / 2, canvasHeight / 2);
+
+		drawBtn((canvasWidth / 2) - 100, (canvasHeight / 2) + 40, 200, 45, '#a6a6a6', 'PLAY AGAIN', '1.5em Helvetica', '#fff');
+	}
+
+	function drawBtn(posX, posY, btnWidth, btnHeight, btnColor, txt, txtFont, txtColor) {
+		ctx.fillStyle = btnColor;
+		ctx.fillRect(posX, posY, btnWidth, btnHeight);
+		ctx.textAlign = 'center';
+		ctx.font = '1.5em Helvetica';
+		ctx.fillStyle = txtColor;
+		ctx.fillText(txt, posX + (btnWidth / 2), posY + (btnHeight / 2) + 8); //8 is for extra offset
 	}
 
 	/* Input */
 	function cellClick(evt, clickCtrl) {
-		if(clickCtrl) {
-			var key = evt.which;
-			if(key === 1) {
-				var x = evt.pageX - canvas.offsetLeft;
-				var y = evt.pageY - canvas.offsetTop;
-				var mouseCoord = { 'x': x, 'y': y };
+		var key = evt.which;
+		var x = evt.pageX - canvas.offsetLeft;
+		var y = evt.pageY - canvas.offsetTop;
+		var mouseCoord = { 'x': x, 'y': y };
 
+		if(clickCtrl === 1) {
+			if(key === 1) {
 				if((mouseCoord.x >= 0) && (mouseCoord.x <= 320) && (mouseCoord.y >= 0) && (mouseCoord.y <= 320)) {
 					var clickedCell = {};
 
@@ -382,6 +395,12 @@ window.onload = function() {
 						}
 						selectedCells = [];
 					}
+				}
+			}
+		} else if(clickCtrl === 2) {
+			if(key === 1) {
+				if((mouseCoord.x >= (canvasWidth / 2) - 100) && (mouseCoord.x <= (canvasWidth / 2) - 100 + 200) && (mouseCoord.y >= (canvasHeight / 2) + 40) && (mouseCoord.y <= (canvasHeight / 2) + 40 + 45)) {
+					init();
 				}
 			}
 		}
