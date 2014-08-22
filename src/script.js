@@ -30,6 +30,7 @@ window.onload = function() {
 	var verifyBoard = [];
 	var selectedCells = [];
 	var cellsToAnimate = [];
+	var score = 0;
 
 	/* Constants */
 	const SPEED = 1; //speed in which the jewels move
@@ -42,6 +43,7 @@ window.onload = function() {
 	const BHQ = 5;
 	const SPECIAL = 6;
 	const BGCOLOR = '#2463aa';
+	const FONTCOLOR = '#fff';
 
 	function generateJewel() {
 		return Math.floor(Math.random() * 6);
@@ -66,8 +68,10 @@ window.onload = function() {
 			board.push(temp);
 		}
 
-		console.log(board);
+		matchCycle();
+		verifyBoard = copyBoard(board);
 		score = 0;
+		//console.log(board);
 		if(typeof game_loop !== 'undefined') clearInterval(game_loop);
 		game_loop = setInterval(draw, 60);
 	}
@@ -91,7 +95,7 @@ window.onload = function() {
 		for(var y = 0; y < boardSize; ++y) {
 			for(var x = 0; x < boardSize; ++x) {
 				var currVal = inputBoard[y][x];
-				if((currVal === prevVal) && (currVal != BLANK)) {
+				if((currVal === prevVal) && (currVal !== BLANK)) {
 					++count;
 				} else {
 					if(count >= 3) {
@@ -116,7 +120,7 @@ window.onload = function() {
 		for(var x = 0; x < boardSize; ++x) {
 			for(var y = 0; y < boardSize; ++y) {
 				var currVal = inputBoard[y][x];
-				if((currVal === prevVal) && (currVal != BLANK)) {
+				if((currVal === prevVal) && (currVal !== BLANK)) {
 					++count;
 				} else {
 					if(count >= 3) {
@@ -236,13 +240,13 @@ window.onload = function() {
 			}
 		}
 
-		if(selectedCells.length != 0) {
+		if(selectedCells.length !== 0) {
 			drawJewel(selectedCells[0].x, selectedCells[0].y, board[selectedCells[0].y][selectedCells[0].x], true);
 		}
 
-		var score_text = 'Score: ' + score;
-		ctx.fillStyle = '#000';
-		ctx.fillText(score_text, canvasWidth - 155, 15);
+		var txtScore = 'Score: ' + score;
+		ctx.fillStyle = FONTCOLOR;
+		ctx.fillText(txtScore, canvasWidth - 155, 15);
 	}
 
 	function swapJewels(direction) {
@@ -336,6 +340,4 @@ window.onload = function() {
 
 	/* "main()" */
 	init();
-	matchCycle();
-	verifyBoard = copyBoard(board);
 };
