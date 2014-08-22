@@ -60,8 +60,35 @@ window.onload = function() {
 		return boardCopy;
 	}
 
+	function drawBtn(posX, posY, btnWidth, btnHeight, btnColor, txt, txtFont, txtColor, txtOffset) {
+		ctx.fillStyle = btnColor;
+		ctx.fillRect(posX, posY, btnWidth, btnHeight);
+		ctx.textAlign = 'center';
+		ctx.font = '1.5em Helvetica';
+		ctx.fillStyle = txtColor;
+		ctx.fillText(txt, posX + (btnWidth / 2), posY + (btnHeight / 2) + txtOffset);
+	}
+
 	/* Start Game */
-	function init() {
+	function start() {
+		game_loop = setInterval(draw_start, 1000 / 60);
+	}
+
+	function draw_start() {
+		//draw the background to clear previous frame
+		ctx.fillStyle = BGCOLOR;
+		ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+		ctx.fillStyle = FONTCOLOR;
+
+		ctx.textAlign = 'center';
+		ctx.font = '2em Helvetica';
+		var txtTimeUp = 'DYE MATCH GAME TITLE';
+		ctx.fillText(txtTimeUp, canvasWidth / 2, (canvasHeight / 2) - 20);
+
+		drawBtn((canvasWidth / 2) - 100, (canvasHeight / 2) + 20, 200, 45, '#a6a6a6', 'START GAME', '1.5em Helvetica', '#fff', 8);
+	}
+
+	function init_game() {
 		board = [];
 
 		//initialize board with randomly generated jewels
@@ -316,16 +343,7 @@ window.onload = function() {
 		ctx.font = '3.5em Helvetica';
 		ctx.fillText(score, canvasWidth / 2, canvasHeight / 2 + 10);
 
-		drawBtn((canvasWidth / 2) - 100, (canvasHeight / 2) + 35, 200, 45, '#a6a6a6', 'PLAY AGAIN', '1.5em Helvetica', '#fff');
-	}
-
-	function drawBtn(posX, posY, btnWidth, btnHeight, btnColor, txt, txtFont, txtColor) {
-		ctx.fillStyle = btnColor;
-		ctx.fillRect(posX, posY, btnWidth, btnHeight);
-		ctx.textAlign = 'center';
-		ctx.font = '1.5em Helvetica';
-		ctx.fillStyle = txtColor;
-		ctx.fillText(txt, posX + (btnWidth / 2), posY + (btnHeight / 2) + 8); //8 is for extra offset
+		drawBtn((canvasWidth / 2) - 100, (canvasHeight / 2) + 35, 200, 45, '#a6a6a6', 'PLAY AGAIN', '1.5em Helvetica', '#fff', 8);
 	}
 
 	/* Input */
@@ -335,8 +353,12 @@ window.onload = function() {
 		var y = evt.pageY - canvas.offsetTop;
 		var mouseCoord = { 'x': x, 'y': y };
 
-		if(clickCtrl === 1) {
-			if(key === 1) {
+		if(key === 1) { //only respond to left-clicks
+			if(clickCtrl === 0) {
+				if((mouseCoord.x >= (canvasWidth / 2) - 100) && (mouseCoord.x <= (canvasWidth / 2) - 100 + 200) && (mouseCoord.y >= (canvasHeight / 2) + 20) && (mouseCoord.y <= (canvasHeight / 2) + 20 + 45)) {
+					init_game();
+				}
+			} else if(clickCtrl === 1) {
 				if((mouseCoord.x >= 0) && (mouseCoord.x <= 320) && (mouseCoord.y >= 0) && (mouseCoord.y <= 320)) {
 					var clickedCell = {};
 
@@ -399,11 +421,9 @@ window.onload = function() {
 						selectedCells = [];
 					}
 				}
-			}
-		} else if(clickCtrl === 2) {
-			if(key === 1) {
+			} else if(clickCtrl === 2) {
 				if((mouseCoord.x >= (canvasWidth / 2) - 100) && (mouseCoord.x <= (canvasWidth / 2) - 100 + 200) && (mouseCoord.y >= (canvasHeight / 2) + 40) && (mouseCoord.y <= (canvasHeight / 2) + 40 + 45)) {
-					init();
+					init_game();
 				}
 			}
 		}
@@ -414,5 +434,5 @@ window.onload = function() {
 	}
 
 	/* "main()" */
-	init();
+	start();
 };
