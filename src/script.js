@@ -34,6 +34,8 @@ window.onload = function() {
 	var speed = 1;
 	var prevX;
 	var prevY;
+	var prevX2;
+	var prevY2;
 	var score;
 
 	function generateJewel() {
@@ -272,15 +274,20 @@ window.onload = function() {
 
 			if(direction === 'left') {
 				prevX -= speed;
+				prevX2 += speed;
 			} else if(direction === 'right') {
 				prevX += speed;
+				prevX2 -= speed;
 			} else if(direction === 'up') {
 				prevY -= speed;
+				prevY2 += speed;
 			} else if(direction === 'down') {
 				prevY += speed;
+				prevY2 -= speed;
 			}
-			//console.log(verifyBoard[cellsToAnimate[0].y][cellsToAnimate[0].x]);
+
 			animateJewel(prevX, prevY, board[cellsToAnimate[0].y][cellsToAnimate[0].x]);
+			animateJewel(prevX2, prevY2, board[cellsToAnimate[1].y][cellsToAnimate[1].x]);
 		}
 	}
 
@@ -291,9 +298,11 @@ window.onload = function() {
 		if(match(verifyBoard)) {
 			clearInterval(game_loop);
 			cellsToAnimate = selectedCells.slice();
-			console.log(cellsToAnimate);
+			//console.log(cellsToAnimate);
 			prevX = selectedCells[0].x * cellSize;
 			prevY = selectedCells[0].y * cellSize;
+			prevX2 = selectedCells[1].x * cellSize;
+			prevY2 = selectedCells[1].y * cellSize;
 			game_loop = setInterval(function() {
 				drawSwap(cellsToAnimate, direction);
 			}, 60);

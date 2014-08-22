@@ -1,0 +1,35 @@
+<html>
+<head>
+	<title>Test</title>
+	<style>
+	body {
+		background-color: #ccc;
+	}
+
+	#canvas {
+		background-color: #fff;
+	}
+	</style>
+</head>
+<body>
+	<canvas id="canvas" width="480" height="320"></canvas>
+	<script>
+	var canvas = document.getElementById('canvas');
+	var ctx = canvas.getContext('2d');
+	var posX = 0;
+	var speed = 5;
+	function draw() {
+		ctx.fillStyle = '#fff';
+		ctx.fillRect(0, 0, 480, 320);
+		posX += speed;
+		ctx.fillStyle = '#000';
+		ctx.fillRect(posX, 0, 20, 20);
+		if(posX === 100) {
+			clearInterval(loop);
+		}
+	}
+
+	var loop = setInterval(draw, 60);
+	</script>
+</body>
+</html>
