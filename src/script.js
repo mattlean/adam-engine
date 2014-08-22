@@ -146,8 +146,6 @@ window.onload = function() {
 		verifyBoard = copyBoard(board);
 		score = 0;
 		time = STARTTIME;
-		ctx.textAlign = 'start';
-		ctx.font = '1.2em Helvetica';
 		//console.log(board);
 		if(typeof game_loop !== 'undefined') clearInterval(game_loop);
 		game_loop = setInterval(draw_game, FRAMERATE);
@@ -318,6 +316,12 @@ window.onload = function() {
 	}
 
 	function draw_game() {
+		if(time < 0) {
+			clearInterval(game_loop);
+			clickCtrl = 2;
+			game_loop = setInterval(draw_timeup, FRAMERATE);
+		}
+
 		//draw the background to clear previous frame
 		ctx.fillStyle = BGCOLOR2;
 		ctx.fillRect(0, 0, canvasWidth, canvasHeight);
@@ -334,24 +338,34 @@ window.onload = function() {
 			drawJewel(selectedCells[0].x, selectedCells[0].y, board[selectedCells[0].y][selectedCells[0].x], true);
 		}
 
-		var txtScore = 'Score: ' + score;
 		ctx.fillStyle = FONTCOLOR;
-		ctx.fillText(txtScore, canvasWidth - 155, 20);
-		var seconds = Math.ceil(time / 60);
-		/*var txtTime = 'Time: ' + seconds;
-		if(time <= 0) {
-			clearInterval(game_loop);
-			clickCtrl = 2;
-			game_loop = setInterval(draw_timeup, FRAMERATE);
-		}
-		ctx.fillText(txtTime, canvasWidth - 155, 40);*/
+		ctx.textAlign = 'start';
+		var txtScore = 'Score:';
+		ctx.fillText(txtScore, 325, 20);
 
+		ctx.textAlign = 'center';
+		ctx.font = '2em Helvetica';
+		var txtScoreVal = score;
+		ctx.fillText(txtScoreVal, 400, 60);
+		
+		ctx.textAlign = 'start';
+		ctx.font = '1.2em Helvetica';
+		var txtTime = 'Time:';
+		ctx.fillText(txtTime, 325, 110);
+
+		var seconds = Math.ceil(time / 60);
 		var tubeSegment = 147 / 60;
-		var tubeStartLevel = 143 + ((60 * tubeSegment) - (seconds * tubeSegment));
+		var tubeStartLevel = 153 + ((60 * tubeSegment) - (seconds * tubeSegment));
 		var tubeEndLevel = 147 - ((60 * tubeSegment) - (seconds * tubeSegment));
-		ctx.fillStyle = '#8cc63e';
+		if(seconds > 30) {
+			ctx.fillStyle = '#8cc63e';
+		} else if(seconds >= 10) {
+			ctx.fillStyle = '#ffd700';
+		} else {
+			ctx.fillStyle = '#ff0000';
+		}
 		ctx.fillRect(386, tubeStartLevel, 28, tubeEndLevel);
-		ctx.drawImage(imgs['timer'], 375, 110, 50, 187);
+		ctx.drawImage(imgs['timer'], 375, 120, 50, 187);
 		time -= 1;
 	}
 
