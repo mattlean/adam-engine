@@ -41,12 +41,13 @@ window.onload = function() {
 		'ORANGE': 'images/ORANGE.png',
 		'RED': 'images/RED.png',
 		'QUASAR': 'images/QUASAR.png',
-		'BHQ': 'images/BHQ.png'
+		'BHQ': 'images/BHQ.png',
+		'timer': 'images/tube.png'
 	};
 
 	/* Constants */
 	const FRAMERATE = 1000 / 60;
-	const NUMIMGS = 6;
+	const NUMIMGS = 7;
 	const SPEED = 1; //speed in which the jewels move
 	const BLANK = -1;
 	const FAM = 0;
@@ -94,8 +95,6 @@ window.onload = function() {
 			newImg.src = imgPaths[key];
 			imgs[key] = newImg;
 		}
-
-		console.log(imgs);
 	}
 
 	function draw_loading() {
@@ -345,6 +344,10 @@ window.onload = function() {
 			game_loop = setInterval(draw_timeup, FRAMERATE);
 		}
 		ctx.fillText(txtTime, canvasWidth - 155, 40);
+
+		ctx.fillStyle = '#8cc63e';
+		ctx.fillRect(386, 143, 28, 147);
+		ctx.drawImage(imgs['timer'], 375, 110, 50, 187);
 		time -= 1;
 	}
 
