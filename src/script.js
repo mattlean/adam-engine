@@ -68,7 +68,7 @@ window.onload = function() {
 			board.push(temp);
 		}
 
-		matchCycle();
+		matchCycle(board, false);
 		verifyBoard = copyBoard(board);
 		score = 0;
 		//console.log(board);
@@ -76,7 +76,7 @@ window.onload = function() {
 		game_loop = setInterval(draw, 60);
 	}
 
-	function match(inputBoard) {
+	function match(inputBoard, trackScore) {
 		var count = 1;
 		var prevVal = -1;
 		var matchFound = 0;
@@ -102,6 +102,9 @@ window.onload = function() {
 						//console.log('x:' + x + ', ' + 'y:' + x + ', ' + 'count:' + count);
 						matchFound = 1;
 						boardClearMarked = clearMatchesXAxis(x - count, y, count, boardClearMarked);
+						if(trackScore) {
+							addScore(count);
+						}
 					}
 					count = 1;
 				}
@@ -111,6 +114,9 @@ window.onload = function() {
 				//console.log('x:' + i + ', ' + 'y:' + x + ', ' + 'count:' + count);
 				matchFound = 1;
 				boardClearMarked = clearMatchesXAxis(boardSize - count, y, count, boardClearMarked);
+				if(trackScore) {
+					addScore(count);
+				}
 			}
 			count = 1;
 			prevVal = -1;
@@ -126,6 +132,9 @@ window.onload = function() {
 					if(count >= 3) {
 						matchFound = 1;
 						boardClearMarked = clearMatchesYAxis(x, y - count, count, boardClearMarked);
+						if(trackScore) {
+							addScore(count);
+						}
 					}
 					count = 1;
 				}
@@ -134,6 +143,9 @@ window.onload = function() {
 			if(count >= 3) {
 				matchFound = 1;
 				boardClearMarked = clearMatchesYAxis(x, boardSize - count, count, boardClearMarked);
+				if(trackScore) {
+					addScore(count);
+				}
 			}
 			count = 1;
 			prevVal = -1;
@@ -147,7 +159,7 @@ window.onload = function() {
 				}
 			}
 		}
-
+		console.log(score);
 		return matchFound;
 	}
 
@@ -165,24 +177,24 @@ window.onload = function() {
 		return boardClearMarked;
 	}
 
-	function matchCycle() {
+	function matchCycle(inputBoard, trackScore) {
 		var matchFound = -1;
-		while(matchFound = match(board)){
-			jewelSlideDown();
-			fillGaps();
+		while(matchFound = match(inputBoard, trackScore)){
+			jewelSlideDown(inputBoard);
+			fillGaps(inputBoard);
 		}
 	}
 
-	function jewelSlideDown() {
+	function jewelSlideDown(inputBoard) {
 		for(var x = 0; x < boardSize; ++x) {
 			var emptyCells = [];
 			for(var y = boardSize - 1; y >= 0; --y) {
-				if(board[y][x] === BLANK) {
+				if(inputBoard[y][x] === BLANK) {
 					emptyCells.unshift({'x': x, 'y': y});
 				} else if(emptyCells.length) {
 					var deepestEmptyCell = emptyCells.pop();
-					board[deepestEmptyCell.y][deepestEmptyCell.x] = board[y][x];
-					board[y][x] = BLANK;
+					inputBoard[deepestEmptyCell.y][deepestEmptyCell.x] = inputBoard[y][x];
+					inputBoard[y][x] = BLANK;
 					emptyCells.unshift({'x': x, 'y': y});
 				}
 			}
@@ -190,11 +202,11 @@ window.onload = function() {
 		}
 	}
 
-	function fillGaps() {
+	function fillGaps(inputBoard) {
 		for(var y = 0; y < board.length; ++y) {
 			for(var x = 0; x < board.length; ++x) {
-				if(board[y][x] === BLANK) {
-					board[y][x] = generateJewel();
+				if(inputBoard[y][x] === BLANK) {
+					inputBoard[y][x] = generateJewel();
 				}
 			}
 		}
@@ -253,11 +265,19 @@ window.onload = function() {
 		var temp = verifyBoard[selectedCells[0].y][selectedCells[0].x];
 		verifyBoard[selectedCells[0].y][selectedCells[0].x] = verifyBoard[selectedCells[1].y][selectedCells[1].x];
 		verifyBoard[selectedCells[1].y][selectedCells[1].x] = temp;
-		if(match(verifyBoard)) {
-			board = copyBoard(verifyBoard);
+		if(match(verifyBoard, true)) {
+			board = copyBoard(verifyBoard, true);
+			jewelSlideDown(board);
+			fillGaps(board);
+			matchCycle(board, true);
+			verifyBoard = copyBoard(board);
 		} else {
 			verifyBoard = copyBoard(board);
 		}
+	}
+
+	function addScore(count) {
+		score += count * 10;
 	}
 
 	/* Input */
