@@ -286,8 +286,15 @@ window.onload = function() {
 				prevY2 -= speed;
 			}
 
-			animateJewel(prevX, prevY, board[cellsToAnimate[0].y][cellsToAnimate[0].x]);
-			animateJewel(prevX2, prevY2, board[cellsToAnimate[1].y][cellsToAnimate[1].x]);
+
+			console.log(prevX);
+			console.log(cellsToAnimate[1].x * cellSize);
+			if(prevX <= (cellsToAnimate[1].x * cellSize)) {
+				animateJewel(prevX, prevY, board[cellsToAnimate[0].y][cellsToAnimate[0].x]);
+				animateJewel(prevX2, prevY2, board[cellsToAnimate[1].y][cellsToAnimate[1].x]);
+			} else {
+				completeSwap();
+			}
 		}
 	}
 
@@ -317,6 +324,7 @@ window.onload = function() {
 		fillGaps();
 		matchCycle();
 		verifyBoard = copyBoard(verifyBoard, board);
+		clearInterval(game_loop);
 		game_loop = setInterval(draw, 60);
 	}
 
