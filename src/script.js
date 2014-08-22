@@ -272,7 +272,6 @@ window.onload = function() {
 		if(time <= 0) {
 			clearInterval(game_loop);
 			clickCtrl = 2;
-			console.log('Finish');
 			game_loop = setInterval(draw_timeup, 1000 / 60);
 		}
 		ctx.fillText(txtTime, canvasWidth - 155, 40);
@@ -302,18 +301,22 @@ window.onload = function() {
 		//draw the background to clear previous frame
 		ctx.fillStyle = BGCOLOR;
 		ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+		ctx.fillStyle = FONTCOLOR;
 
 		ctx.textAlign = 'center';
-		ctx.font = '1.5em Helvetica';
-
-		var txtFinal = 'Your final score:';
-		ctx.fillStyle = FONTCOLOR;
-		ctx.fillText(txtFinal, canvasWidth / 2, (canvasHeight / 2) - 40);
 
 		ctx.font = '2em Helvetica';
-		ctx.fillText(score, canvasWidth / 2, canvasHeight / 2);
+		var txtTimeUp = 'TIME\'S UP!';
+		ctx.fillText(txtTimeUp, canvasWidth / 2, (canvasHeight / 2) - 80);
 
-		drawBtn((canvasWidth / 2) - 100, (canvasHeight / 2) + 40, 200, 45, '#a6a6a6', 'PLAY AGAIN', '1.5em Helvetica', '#fff');
+		ctx.font = '1.5em Helvetica';
+		var txtFinal = 'Your final score:';
+		ctx.fillText(txtFinal, canvasWidth / 2, (canvasHeight / 2) - 45);
+
+		ctx.font = '3.5em Helvetica';
+		ctx.fillText(score, canvasWidth / 2, canvasHeight / 2 + 10);
+
+		drawBtn((canvasWidth / 2) - 100, (canvasHeight / 2) + 35, 200, 45, '#a6a6a6', 'PLAY AGAIN', '1.5em Helvetica', '#fff');
 	}
 
 	function drawBtn(posX, posY, btnWidth, btnHeight, btnColor, txt, txtFont, txtColor) {
