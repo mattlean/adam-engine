@@ -33,8 +33,20 @@ window.onload = function() {
 	var score = 0;
 	var time = 0;
 	var clickCtrl = 0; //controls state of click availability
+	var imgs = {}; //dictionary of images
+	var imgsLoaded = 0;
+	var imgPaths = {
+		'FAM': 'images/FAM.png',
+		'GOLD': 'images/GOLD.png',
+		'ORANGE': 'images/ORANGE.png',
+		'RED': 'images/RED.png',
+		'QUASAR': 'images/QUASAR.png',
+		'BHQ': 'images/BHQ.png'
+	};
 
 	/* Constants */
+	const FRAMERATE = 1000 / 60;
+	const NUMIMGS = 6;
 	const SPEED = 1; //speed in which the jewels move
 	const BLANK = -1;
 	const FAM = 0;
@@ -44,7 +56,8 @@ window.onload = function() {
 	const QUASAR = 4;
 	const BHQ = 5;
 	const SPECIAL = 6;
-	const BGCOLOR = '#2463aa';
+	const BGCOLOR1 = '#2463aa';
+	const BGCOLOR2 = '#000';
 	const FONTCOLOR = '#fff';
 	const STARTTIME = 3600; //60 seconds
 
@@ -71,19 +84,48 @@ window.onload = function() {
 
 	/* Start Game */
 	function start() {
-		game_loop = setInterval(draw_start, 1000 / 60);
+		game_loop = setInterval(draw_loading, FRAMERATE);
+
+		for(var key in imgPaths) {
+			var newImg = new Image();
+			newImg.onload = function() {
+				++imgsLoaded;
+			};
+			newImg.src = imgPaths[key];
+			imgs[key] = newImg;
+		}
+
+		console.log(imgs);
+	}
+
+	function draw_loading() {
+		if(imgsLoaded === NUMIMGS) {
+			clearInterval(game_loop);
+			game_loop = setInterval(draw_start, FRAMERATE);
+			clickCtrl = 0;
+		}
+
+		//draw the background to clear previous frame
+		ctx.fillStyle = BGCOLOR1;
+		ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+		ctx.fillStyle = FONTCOLOR;
+
+		ctx.textAlign = 'center';
+		ctx.font = '1em Helvetica';
+		var txtLoading = 'Loading...';
+		ctx.fillText(txtLoading, canvasWidth / 2, (canvasHeight / 2));
 	}
 
 	function draw_start() {
 		//draw the background to clear previous frame
-		ctx.fillStyle = BGCOLOR;
+		ctx.fillStyle = BGCOLOR1;
 		ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 		ctx.fillStyle = FONTCOLOR;
 
 		ctx.textAlign = 'center';
 		ctx.font = '2em Helvetica';
-		var txtTimeUp = 'DYE MATCH GAME TITLE';
-		ctx.fillText(txtTimeUp, canvasWidth / 2, (canvasHeight / 2) - 20);
+		var txtTitle = 'DYE MATCH GAME TITLE';
+		ctx.fillText(txtTitle, canvasWidth / 2, (canvasHeight / 2) - 20);
 
 		drawBtn((canvasWidth / 2) - 100, (canvasHeight / 2) + 20, 200, 45, '#a6a6a6', 'START GAME', '1.5em Helvetica', '#fff', 8);
 	}
@@ -108,7 +150,7 @@ window.onload = function() {
 		ctx.font = '1.2em Helvetica';
 		//console.log(board);
 		if(typeof game_loop !== 'undefined') clearInterval(game_loop);
-		game_loop = setInterval(draw, 1000 / 60);
+		game_loop = setInterval(draw_game, FRAMERATE);
 		clickCtrl = 1;
 	}
 
@@ -248,38 +290,39 @@ window.onload = function() {
 	}
 
 	function drawJewel(x, y, val, highlight) {
+		var img;
 		if(val === FAM) {
-			ctx.fillStyle = '#00ff00';
+			img = imgs['FAM'];
 		} else if(val === GOLD) {
-			ctx.fillStyle = '#ffff00';
+			img = imgs['GOLD'];
 		} else if(val === ORANGE){
-			ctx.fillStyle = '#ffa500';
+			img = imgs['ORANGE'];
 		} else if(val === RED) {
-			ctx.fillStyle = '#ff0000';
+			img = imgs['RED'];
 		} else if(val === QUASAR) {
-			ctx.fillStyle = '#ff00ff';
+			img = imgs['QUASAR'];
 		} else if(val === BHQ) {
-			ctx.fillStyle = '#2e0854';
+			img = imgs['BHQ'];
 		} else if(val === BLANK) {
 			ctx.fillStyle = '#000';
 		} else {
 			ctx.fillStyle = '#fff';
 		}
-		ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+		//ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+		ctx.drawImage(img, x * cellSize, y * cellSize, cellSize, cellSize);
 		if(highlight) {
 			ctx.lineWidth = 2;
-			ctx.strokeStyle = '#0000ff';
-		} else {
-			ctx.lineWidth = 1;
-			ctx.strokeStyle = '#fff';
+			ctx.strokeStyle = '#ff00ff';
+			ctx.strokeRect(x * cellSize, y * cellSize, cellSize, cellSize);
 		}
-		ctx.strokeRect(x * cellSize, y * cellSize, cellSize, cellSize);
 	}
 
-	function draw() {
+	function draw_game() {
 		//draw the background to clear previous frame
-		ctx.fillStyle = BGCOLOR;
+		ctx.fillStyle = BGCOLOR2;
 		ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+		ctx.fillStyle = BGCOLOR1;
+		ctx.fillRect(cellSize * board.length, 0, 200, canvasHeight);
 
 		for(var y = 0; y < boardSize; ++y) {
 			for(var x = 0; x < boardSize; ++x) {
@@ -299,7 +342,7 @@ window.onload = function() {
 		if(time <= 0) {
 			clearInterval(game_loop);
 			clickCtrl = 2;
-			game_loop = setInterval(draw_timeup, 1000 / 60);
+			game_loop = setInterval(draw_timeup, FRAMERATE);
 		}
 		ctx.fillText(txtTime, canvasWidth - 155, 40);
 		time -= 1;
@@ -326,7 +369,7 @@ window.onload = function() {
 
 	function draw_timeup() {
 		//draw the background to clear previous frame
-		ctx.fillStyle = BGCOLOR;
+		ctx.fillStyle = BGCOLOR1;
 		ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 		ctx.fillStyle = FONTCOLOR;
 
