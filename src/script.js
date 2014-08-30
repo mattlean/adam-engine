@@ -316,7 +316,7 @@ window.onload = function() {
 	}
 
 	function draw_game() {
-		if(time < 0) {
+		if(time <= 0) {
 			clearInterval(game_loop);
 			clickCtrl = 2;
 			game_loop = setInterval(draw_timeup, FRAMERATE);
