@@ -631,12 +631,13 @@ window.onload = function() {
 			}
 		}
 
-		console.log(cellsToSlide[cellsToSlide.length - 1][cellsToSlide[0].length - 1]);
 		if((cellsToSlide[cellsToSlide.length - 1][cellsToSlide[cellsToSlide.length - 1].length - 1].prevY) <= ((cellsToSlide[0].length) * cellSize)) {
 			for(var i = 0; i < cellsToSlide.length; ++i) {
 				for(var y = 0; y < cellsToSlide[i].length; ++y) {
-						cellsToSlide[i][y].prevY += SPEED;
+					cellsToSlide[i][y].prevY += SPEED;
+					if(verifyBoard[cellsToSlide[i][y].y][cellsToSlide[i][y].x] !== BLANK) {
 						drawJewel(cellsToSlide[i][y].prevX, cellsToSlide[i][y].prevY, verifyBoard[cellsToSlide[i][y].y][cellsToSlide[i][y].x], false, false);
+					}
 				}
 			}
 		} else {
@@ -651,11 +652,45 @@ window.onload = function() {
 
 	function completeSlide() {
 		clearInterval(game_loop);
-		jewelSlideDown(board);
-		verifyBoard = copyBoard(board);
+		//jewelSlideDown(board);
+		//verifyBoard = copyBoard(board);
+
+		//move jewel data down one cell
+		//get highest empty cells
+		var highestEmptyCells = [];
+		for(var x = 0; x < boardSize; ++x) {
+			for(var y = 1; y < boardSize; ++y) {
+				if(verifyBoard[y][x] === BLANK) {
+					highestEmptyCells.push({'x': x, 'y': y});
+					break;
+				}
+			}
+		}
+		console.log(highestEmptyCells);
+
+		//now push all cells down one row
+		/*for(var x = 0; x < boardSize; ++x) {
+			//iterate through highestEmptyCells
+			for(var i = 0; i < highestEmptyCells.length; ++i) {
+				for(var y = highestEmptyCells[i].y - 1; y >= 0; --y) {
+					verifyBoard[y + 1][x + 1] = verifyBoard[y][x];
+					verifyBoard[y][x] = -1;
+					console.log('it happened');
+				}
+			}
+		}*/
+
+		for(var i = 0; i < highestEmptyCells.length; ++i) {
+			for(var y = highestEmptyCells[i].y - 1; y >= 0; --y) {
+				verifyBoard[y + 1][highestEmptyCells[i].x] = verifyBoard[y][highestEmptyCells[i].x];
+				verifyBoard[y][highestEmptyCells[i].x] = -1;
+			}
+		}
+
+		board = copyBoard(verifyBoard);
+
 		game_loop = setInterval(draw_game, FRAMERATE);
 		clickCtrl = 1; //re-enable clicking
-		opacity = 1;
 		console.log('done yeah');
 	}
 
