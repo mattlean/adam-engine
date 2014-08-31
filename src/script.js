@@ -617,22 +617,27 @@ window.onload = function() {
 		ctx.fillStyle = BGCOLOR1;
 		ctx.fillRect(cellSize * board.length, 0, 200, canvasHeight);
 
+		//iterate through board
 		for(var x = 0; x < boardSize; ++x) {
-			for(var y = 0; y < boardSize; ++y) {
-				for(var i = 0; i < cellsToAnimate.length; ++i) {
-					if(cellsToAnimate[i].y === y) {
-						console.log('no');
+			rowLoop: for(var y = 0; y < boardSize; ++y) {
+				//iterate through cellsToAnimate
+				for(var i = 0; i < cellsToSlide.length; ++i) {
+					for(var j = 0; j < cellsToSlide[i].length; ++j) {
+						if((cellsToSlide[i][j].x === x) && (cellsToSlide[i][j].y === y)) {
+							console.log(x, y);
+							continue rowLoop;
+						}
 					}
-					break;
 				}
+
 				drawJewel(x, y, board[y][x], false, true);
 			}
 		}
 
 		for(var i = 0; i < cellsToSlide.length; ++i) {
 			for(var y = 0; y < cellsToSlide[i].length; ++y) {
-				cellsToSlide[i][y].prevY += 1;
-				drawJewel(cellsToSlide[i][y].prevX, cellsToSlide[i][y].prevY, FAM, false, false);
+					cellsToSlide[i][y].prevY += 1;
+					drawJewel(cellsToSlide[i][y].prevX, cellsToSlide[i][y].prevY, FAM, false, false);
 			}
 		}
 	}
