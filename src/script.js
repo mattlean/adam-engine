@@ -30,6 +30,7 @@ window.onload = function() {
 	var verifyBoard = [];
 	var selectedCells = [];
 	var cellsToAnimate = [];
+	var animationState = 0;
 	var score = 0;
 	var time = 0;
 	var tubeTime = 100;
@@ -49,7 +50,7 @@ window.onload = function() {
 	/* Constants */
 	const FRAMERATE = 1000 / 60;
 	const NUMIMGS = 7;
-	const SPEED = 1; //speed in which the jewels move
+	const SPEED = 5; //speed in which the jewels move
 	const BLANK = -1;
 	const FAM = 0;
 	const GOLD = 1;
@@ -58,6 +59,7 @@ window.onload = function() {
 	const QUASAR = 4;
 	const BHQ = 5;
 	const SPECIAL = 6;
+	const DEBUG = 7;
 	const BGCOLOR1 = '#2463aa';
 	const BGCOLOR2 = '#000';
 	const FONTCOLOR = '#fff';
@@ -304,7 +306,7 @@ window.onload = function() {
 		} else if(val === BLANK) {
 			ctx.fillStyle = '#000';
 		} else {
-			ctx.fillStyle = '#fff';
+			ctx.fillStyle = '#00ff00';
 		}
 
 		if(convert) {
@@ -312,7 +314,7 @@ window.onload = function() {
 			y *= cellSize;
 		}
 
-		if((val === BLANK) || (val === null)) ctx.fillRect(x, y, cellSize, cellSize);
+		if((val === BLANK) || (val === DEBUG)) ctx.fillRect(x, y, cellSize, cellSize);
 		else ctx.drawImage(img, x, y, cellSize, cellSize);
 
 		if(highlight) {
@@ -403,8 +405,6 @@ window.onload = function() {
 	}
 
 	function draw_swap(cellsToAnimate, direction) {
-		
-
 		//draw the background to clear previous frame
 		ctx.fillStyle = '#fff';
 		ctx.fillRect(0, 0, canvasWidth, canvasHeight);
@@ -420,30 +420,38 @@ window.onload = function() {
 					drawJewel(x, y, BLANK, false, true);
 				}
 			}
-
 		}
 
-		cellsToAnimate[0].prevX += SPEED;
-		console.log('test');
-		drawJewel(cellsToAnimate[0].prevX, cellsToAnimate[0].prevY, BLANK, false, false);
+		if(direction === 'left') {
+			cellsToAnimate[0].prevX -= SPEED;
+			cellsToAnimate[1].prevX += SPEED;
+		} else if(direction === 'right') {
+			cellsToAnimate[0].prevX += SPEED;
+			cellsToAnimate[1].prevX -= SPEED;
+		} else if(direction === 'up') {
+			cellsToAnimate[0].prevY -= SPEED;
+			cellsToAnimate[1].prevY += SPEED;
+		} else if(direction === 'down') {
+			cellsToAnimate[0].prevY += SPEED;
+			cellsToAnimate[1].prevY -= SPEED;
+		}
+
+		//draw the actual swap animation
+		if(
+			((direction === 'right') && (cellsToAnimate[0].prevX <= (cellsToAnimate[1].x * cellSize))) ||
+			((direction === 'left') && (cellsToAnimate[0].prevX >= (cellsToAnimate[1].x * cellSize))) ||
+			((direction === 'up') && (cellsToAnimate[0].prevY >= (cellsToAnimate[1].y * cellSize))) ||
+			((direction === 'down') && (cellsToAnimate[0].prevY <= (cellsToAnimate[1].y * cellSize)))
+		) {
+			drawJewel(cellsToAnimate[0].prevX, cellsToAnimate[0].prevY, board[cellsToAnimate[0].y][cellsToAnimate[0].x], false, false);
+			drawJewel(cellsToAnimate[1].prevX, cellsToAnimate[1].prevY, board[cellsToAnimate[1].y][cellsToAnimate[1].x], false, false);
+		} else {
+			completeSwap();
+		}
 	}
 
-	function animateJewel(x, y, val, direction) {
-		if(val === 0) {
-			ctx.fillStyle = '#ff0000';
-		} else if(val === 1) {
-			ctx.fillStyle = '#00ff00';
-		} else if(val === 2){
-			ctx.fillStyle = '#0000ff';
-		} else if(val === 4) {
-			ctx.fillStyle = '#fff';
-		} else {
-			ctx.fillStyle = '#000';
-		}
-		ctx.fillRect(x, y, cellSize, cellSize);
-		ctx.lineWidth = 1;
-		ctx.strokeStyle = '#fff';
-		ctx.strokeRect(x, y, cellSize, cellSize);
+	function completeSwap() {
+		console.log('test');
 	}
 
 	function addScore(count) {
@@ -533,15 +541,15 @@ window.onload = function() {
 						drawJewel(secondCell.x, secondCell.y, board[secondCell.y][secondCell.x], true, true);
 						if(secondCell.y === firstCell.y) {
 							if(secondCell.x + 1 === firstCell.x) {
-								swapJewels();
+								swapJewels('left');
 							} else if(secondCell.x - 1 === firstCell.x) {
-								swapJewels();
+								swapJewels('right');
 							}
 						} else if(secondCell.x === firstCell.x) {
 							if(secondCell.y + 1 === firstCell.y) {
-								swapJewels();
+								swapJewels('up');
 							} else if(secondCell.y - 1 === firstCell.y) {
-								swapJewels();
+								swapJewels('down');
 							}
 						}
 						selectedCells = [];
