@@ -584,40 +584,33 @@ window.onload = function() {
 			}
 		}
 
-
-		/*for(var x = 0; x < boardSize; ++x) {
-			for(var y = 1; y < ; ++y) {
-				if(inputBoard[y][x] === BLANK) {
-					highestEmptyCells({'x': x, 'y': y});
-					break;
-				}
-			}
-		}*/
-
-		console.log(highestEmptyCells);
-
+		//get all cells above empty cells
 		var i = 0;
 		var cellsToSlide = [];
 		while(i < highestEmptyCells.length) {
+			var column = [];
 			for(var y = 0; y < highestEmptyCells[i].y; ++y) {
-				if(typeof cellsToSlide[highestEmptyCells[i].x] === 'undefined') {
-					cellsToSlide[highestEmptyCells[i].x] = [y];
-				}
-				cellsToSlide[highestEmptyCells[i].x].push(y);
+				column.push({'x': highestEmptyCells[i].x, 'y': y, prevX: highestEmptyCells[i].x * cellSize, prevY: y * cellSize});
 			}
-
+			cellsToSlide.push(column);
+			column = [];
 			++i;
 		}
 
-		console.log(cellsToSlide);
+		return cellsToSlide;
 	}
 
 	function slideJewels() {
-		jewelSlideDown2(board);
-		game_loop = setInterval(draw_slide, FRAMERATE);
+		clickCtrl = -1; //disable clicking during animation
+		var cellsToSlide = jewelSlideDown2(board);
+		game_loop = setInterval(function() {
+			draw_slide(cellsToSlide);
+		}, FRAMERATE);
 	}
 
-	function draw_slide() {
+	function draw_slide(cellsToSlide) {
+		console.log(cellsToSlide);
+
 		//draw the background to clear previous frame
 		ctx.fillStyle = BGCOLOR2;
 		ctx.fillRect(0, 0, canvasWidth, canvasHeight);
@@ -633,6 +626,13 @@ window.onload = function() {
 					break;
 				}
 				drawJewel(x, y, board[y][x], false, true);
+			}
+		}
+
+		for(var i = 0; i < cellsToSlide.length; ++i) {
+			for(var y = 0; y < cellsToSlide[i].length; ++y) {
+				cellsToSlide[i][y].prevY += 1;
+				drawJewel(cellsToSlide[i][y].prevX, cellsToSlide[i][y].prevY, FAM, false, false);
 			}
 		}
 	}
