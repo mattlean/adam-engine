@@ -602,7 +602,7 @@ window.onload = function() {
 
 	function slideJewels() {
 		clickCtrl = -1; //disable clicking during animation
-		var cellsToSlide = jewelSlideDown2(board);
+		var cellsToSlide = jewelSlideDown2(verifyBoard);
 		game_loop = setInterval(function() {
 			draw_slide(cellsToSlide);
 		}, FRAMERATE);
@@ -618,7 +618,7 @@ window.onload = function() {
 		//iterate through board
 		for(var x = 0; x < boardSize; ++x) {
 			rowLoop: for(var y = 0; y < boardSize; ++y) {
-				//iterate through cellsToAnimate
+				//iterate through cellsToSlide
 				for(var i = 0; i < cellsToSlide.length; ++i) {
 					for(var j = 0; j < cellsToSlide[i].length; ++j) {
 						if((cellsToSlide[i][j].x === x) && (cellsToSlide[i][j].y === y)) {
@@ -631,7 +631,8 @@ window.onload = function() {
 			}
 		}
 
-		if((cellsToSlide[cellsToSlide.length - 1][cellsToSlide[0].length - 1].prevY) <= ((cellsToSlide[0].length) * cellSize)) {
+		console.log(cellsToSlide[cellsToSlide.length - 1][cellsToSlide[0].length - 1]);
+		if((cellsToSlide[cellsToSlide.length - 1][cellsToSlide[cellsToSlide.length - 1].length - 1].prevY) <= ((cellsToSlide[0].length) * cellSize)) {
 			for(var i = 0; i < cellsToSlide.length; ++i) {
 				for(var y = 0; y < cellsToSlide[i].length; ++y) {
 						cellsToSlide[i][y].prevY += SPEED;
@@ -639,8 +640,23 @@ window.onload = function() {
 				}
 			}
 		} else {
-			console.log('done');
+			for(var i = 0; i < cellsToSlide.length; ++i) {
+				for(var y = 0; y < cellsToSlide[i].length; ++y) {
+						drawJewel(cellsToSlide[i][y].prevX, cellsToSlide[i][y].prevY, verifyBoard[cellsToSlide[i][y].y][cellsToSlide[i][y].x], false, false);
+				}
+			}
+			completeSlide();
 		}
+	}
+
+	function completeSlide() {
+		clearInterval(game_loop);
+		jewelSlideDown(board);
+		verifyBoard = copyBoard(board);
+		game_loop = setInterval(draw_game, FRAMERATE);
+		clickCtrl = 1; //re-enable clicking
+		opacity = 1;
+		console.log('done yeah');
 	}
 
 	function addScore(count) {
