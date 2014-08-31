@@ -630,14 +630,17 @@ window.onload = function() {
 					}
 				}
 
-				drawJewel(x, y, board[y][x], false, true);
+				drawJewel(x, y, verifyBoard[y][x], false, true);
 			}
 		}
 
+		console.log(verifyBoard);
+		console.log(board);
+
 		for(var i = 0; i < cellsToSlide.length; ++i) {
 			for(var y = 0; y < cellsToSlide[i].length; ++y) {
-					cellsToSlide[i][y].prevY += 1;
-					drawJewel(cellsToSlide[i][y].prevX, cellsToSlide[i][y].prevY, FAM, false, false);
+					cellsToSlide[i][y].prevY += 0.1;
+					drawJewel(cellsToSlide[i][y].prevX, cellsToSlide[i][y].prevY, verifyBoard[cellsToSlide[i][y].y][cellsToSlide[i][y].x], false, false);
 			}
 		}
 	}
