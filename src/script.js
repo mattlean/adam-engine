@@ -609,8 +609,6 @@ window.onload = function() {
 	}
 
 	function draw_slide(cellsToSlide) {
-		console.log(cellsToSlide);
-
 		//draw the background to clear previous frame
 		ctx.fillStyle = BGCOLOR2;
 		ctx.fillRect(0, 0, canvasWidth, canvasHeight);
@@ -624,7 +622,6 @@ window.onload = function() {
 				for(var i = 0; i < cellsToSlide.length; ++i) {
 					for(var j = 0; j < cellsToSlide[i].length; ++j) {
 						if((cellsToSlide[i][j].x === x) && (cellsToSlide[i][j].y === y)) {
-							console.log(x, y);
 							continue rowLoop;
 						}
 					}
@@ -634,14 +631,15 @@ window.onload = function() {
 			}
 		}
 
-		console.log(verifyBoard);
-		console.log(board);
-
-		for(var i = 0; i < cellsToSlide.length; ++i) {
-			for(var y = 0; y < cellsToSlide[i].length; ++y) {
-					cellsToSlide[i][y].prevY += 0.1;
-					drawJewel(cellsToSlide[i][y].prevX, cellsToSlide[i][y].prevY, verifyBoard[cellsToSlide[i][y].y][cellsToSlide[i][y].x], false, false);
+		if((cellsToSlide[cellsToSlide.length - 1][cellsToSlide[0].length - 1].prevY) <= ((cellsToSlide[0].length) * cellSize)) {
+			for(var i = 0; i < cellsToSlide.length; ++i) {
+				for(var y = 0; y < cellsToSlide[i].length; ++y) {
+						cellsToSlide[i][y].prevY += SPEED;
+						drawJewel(cellsToSlide[i][y].prevX, cellsToSlide[i][y].prevY, verifyBoard[cellsToSlide[i][y].y][cellsToSlide[i][y].x], false, false);
+				}
 			}
+		} else {
+			console.log('done');
 		}
 	}
 
