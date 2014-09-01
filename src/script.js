@@ -182,6 +182,7 @@ window.onload = function() {
 		drawBtn((canvasWidth / 2) - 100, (canvasHeight / 2) + 20, 200, 45, '#a6a6a6', 'START GAME', '1.5em Helvetica', '#fff', 8);
 	}
 
+	/* Begins a new game */
 	function init_game() {
 		board = [];
 
@@ -857,6 +858,7 @@ window.onload = function() {
 					init_game();
 				}
 			} else if(clickCtrl === 1) {
+				//selSound.play();
 				if((mouseCoord.x >= 0) && (mouseCoord.x <= 320) && (mouseCoord.y >= 0) && (mouseCoord.y <= 320)) {
 					var clickedCell = {};
 
@@ -937,6 +939,24 @@ window.onload = function() {
 	window.onmousedown = function(evt) {
 		cellClick(evt, clickCtrl);
 	}
+
+	/* Sound */
+	/*var selSound = document.createElement('audio');
+	document.body.appendChild(selSound);
+	selSound.setAttribute('src', 'sounds/select.wav');*/
+
+	var audioCtx = new AudioContext();
+	var selSound;
+
+	var getSelSound = new XMLHttpRequest();
+	getSelSound.open('GET', 'sounds/select.wav', true);
+	getSelSound.responseType = 'arraybuffer';
+	getSelSound.onload = function() {
+		audioCtx.decodeAudioData(getSelSound.response, function(buffer) {
+			selSound = buffer;
+		});
+	}
+	getSelSound.send();
 
 	/* "main()" */
 	start();
