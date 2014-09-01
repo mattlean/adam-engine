@@ -175,18 +175,16 @@ window.onload = function() {
 	}
 
 	function init_game() {
-		/*board = [];
-
-		//initialize board with randomly generated jewels
+		/*//initialize board with randomly generated jewels
 		for(var y = 0; y < boardSize; ++y) {
 			var temp = [];
 			for(var x = 0; x < boardSize; ++x) {
 				temp.push(generateJewel());
 			}
 			board.push(temp);
-		}*/
+		}
 
-		//matchCycle(board, false);
+		matchCycle(board, false);*/
 		verifyBoard = copyBoard(board);
 		score = 0;
 		time = STARTTIME;
@@ -622,8 +620,15 @@ window.onload = function() {
 				draw_slide(cellsToSlide);
 			}, FRAMERATE);
 		} else {
-			game_loop = setInterval(draw_game, FRAMERATE);
-			console.log('fill cells');
+			var matchFound = -1;
+			matchFound = match(board, true, true);
+			if(matchFound === 1) {
+				destroyJewels();
+			} else {
+				game_loop = setInterval(draw_game, FRAMERATE);
+				clickCtrl = 1;
+				console.log('fill cells');
+			}
 		}
 	}
 
