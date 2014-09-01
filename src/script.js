@@ -27,7 +27,7 @@ window.onload = function() {
 	[1, 2, 2, 1, 2, 2, 1, 1],
 	[0, 1, 1, 0, 1, 1, 2, 2]
 	];*/
-	/*var board = [
+	var board = [
 	[1, 5, 3, 4, 5, 2, 1, 1],
 	[0, 3, 2, 5, 1, 2, 4, 4],
 	[4, 1, 4, 0, 4, 1, 1, 5],
@@ -36,7 +36,7 @@ window.onload = function() {
 	[5, 4, 1, 3, 1, 1, 0, 5],
 	[5, 0, 3, 1, 0 ,1, 3, 1],
 	[4, 3, 3, 1, 1, 3, 4, 3]
-	];*/
+	];
 	/*var board = [
 	[1, 5, 3, 4, 5, 2, 1, 1],
 	[0, 3, 2, 5, 1, 2, 4, 4],
@@ -57,7 +57,7 @@ window.onload = function() {
 	[5, 0, 3, 1, 0 ,1, 3, 1],
 	[4, 3, 3, 1, 1, 3, 4, 3]
 	];*/
-	var board = [
+	/*var board = [
 	[1, 5, 3, 1, 5, 2, 1, 1],
 	[0, 3, 2, -1, 1, 2, 4, 4],
 	[4, 1, 4, -1, 4, 1, 1, 5],
@@ -66,7 +66,7 @@ window.onload = function() {
 	[5, 4, 1, 0, 1, 1, 0, 5],
 	[5, 0, 3, -1, 0 ,1, 3, 1],
 	[4, 3, 3, 1, 1, 3, 4, 3]
-	];
+	];*/
 	var verifyBoard = [];
 	var selectedCells = [];
 	var cellsToAnimate = [];
@@ -615,15 +615,15 @@ window.onload = function() {
 
 	function slideJewels() {
 		clickCtrl = -1; //disable clicking during animation
-		var cellsToSlide = jewelSlideDown2(verifyBoard);
-		//board = copyBoard(verifyBoard);
-		//game_loop = setInterval(draw_game, FRAMERATE);
-		if(cellsToSlide.length != 0) {
+		var cellsToSlide = jewelSlideDown2();
+
+		if(cellsToSlide.length > 0) {
 			game_loop = setInterval(function() {
 				draw_slide(cellsToSlide);
 			}, FRAMERATE);
 		} else {
-			console.log('success');
+			game_loop = setInterval(draw_game, FRAMERATE);
+			console.log('fill cells');
 		}
 	}
 
@@ -646,50 +646,6 @@ window.onload = function() {
 			verifyBoard[cellsToSlide[i].y][cellsToSlide[i].x] = BLANK;
 		}
 
-		console.log(verifyBoard);
-
-		/*for(var i = 0; i < highestEmptyCells.length; ++i) {
-			for(var y = highestEmptyCells[i].y - 1; y >= 0; --y) {
-				verifyBoard[y + 1][highestEmptyCells[i].x] = board[y][highestEmptyCells[i].x];
-				verifyBoard[y][highestEmptyCells[i].x] = -1;
-			}
-		}*/
-
-		/*var highestEmptyCells = [];
-
-		//get highest empty cells
-		for(var x = 0; x < boardSize; ++x) {
-			for(var y = 1; y < boardSize; ++y) {
-				if(inputBoard[y][x] === BLANK) {
-					highestEmptyCells.push({'x': x, 'y': y});
-					break;
-				}
-			}
-		}
-
-		//get all cells above empty cells
-		var i = 0;
-		var cellsToSlide = [];
-		while(i < highestEmptyCells.length) {
-			var column = [];
-			for(var y = 0; y < highestEmptyCells[i].y; ++y) {
-				column.push({'x': highestEmptyCells[i].x, 'y': y, prevX: highestEmptyCells[i].x * cellSize, prevY: y * cellSize});
-			}
-			cellsToSlide.push(column);
-			column = [];
-			++i;
-		}*/
-
-		//update inputBoard
-		/*for(var i = 0; i < highestEmptyCells.length; ++i) {
-			for(var y = highestEmptyCells[i].y - 1; y >= 0; --y) {
-				inputBoard[y + 1][highestEmptyCells[i].x] = board[y][highestEmptyCells[i].x];
-				inputBoard[y][highestEmptyCells[i].x] = -1;
-			}
-		}*/
-
-		//console.log(cellsToSlide);
-
 		return cellsToSlide;
 	}
 
@@ -705,10 +661,8 @@ window.onload = function() {
 			rowLoop: for(var y = 0; y < boardSize; ++y) {
 				//iterate through cellsToSlide
 				for(var i = 0; i < cellsToSlide.length; ++i) {
-					for(var j = 0; j < cellsToSlide[i].length; ++j) {
-						if((cellsToSlide[i][j].x === x) && (cellsToSlide[i][j].y === y)) {
-							continue rowLoop;
-						}
+					if((cellsToSlide[i].x === x) && (cellsToSlide[i].y === y)) {
+						continue rowLoop;
 					}
 				}
 
@@ -740,62 +694,22 @@ window.onload = function() {
 		}*/
 
 		for(var i = 0; i < cellsToSlide.length; ++i) {
-			for(var y = 0; y < cellsToSlide[i].length; ++y) {
-				cellsToSlide[i][y].prevY += SPEED;
-				drawJewel(cellsToSlide[i][y].prevX, cellsToSlide[i][y].prevY, board[cellsToSlide[i][y].y][cellsToSlide[i][y].x], false, false);
-			}
+			cellsToSlide[i].prevY += SPEED;
+			drawJewel(cellsToSlide[i].prevX, cellsToSlide[i].prevY, board[cellsToSlide[i].y][cellsToSlide[i].x], false, false);
 		}
 
 		slideTime -= 1;
-
-		console.log(slideTime);
-		if(slideTime === 0) {
+		if(slideTime <= 0) {
 			completeSlide();
 		}
 	}
 
 	function completeSlide() {
 		clearInterval(game_loop);
-		slideTime = cellSize / SPEED;
-		//jewelSlideDown(board);
-		//verifyBoard = copyBoard(board);
-
-		//move jewel data down one cell
-		//get highest empty cells
-		/*var highestEmptyCells = [];
-		for(var x = 0; x < boardSize; ++x) {
-			for(var y = 1; y < boardSize; ++y) {
-				if(verifyBoard[y][x] === BLANK) {
-					highestEmptyCells.push({'x': x, 'y': y});
-					break;
-				}
-			}
-		}
-		console.log(highestEmptyCells);*/
-
-		//now push all cells down one row
-		/*for(var x = 0; x < boardSize; ++x) {
-			//iterate through highestEmptyCells
-			for(var i = 0; i < highestEmptyCells.length; ++i) {
-				for(var y = highestEmptyCells[i].y - 1; y >= 0; --y) {
-					verifyBoard[y + 1][x + 1] = verifyBoard[y][x];
-					verifyBoard[y][x] = -1;
-					console.log('it happened');
-				}
-			}
-		}*/
-
-		/*for(var i = 0; i < highestEmptyCells.length; ++i) {
-			for(var y = highestEmptyCells[i].y - 1; y >= 0; --y) {
-				verifyBoard[y + 1][highestEmptyCells[i].x] = verifyBoard[y][highestEmptyCells[i].x];
-				verifyBoard[y][highestEmptyCells[i].x] = -1;
-			}
-		}*/
-
 		board = copyBoard(verifyBoard);
-		game_loop = setInterval(draw_game, FRAMERATE);
+		slideTime = cellSize / SPEED;
 		clickCtrl = 1; //re-enable clicking
-		console.log('done yeah');
+		slideJewels();
 	}
 
 	function addScore(count) {
@@ -837,7 +751,7 @@ window.onload = function() {
 					init_game();
 				}
 			} else if(clickCtrl === 1) {
-				/*if((mouseCoord.x >= 0) && (mouseCoord.x <= 320) && (mouseCoord.y >= 0) && (mouseCoord.y <= 320)) {
+				if((mouseCoord.x >= 0) && (mouseCoord.x <= 320) && (mouseCoord.y >= 0) && (mouseCoord.y <= 320)) {
 					var clickedCell = {};
 
 					if((mouseCoord.x / 40) <= 1) {
@@ -898,12 +812,12 @@ window.onload = function() {
 						}
 						selectedCells = [];
 					}
-				}*/
-				clearInterval(game_loop);
+				}
+				/*clearInterval(game_loop);
 				var test = jewelSlideDown2(verifyBoard);
 				console.log(test);
 				board = copyBoard(verifyBoard);
-				game_loop = setInterval(draw_game, FRAMERATE);
+				game_loop = setInterval(draw_game, FRAMERATE);*/
 			} else if(clickCtrl === 2) {
 				if((mouseCoord.x >= (canvasWidth / 2) - 100) && (mouseCoord.x <= (canvasWidth / 2) - 100 + 200) && (mouseCoord.y >= (canvasHeight / 2) + 40) && (mouseCoord.y <= (canvasHeight / 2) + 40 + 45)) {
 					init_game();
