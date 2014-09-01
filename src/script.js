@@ -1,3 +1,11 @@
+/*
+ * DYE MATCH GAME
+ * Version: 0.0.1
+ * Developed by Matthew Lean
+ * www.mattlean.com
+ * 2014
+ */
+
 window.onload = function() {
 	var canvas = document.getElementById('canvas');
 	var ctx = canvas.getContext('2d');
@@ -682,6 +690,37 @@ window.onload = function() {
 		}
 
 		slideTime -= 1;
+
+		ctx.fillStyle = FONTCOLOR;
+		ctx.textAlign = 'start';
+		var txtScore = 'Score:';
+		ctx.fillText(txtScore, 325, 20);
+
+		ctx.textAlign = 'center';
+		ctx.font = '2em Helvetica';
+		var txtScoreVal = score;
+		ctx.fillText(txtScoreVal, 400, 60);
+		
+		ctx.textAlign = 'start';
+		ctx.font = '1.2em Helvetica';
+		var txtTime = 'Time:';
+		ctx.fillText(txtTime, 325, 110);
+
+		var seconds = Math.ceil(time / 60);
+		var tubeSegment = 147 / 60;
+		var tubeStartLevel = 153 + ((60 * tubeSegment) - (seconds * tubeSegment));
+		var tubeEndLevel = 147 - ((60 * tubeSegment) - (seconds * tubeSegment));
+		if(seconds > 30) {
+			ctx.fillStyle = '#8cc63e';
+		} else if(seconds >= 10) {
+			ctx.fillStyle = '#ffd700';
+		} else {
+			ctx.fillStyle = '#ff0000';
+		}
+		ctx.fillRect(386, tubeStartLevel, 28, tubeEndLevel);
+		ctx.drawImage(imgs['timer'], 375, 120, 50, 187);
+		time -= 1;
+
 		if(slideTime <= 0) {
 			completeSlide();
 		}
@@ -889,9 +928,9 @@ window.onload = function() {
 				if((mouseCoord.x >= (canvasWidth / 2) - 100) && (mouseCoord.x <= (canvasWidth / 2) - 100 + 200) && (mouseCoord.y >= (canvasHeight / 2) + 40) && (mouseCoord.y <= (canvasHeight / 2) + 40 + 45)) {
 					init_game();
 				}
-			} else {
+			}/* else {
 				console.log('Click disabled');
-			}
+			}*/
 		}
 	}
 
