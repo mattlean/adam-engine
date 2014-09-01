@@ -47,7 +47,7 @@ window.onload = function() {
 	[5, 0, 3, -1, 0 ,1, 3, 1],
 	[4, 3, 3, -1, 1, 3, 4, 3]
 	];*/
-	var board = [
+	/*var board = [
 	[1, 5, 3, -1, 5, 2, 1, 1],
 	[0, 3, 2, -1, 1, 2, 4, 4],
 	[4, 1, 4, -1, 4, 1, 1, 5],
@@ -56,6 +56,16 @@ window.onload = function() {
 	[5, 4, 1, 3, 1, 1, 0, 5],
 	[5, 0, 3, 1, 0 ,1, 3, 1],
 	[4, 3, 3, 1, 1, 3, 4, 3]
+	];*/
+	var board = [
+	[1, 5, 3, 1, 5, 2, 1, 1],
+	[0, 3, 2, -1, 1, 2, 4, 4],
+	[4, 1, 4, -1, 4, 1, 1, 5],
+	[2, 2, 3, -1, 5, 5, 3, 4],
+	[0, 4, 3, 0 ,4, 5, 4, 0],
+	[5, 4, 1, -1, 1, 1, 0, 5],
+	[5, 0, 3, -1, 0 ,1, 3, 1],
+	[4, 3, 3, -1, 1, 3, 4, 3]
 	];
 	var verifyBoard = [];
 	var selectedCells = [];
@@ -603,8 +613,37 @@ window.onload = function() {
 		}
 	}
 
-	function jewelSlideDown2(inputBoard) {
-		var highestEmptyCells = [];
+	function slideJewels() {
+		clickCtrl = -1; //disable clicking during animation
+		var cellsToSlide = jewelSlideDown2(verifyBoard);
+		//board = copyBoard(verifyBoard);
+		//game_loop = setInterval(draw_game, FRAMERATE);
+		if(cellsToSlide.length != 0) {
+			game_loop = setInterval(function() {
+				draw_slide(cellsToSlide);
+			}, FRAMERATE);
+		} else {
+			console.log('success');
+		}
+	}
+
+	function jewelSlideDown2() {
+		var cellsToSlide = [];
+
+		for(var x = 0; x < boardSize; ++x) {
+			var colArray = [];
+			var gapFound = false;
+			for(var y = boardSize - 1; y >= 0; --y) {
+				if(verifyBoard[y][x] === BLANK) {
+					gapFound = true;
+				} else if(gapFound) {
+					colArray.unshift({'x': x, 'y': y, 'prevX': x * cellSize, 'prevY': y * cellSize});
+				}
+			}
+			if(colArray.length > 0) cellsToSlide.push(colArray);
+		}
+
+		/*var highestEmptyCells = [];
 
 		//get highest empty cells
 		for(var x = 0; x < boardSize; ++x) {
@@ -627,7 +666,7 @@ window.onload = function() {
 			cellsToSlide.push(column);
 			column = [];
 			++i;
-		}
+		}*/
 
 		//update inputBoard
 		/*for(var i = 0; i < highestEmptyCells.length; ++i) {
@@ -640,20 +679,6 @@ window.onload = function() {
 		//console.log(cellsToSlide);
 
 		return cellsToSlide;
-	}
-
-	function slideJewels() {
-		clickCtrl = -1; //disable clicking during animation
-		var cellsToSlide = jewelSlideDown2(verifyBoard);
-		//board = copyBoard(verifyBoard);
-		//game_loop = setInterval(draw_game, FRAMERATE);
-		if(cellsToSlide.length != 0) {
-			game_loop = setInterval(function() {
-				draw_slide(cellsToSlide);
-			}, FRAMERATE);
-		} else {
-			console.log('success');
-		}
 	}
 
 	function draw_slide(cellsToSlide) {
