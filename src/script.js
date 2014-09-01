@@ -859,6 +859,10 @@ window.onload = function() {
 				}
 			} else if(clickCtrl === 1) {
 				//selSound.play();
+				var playSound = audioCtx.createBufferSource();
+				playSound.buffer = laserSound;
+				playSound.connect(audioCtx.destination);
+				playSound.noteOn(0);
 				if((mouseCoord.x >= 0) && (mouseCoord.x <= 320) && (mouseCoord.y >= 0) && (mouseCoord.y <= 320)) {
 					var clickedCell = {};
 
@@ -945,18 +949,18 @@ window.onload = function() {
 	document.body.appendChild(selSound);
 	selSound.setAttribute('src', 'sounds/select.wav');*/
 
-	var audioCtx = new AudioContext();
-	var selSound;
+	var audioCtx = new webkitAudioContext();
+	var laserSound;
 
-	var getSelSound = new XMLHttpRequest();
-	getSelSound.open('GET', 'sounds/select.wav', true);
-	getSelSound.responseType = 'arraybuffer';
-	getSelSound.onload = function() {
-		audioCtx.decodeAudioData(getSelSound.response, function(buffer) {
-			selSound = buffer;
+	var getLaser = new XMLHttpRequest();
+	getLaser.open('GET', 'sounds/select.wav', true);
+	getLaser.responseType = 'arraybuffer';
+	getLaser.onload = function() {
+		audioCtx.decodeAudioData(getLaser.response, function(buffer) {
+			laserSound = buffer;
 		});
 	}
-	getSelSound.send();
+	getLaser.send();*/
 
 	/* "main()" */
 	start();
