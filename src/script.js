@@ -6,7 +6,7 @@ window.onload = function() {
 	var game_loop;
 	var cellSize = 40; //determines cell size. cell is always a square.
 	var boardSize = 8; //determines board size. at the moment the board is always square.
-	//var board = [];
+	var board = [];
 	/*var board = [
 	[1, 2, 0, 1, 2, 2, 2, 0],
 	[2, 0, 0, 2, 1, 2, 2, 0],
@@ -27,7 +27,7 @@ window.onload = function() {
 	[1, 2, 2, 1, 2, 2, 1, 1],
 	[0, 1, 1, 0, 1, 1, 2, 2]
 	];*/
-	var board = [
+	/*var board = [
 	[1, 5, 3, 4, 5, 2, 1, 1],
 	[0, 3, 2, 5, 1, 2, 4, 4],
 	[4, 1, 4, 0, 4, 1, 1, 5],
@@ -36,7 +36,7 @@ window.onload = function() {
 	[5, 4, 1, 3, 1, 1, 0, 5],
 	[5, 0, 3, 1, 0 ,1, 3, 1],
 	[4, 3, 3, 1, 1, 3, 4, 3]
-	];
+	];*/
 	/*var board = [
 	[1, 5, 3, 4, 5, 2, 1, 1],
 	[0, 3, 2, 5, 1, 2, 4, 4],
@@ -103,7 +103,7 @@ window.onload = function() {
 	const BGCOLOR1 = '#2463aa';
 	const BGCOLOR2 = '#000';
 	const FONTCOLOR = '#fff';
-	const STARTTIME = 9999999; //3600 = 60 seconds
+	const STARTTIME = 3600; //3600 = 60 seconds
 
 	var slideTime = cellSize / SPEED;
 
@@ -175,7 +175,9 @@ window.onload = function() {
 	}
 
 	function init_game() {
-		/*//initialize board with randomly generated jewels
+		board = [];
+
+		//initialize board with randomly generated jewels
 		for(var y = 0; y < boardSize; ++y) {
 			var temp = [];
 			for(var x = 0; x < boardSize; ++x) {
@@ -184,7 +186,7 @@ window.onload = function() {
 			board.push(temp);
 		}
 
-		matchCycle(board, false);*/
+		matchCycle(board, false);
 		verifyBoard = copyBoard(board);
 		score = 0;
 		time = STARTTIME;
@@ -301,6 +303,24 @@ window.onload = function() {
 		while(matchFound = match(inputBoard, trackScore, true)){
 			jewelSlideDown(inputBoard);
 			fillGaps(inputBoard);
+		}
+	}
+
+	//slide down jewels with no animation during initial board setup
+	function jewelSlideDown(inputBoard) {
+		for(var x = 0; x < boardSize; ++x) {
+			var emptyCells = [];
+			for(var y = boardSize - 1; y >= 0; --y) {
+				if(inputBoard[y][x] === BLANK) {
+					emptyCells.unshift({'x': x, 'y': y});
+				} else if(emptyCells.length) {
+					var deepestEmptyCell = emptyCells.pop();
+					inputBoard[deepestEmptyCell.y][deepestEmptyCell.x] = inputBoard[y][x];
+					inputBoard[y][x] = BLANK;
+					emptyCells.unshift({'x': x, 'y': y});
+				}
+			}
+			emptyCells = [];
 		}
 	}
 
@@ -593,24 +613,6 @@ window.onload = function() {
 		slideJewels();
 	}
 
-	//slide down jewels with no animation during initial board setup
-	function jewelSlideDown(inputBoard) {
-		for(var x = 0; x < boardSize; ++x) {
-			var emptyCells = [];
-			for(var y = boardSize - 1; y >= 0; --y) {
-				if(inputBoard[y][x] === BLANK) {
-					emptyCells.unshift({'x': x, 'y': y});
-				} else if(emptyCells.length) {
-					var deepestEmptyCell = emptyCells.pop();
-					inputBoard[deepestEmptyCell.y][deepestEmptyCell.x] = inputBoard[y][x];
-					inputBoard[y][x] = BLANK;
-					emptyCells.unshift({'x': x, 'y': y});
-				}
-			}
-			emptyCells = [];
-		}
-	}
-
 	function slideJewels() {
 		clickCtrl = -1; //disable clicking during animation
 		var cellsToSlide = jewelSlideDown2();
@@ -625,9 +627,8 @@ window.onload = function() {
 			if(matchFound === 1) {
 				destroyJewels();
 			} else {
-				game_loop = setInterval(draw_game, FRAMERATE);
 				clickCtrl = 1;
-				console.log('fill cells');
+				fillCells();
 			}
 		}
 	}
@@ -675,29 +676,6 @@ window.onload = function() {
 			}
 		}
 
-		/*if(cellsToSlide.length > 0) {
-			if((cellsToSlide[cellsToSlide.length - 1][cellsToSlide[cellsToSlide.length - 1].length - 1].prevY) <= ((cellsToSlide[0].length) * cellSize)) {
-				for(var i = 0; i < cellsToSlide.length; ++i) {
-					for(var y = 0; y < cellsToSlide[i].length; ++y) {
-						cellsToSlide[i][y].prevY += SPEED;
-						if(verifyBoard[cellsToSlide[i][y].y][cellsToSlide[i][y].x] !== BLANK) {
-							drawJewel(cellsToSlide[i][y].prevX, cellsToSlide[i][y].prevY, verifyBoard[cellsToSlide[i][y].y][cellsToSlide[i][y].x], false, false);
-						}
-					}
-				}
-			} else {
-				for(var i = 0; i < cellsToSlide.length; ++i) {
-					for(var y = 0; y < cellsToSlide[i].length; ++y) {
-						drawJewel(cellsToSlide[i][y].prevX, cellsToSlide[i][y].prevY, verifyBoard[cellsToSlide[i][y].y][cellsToSlide[i][y].x], false, false);
-					}
-				}
-
-				cellsToSlide = [];
-			}
-		} else {
-			completeSlide();
-		}*/
-
 		for(var i = 0; i < cellsToSlide.length; ++i) {
 			cellsToSlide[i].prevY += SPEED;
 			drawJewel(cellsToSlide[i].prevX, cellsToSlide[i].prevY, board[cellsToSlide[i].y][cellsToSlide[i].x], false, false);
@@ -715,6 +693,82 @@ window.onload = function() {
 		slideTime = cellSize / SPEED;
 		clickCtrl = 1; //re-enable clicking
 		slideJewels();
+	}
+
+	function fillCells() {
+		fillGaps(verifyBoard);
+		opacity = 0;
+		game_loop = setInterval(draw_fill, FRAMERATE);
+	}
+
+	function draw_fill() {
+		if(opacity <= 1) {
+			var opacityCheck = false; //set to true once opacity is incremented for iteration
+
+			//draw the background to clear previous frame
+			ctx.fillStyle = BGCOLOR2;
+			ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+			ctx.fillStyle = BGCOLOR1;
+			ctx.fillRect(cellSize * board.length, 0, 200, canvasHeight);
+
+			for(var y = 0; y < boardSize; ++y) {
+				for(var x = 0; x < boardSize; ++x) {
+					if(board[y][x] === BLANK) {
+						if(!opacityCheck) {
+							if(opacity <= 1) {
+								opacity += 0.2;
+								opacityCheck = true;
+							}
+						}
+
+						ctx.globalAlpha = opacity;
+						drawJewel(x, y, verifyBoard[y][x], false, true);
+						ctx.globalAlpha = 1;
+					} else {
+						drawJewel(x, y, verifyBoard[y][x], false, true);
+					}
+				}
+			}
+
+			ctx.fillStyle = FONTCOLOR;
+			ctx.textAlign = 'start';
+			var txtScore = 'Score:';
+			ctx.fillText(txtScore, 325, 20);
+
+			ctx.textAlign = 'center';
+			ctx.font = '2em Helvetica';
+			var txtScoreVal = score;
+			ctx.fillText(txtScoreVal, 400, 60);
+		
+			ctx.textAlign = 'start';
+			ctx.font = '1.2em Helvetica';
+			var txtTime = 'Time:';
+			ctx.fillText(txtTime, 325, 110);
+
+			var seconds = Math.ceil(time / 60);
+			var tubeSegment = 147 / 60;
+			var tubeStartLevel = 153 + ((60 * tubeSegment) - (seconds * tubeSegment));
+			var tubeEndLevel = 147 - ((60 * tubeSegment) - (seconds * tubeSegment));
+			if(seconds > 30) {
+				ctx.fillStyle = '#8cc63e';
+			} else if(seconds >= 10) {
+				ctx.fillStyle = '#ffd700';
+			} else {
+				ctx.fillStyle = '#ff0000';
+			}
+			ctx.fillRect(386, tubeStartLevel, 28, tubeEndLevel);
+			ctx.drawImage(imgs['timer'], 375, 120, 50, 187);
+			time -= 1;
+		} else {
+			completeFill();
+		}
+	}
+
+	function completeFill() {
+		clearInterval(game_loop);
+		board = copyBoard(verifyBoard);
+		opacity = 1;
+		game_loop = setInterval(draw_game, FRAMERATE);
 	}
 
 	function addScore(count) {
