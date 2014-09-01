@@ -27,11 +27,31 @@ window.onload = function() {
 	[1, 2, 2, 1, 2, 2, 1, 1],
 	[0, 1, 1, 0, 1, 1, 2, 2]
 	];*/
-	var board = [
+	/*var board = [
 	[1, 5, 3, 4, 5, 2, 1, 1],
 	[0, 3, 2, 5, 1, 2, 4, 4],
 	[4, 1, 4, 0, 4, 1, 1, 5],
 	[2, 2, 3, 1, 5, 5, 3, 4],
+	[0, 4, 3, 0 ,4, 5, 4, 0],
+	[5, 4, 1, 3, 1, 1, 0, 5],
+	[5, 0, 3, 1, 0 ,1, 3, 1],
+	[4, 3, 3, 1, 1, 3, 4, 3]
+	];*/
+	/*var board = [
+	[1, 5, 3, 4, 5, 2, 1, 1],
+	[0, 3, 2, 5, 1, 2, 4, 4],
+	[4, 1, 4, 0, 4, 1, 1, 5],
+	[2, 2, 3, 1, 5, 5, 3, 4],
+	[0, 4, 3, 0 ,4, 5, 4, 0],
+	[5, 4, 1, -1, 3, 1, 0, 5],
+	[5, 0, 3, -1, 0 ,1, 3, 1],
+	[4, 3, 3, -1, 1, 3, 4, 3]
+	];*/
+	var board = [
+	[1, 5, 3, -1, 5, 2, 1, 1],
+	[0, 3, 2, -1, 1, 2, 4, 4],
+	[4, 1, 4, -1, 4, 1, 1, 5],
+	[2, 2, 3, -1, 5, 5, 3, 4],
 	[0, 4, 3, 0 ,4, 5, 4, 0],
 	[5, 4, 1, 3, 1, 1, 0, 5],
 	[5, 0, 3, 1, 0 ,1, 3, 1],
@@ -156,7 +176,7 @@ window.onload = function() {
 			board.push(temp);
 		}*/
 
-		matchCycle(board, false);
+		//matchCycle(board, false);
 		verifyBoard = copyBoard(board);
 		score = 0;
 		time = STARTTIME;
@@ -610,21 +630,21 @@ window.onload = function() {
 		}
 
 		//update inputBoard
-		for(var i = 0; i < highestEmptyCells.length; ++i) {
+		/*for(var i = 0; i < highestEmptyCells.length; ++i) {
 			for(var y = highestEmptyCells[i].y - 1; y >= 0; --y) {
-				inputBoard[y + 1][highestEmptyCells[i].x] = verifyBoard[y][highestEmptyCells[i].x];
+				inputBoard[y + 1][highestEmptyCells[i].x] = board[y][highestEmptyCells[i].x];
 				inputBoard[y][highestEmptyCells[i].x] = -1;
 			}
-		}
+		}*/
 
-		console.log(cellsToSlide);
+		//console.log(cellsToSlide);
 
 		return cellsToSlide;
 	}
 
 	function slideJewels() {
 		clickCtrl = -1; //disable clicking during animation
-		var cellsToSlide = jewelSlideDown2(board);
+		var cellsToSlide = jewelSlideDown2(verifyBoard);
 		//board = copyBoard(verifyBoard);
 		//game_loop = setInterval(draw_game, FRAMERATE);
 		if(cellsToSlide.length != 0) {
@@ -655,7 +675,7 @@ window.onload = function() {
 					}
 				}
 
-				drawJewel(x, y, verifyBoard[y][x], false, true);
+				drawJewel(x, y, board[y][x], false, true);
 			}
 		}
 
@@ -685,7 +705,7 @@ window.onload = function() {
 		for(var i = 0; i < cellsToSlide.length; ++i) {
 			for(var y = 0; y < cellsToSlide[i].length; ++y) {
 				cellsToSlide[i][y].prevY += SPEED;
-				drawJewel(cellsToSlide[i][y].prevX, cellsToSlide[i][y].prevY, verifyBoard[cellsToSlide[i][y].y][cellsToSlide[i][y].x], false, false);
+				drawJewel(cellsToSlide[i][y].prevX, cellsToSlide[i][y].prevY, board[cellsToSlide[i][y].y][cellsToSlide[i][y].x], false, false);
 			}
 		}
 
@@ -733,12 +753,11 @@ window.onload = function() {
 				verifyBoard[y + 1][highestEmptyCells[i].x] = verifyBoard[y][highestEmptyCells[i].x];
 				verifyBoard[y][highestEmptyCells[i].x] = -1;
 			}
-		}
+		}*/
 
 		board = copyBoard(verifyBoard);
-
 		game_loop = setInterval(draw_game, FRAMERATE);
-		clickCtrl = 1; //re-enable clicking*/
+		clickCtrl = 1; //re-enable clicking
 		console.log('done yeah');
 	}
 
@@ -781,7 +800,7 @@ window.onload = function() {
 					init_game();
 				}
 			} else if(clickCtrl === 1) {
-				if((mouseCoord.x >= 0) && (mouseCoord.x <= 320) && (mouseCoord.y >= 0) && (mouseCoord.y <= 320)) {
+				/*if((mouseCoord.x >= 0) && (mouseCoord.x <= 320) && (mouseCoord.y >= 0) && (mouseCoord.y <= 320)) {
 					var clickedCell = {};
 
 					if((mouseCoord.x / 40) <= 1) {
@@ -842,7 +861,9 @@ window.onload = function() {
 						}
 						selectedCells = [];
 					}
-				}
+				}*/
+				var test = jewelSlideDown2(verifyBoard);
+				console.log(test);
 			} else if(clickCtrl === 2) {
 				if((mouseCoord.x >= (canvasWidth / 2) - 100) && (mouseCoord.x <= (canvasWidth / 2) - 100 + 200) && (mouseCoord.y >= (canvasHeight / 2) + 40) && (mouseCoord.y <= (canvasHeight / 2) + 40 + 45)) {
 					init_game();
