@@ -696,6 +696,7 @@ window.onload = function() {
 	}
 
 	function fillCells() {
+		clickCtrl = -1;
 		fillGaps(verifyBoard);
 		opacity = 0;
 		game_loop = setInterval(draw_fill, FRAMERATE);
@@ -768,7 +769,14 @@ window.onload = function() {
 		clearInterval(game_loop);
 		board = copyBoard(verifyBoard);
 		opacity = 1;
-		game_loop = setInterval(draw_game, FRAMERATE);
+		var matchFound = -1;
+		matchFound = match(board, true, true);
+		if(matchFound === 1) {
+			destroyJewels();
+		} else {
+			clickCtrl = 1;
+			game_loop = setInterval(draw_game, FRAMERATE);
+		}
 	}
 
 	function addScore(count) {
