@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Dye Match Game [Test]</title>
+	<style>
+	body {
+		background-color: #CCC;
+	}
+
+	#canvas {
+		border: 1px solid #000;
+		background-color: #333;
+	}
+	</style>
+</head>
+<body>
+	<canvas id="canvas" width="480" height="320">
+		Please use a modern browser with JavaScript enabled to play the game!
+		Canvas is not supported on your current browser.
+	</canvas>
+	<script>
+	window.onload = function() {
+		var canvas = document.getElementById('canvas');
+		var ctx = canvas.getContext('2d');
+		ctx.fillStyle = '#00ff00';
+		ctx.fillRect(10, 10, 10, 10);
+
+		var audioCtx = new webkitAudioContext();
+		var laserSound;
+
+		var getLaser = new XMLHttpRequest();
+		getLaser.open('GET', 'sounds/select.wav', true);
+		getLaser.responseType = 'arraybuffer';
+		getLaser.onload = function() {
+			audioCtx.decodeAudioData(getLaser.response, function(buffer) {
+				laserSound = buffer;
+			});
+		}
+		getLaser.send();
+
+		window.onmousedown = function(evt) {
+			console.log('Click');
+			var playSound = audioCtx.createBufferSource();
+			playSound.buffer = laserSound;
+			playSound.connect(audioCtx.destination);
+			playSound.start(0);
+		}
+	}
+	</script>
+</body>
+</html>

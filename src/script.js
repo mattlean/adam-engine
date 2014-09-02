@@ -858,11 +858,6 @@ window.onload = function() {
 					init_game();
 				}
 			} else if(clickCtrl === 1) {
-				//selSound.play();
-				var playSound = audioCtx.createBufferSource();
-				playSound.buffer = laserSound;
-				playSound.connect(audioCtx.destination);
-				playSound.noteOn(0);
 				if((mouseCoord.x >= 0) && (mouseCoord.x <= 320) && (mouseCoord.y >= 0) && (mouseCoord.y <= 320)) {
 					var clickedCell = {};
 
@@ -904,6 +899,8 @@ window.onload = function() {
 
 					if(selectedCells.length === 0) {
 						selectedCells.push(clickedCell);
+						selSound.currentTime = 0;
+						selSound.play();
 					} else if(selectedCells.length === 1) {
 						selectedCells.push(clickedCell);
 						var firstCell = selectedCells[0];
@@ -925,11 +922,6 @@ window.onload = function() {
 						selectedCells = [];
 					}
 				}
-				/*clearInterval(game_loop);
-				var test = jewelSlideDown2(verifyBoard);
-				console.log(test);
-				board = copyBoard(verifyBoard);
-				game_loop = setInterval(draw_game, FRAMERATE);*/
 			} else if(clickCtrl === 2) {
 				if((mouseCoord.x >= (canvasWidth / 2) - 100) && (mouseCoord.x <= (canvasWidth / 2) - 100 + 200) && (mouseCoord.y >= (canvasHeight / 2) + 40) && (mouseCoord.y <= (canvasHeight / 2) + 40 + 45)) {
 					init_game();
@@ -945,11 +937,11 @@ window.onload = function() {
 	}
 
 	/* Sound */
-	/*var selSound = document.createElement('audio');
+	var selSound = document.createElement('audio');
 	document.body.appendChild(selSound);
-	selSound.setAttribute('src', 'sounds/select.wav');*/
+	selSound.setAttribute('src', 'sounds/select.wav');
 
-	var audioCtx = new webkitAudioContext();
+	/*var audioCtx = new webkitAudioContext();
 	var laserSound;
 
 	var getLaser = new XMLHttpRequest();
