@@ -1016,89 +1016,90 @@ function draw_destroy() {
 
 	/* Touch */
 	function cellTouch(evt) {
-		var x = evt.changedTouches[0].pageX - canvas.offsetLeft;
-		var y = evt.changedTouches[0].pageY - canvas.offsetTop;
-		var mouseCoord = { 'x': x, 'y': y };
+		if(clickCtrl === 1) {
+			var x = evt.changedTouches[0].pageX - canvas.offsetLeft;
+			var y = evt.changedTouches[0].pageY - canvas.offsetTop;
+			var mouseCoord = { 'x': x, 'y': y };
 
-		if((mouseCoord.x >= 0) && (mouseCoord.x <= 320) && (mouseCoord.y >= 0) && (mouseCoord.y <= 320)) {
-			var clickedCell = {};
+			if((mouseCoord.x >= 0) && (mouseCoord.x <= 320) && (mouseCoord.y >= 0) && (mouseCoord.y <= 320)) {
+				var clickedCell = {};
 
-			if((mouseCoord.x / 40) <= 1) {
-				clickedCell.x = 0;
-			} else if((mouseCoord.x / 40) <= 2) {
-				clickedCell.x = 1;
-			} else if((mouseCoord.x / 40) <= 3) {
-				clickedCell.x = 2;
-			} else if((mouseCoord.x / 40) <= 4) {
-				clickedCell.x = 3;
-			} else if((mouseCoord.x / 40) <= 5) {
-				clickedCell.x = 4;
-			} else if((mouseCoord.x / 40) <= 6) {
-				clickedCell.x = 5;
-			} else if((mouseCoord.x / 40) <= 7) {
-				clickedCell.x = 6;
-			} else if((mouseCoord.x / 40) <= 8) {
-				clickedCell.x = 7;
-			}
+				if((mouseCoord.x / 40) <= 1) {
+					clickedCell.x = 0;
+				} else if((mouseCoord.x / 40) <= 2) {
+					clickedCell.x = 1;
+				} else if((mouseCoord.x / 40) <= 3) {
+					clickedCell.x = 2;
+				} else if((mouseCoord.x / 40) <= 4) {
+					clickedCell.x = 3;
+				} else if((mouseCoord.x / 40) <= 5) {
+					clickedCell.x = 4;
+				} else if((mouseCoord.x / 40) <= 6) {
+					clickedCell.x = 5;
+				} else if((mouseCoord.x / 40) <= 7) {
+					clickedCell.x = 6;
+				} else if((mouseCoord.x / 40) <= 8) {
+					clickedCell.x = 7;
+				}
 
-			if((mouseCoord.y / 40) <= 1) {
-				clickedCell.y = 0;
-			} else if((mouseCoord.y / 40) <= 2) {
-				clickedCell.y = 1;
-			} else if((mouseCoord.y / 40) <= 3) {
-				clickedCell.y = 2;
-			} else if((mouseCoord.y / 40) <= 4) {
-				clickedCell.y = 3;
-			} else if((mouseCoord.y / 40) <= 5) {
-				clickedCell.y = 4;
-			} else if((mouseCoord.y / 40) <= 6) {
-				clickedCell.y = 5;
-			} else if((mouseCoord.y / 40) <= 7) {
-				clickedCell.y = 6;
-			} else if((mouseCoord.y / 40) <= 8) {
-				clickedCell.y = 7;
-			}
+				if((mouseCoord.y / 40) <= 1) {
+					clickedCell.y = 0;
+				} else if((mouseCoord.y / 40) <= 2) {
+					clickedCell.y = 1;
+				} else if((mouseCoord.y / 40) <= 3) {
+					clickedCell.y = 2;
+				} else if((mouseCoord.y / 40) <= 4) {
+					clickedCell.y = 3;
+				} else if((mouseCoord.y / 40) <= 5) {
+					clickedCell.y = 4;
+				} else if((mouseCoord.y / 40) <= 6) {
+					clickedCell.y = 5;
+				} else if((mouseCoord.y / 40) <= 7) {
+					clickedCell.y = 6;
+				} else if((mouseCoord.y / 40) <= 8) {
+					clickedCell.y = 7;
+				}
 
-			if(selectedCells.length === 0) {
-				console.log('start: ', clickedCell);
-				selectedCells.push(clickedCell);
-				selSfx.play();
-			} else if(selectedCells.length === 1) {
-				console.log('end: ', clickedCell);
-				if((clickedCell.x === selectedCells[0].x) && (clickedCell.y === selectedCells[0].y)) {
+				if(selectedCells.length === 0) {
+					console.log('start: ', clickedCell);
+					selectedCells.push(clickedCell);
+					selSfx.play();
+				} else if(selectedCells.length === 1) {
+					console.log('end: ', clickedCell);
+					if((clickedCell.x === selectedCells[0].x) && (clickedCell.y === selectedCells[0].y)) {
+						return
+					}
+					if(clickedCell.x > selectedCells[0].x) {
+						clickedCell.x = selectedCells[0].x + 1;
+					} else if (clickedCell.x < selectedCells[0].x) {
+						clickedCell.x = selectedCells[0].x - 1;
+					}
+					if(clickedCell.y > selectedCells[0].y) {
+						clickedCell.y = selectedCells[0].y + 1;
+					} else if (clickedCell.y < selectedCells[0].y) {
+						clickedCell.y = selectedCells[0].y - 1;
+					}
+					selectedCells.push(clickedCell);
+					var firstCell = selectedCells[0];
+					var secondCell = selectedCells[1];
+					drawJewel(secondCell.x, secondCell.y, board[secondCell.y][secondCell.x], true, true);
+					if(secondCell.y === firstCell.y) {
+						if(secondCell.x + 1 === firstCell.x) {
+							swapJewels('left');
+						} else if(secondCell.x - 1 === firstCell.x) {
+							swapJewels('right');
+						}
+					} else if(secondCell.x === firstCell.x) {
+						if(secondCell.y + 1 === firstCell.y) {
+							swapJewels('up');
+						} else if(secondCell.y - 1 === firstCell.y) {
+							swapJewels('down');
+						}
+					} else {
+						illegalSfx.play();
+					}
 					selectedCells = [];
-					return
 				}
-				if(clickedCell.x > selectedCells[0].x) {
-					clickedCell.x = selectedCells[0].x + 1;
-				} else if (clickedCell.x < selectedCells[0].x) {
-					clickedCell.x = selectedCells[0].x - 1;
-				}
-				if(clickedCell.y > selectedCells[0].y) {
-					clickedCell.y = selectedCells[0].y + 1;
-				} else if (clickedCell.y < selectedCells[0].y) {
-					clickedCell.y = selectedCells[0].y - 1;
-				}
-				selectedCells.push(clickedCell);
-				var firstCell = selectedCells[0];
-				var secondCell = selectedCells[1];
-				drawJewel(secondCell.x, secondCell.y, board[secondCell.y][secondCell.x], true, true);
-				if(secondCell.y === firstCell.y) {
-					if(secondCell.x + 1 === firstCell.x) {
-						swapJewels('left');
-					} else if(secondCell.x - 1 === firstCell.x) {
-						swapJewels('right');
-					}
-				} else if(secondCell.x === firstCell.x) {
-					if(secondCell.y + 1 === firstCell.y) {
-						swapJewels('up');
-					} else if(secondCell.y - 1 === firstCell.y) {
-						swapJewels('down');
-					}
-				} else {
-					illegalSfx.play();
-				}
-				selectedCells = [];
 			}
 		}
 	}
