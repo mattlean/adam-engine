@@ -1,6 +1,6 @@
 /*
  * DYE MATCH GAME
- * Version: 0.0.1
+ * Version: 0.0.2
  * Developed by Matthew Lean
  * www.mattlean.com
  * 2014
@@ -98,10 +98,12 @@
 	var swapSfx;
 	var scoreSfx;
 	var illegalSfx;
+	var sfxsLoaded = 0;
 
 	/* Constants */
 	const FRAMERATE = 1000 / 60;
-	const NUMIMGS = 7;
+	const NUMIMGS = 7; //number of images
+	const NUMSFXS = 4; //number of sound effects
 	const SPEED = 5; //speed in which the jewels move
 	const BLANK = -1;
 	const FAM = 0;
@@ -159,6 +161,8 @@
 				that.buffer = buffer;
 				that.isLoaded = true;
 			});
+
+			++sfxsLoaded;
 		}
 
 		getSound.send();
@@ -204,7 +208,7 @@
 	}
 
 	function draw_loading() {
-		if(imgsLoaded === NUMIMGS) {
+		if((imgsLoaded === NUMIMGS) && (sfxsLoaded === NUMSFXS)) {
 			clearInterval(game_loop);
 			game_loop = setInterval(draw_start, FRAMERATE);
 			clickCtrl = 0;
