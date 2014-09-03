@@ -115,7 +115,7 @@
 	const BGCOLOR1 = '#2463aa';
 	const BGCOLOR2 = '#a3a3a3';
 	const FONTCOLOR = '#fff';
-	const STARTTIME = 3600; //3600 = 60 seconds
+	const STARTTIME = 200; //3600 = 60 seconds
 
 	var slideTime = cellSize / SPEED;
 
@@ -237,6 +237,10 @@
 
 	/* Begins a new game */
 	function init_game() {
+		//replace default touch controls
+		canvas.addEventListener('touchstart', touchStartHand, false);
+		canvas.addEventListener('touchend', touchEndHand, false);
+
 		board = [];
 
 		//initialize board with randomly generated jewels
@@ -443,6 +447,8 @@
 	function draw_game() {
 		if(time <= 0) {
 			clearInterval(game_loop);
+			canvas.removeEventListener('touchstart', touchStartHand, false);
+			canvas.removeEventListener('touchend', touchEndHand, false);
 			clickCtrl = 2;
 			game_loop = setInterval(draw_timeup, FRAMERATE);
 		}
@@ -910,7 +916,7 @@ function draw_destroy() {
 		drawBtn((canvasWidth / 2) - 100, (canvasHeight / 2) + 35, 200, 45, '#a6a6a6', 'PLAY AGAIN', '1.5em Helvetica', '#fff', 8);
 	}
 
-	/* Input */
+	/* Mouse Click */
 	function cellClick(evt, clickCtrl) {
 		var key = evt.which;
 		var x = evt.pageX - canvas.offsetLeft;
@@ -1002,6 +1008,19 @@ function draw_destroy() {
 
 	window.onmousedown = function(evt) {
 		cellClick(evt, clickCtrl);
+	}
+
+	/* Touch */
+	function touchStartHand(evt) {
+		evt.preventDefault();
+		console.log(evt.changedTouches[0].pageX, evt.changedTouches[0].pageY);
+		console.log(evt.which);
+	}
+
+	function touchEndHand(evt) {
+		evt.preventDefault();
+		console.log(evt.changedTouches[0].pageX, evt.changedTouches[0].pageY);
+		console.log(evt.which);
 	}
 
 	/* "main()" */
