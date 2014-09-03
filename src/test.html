@@ -17,6 +17,7 @@
 	</style>
 </head>
 <body>
+	<h1>Title Offset</h1>
 	<canvas id="canvas" width="480" height="320">
 		Please use a modern browser with JavaScript enabled to play the game!
 		Canvas is not supported on your current browser.
@@ -63,14 +64,28 @@
 		}
 	}
 
+	function touchStartHand(evt) {
+		evt.preventDefault();
+		console.log(evt.changedTouches[0].pageX, evt.changedTouches[0].pageY);
+	}
+
+	function touchEndHand(evt) {
+		evt.preventDefault();
+		console.log(evt.changedTouches[0].pageX, evt.changedTouches[0].pageY);
+	}
+
 	window.onload = function() {
 		var canvas = document.getElementById('canvas');
 		var ctx = canvas.getContext('2d');
+
 		ctx.fillStyle = '#00ff00';
 		ctx.fillRect(10, 10, 10, 10);
 
 		var selSfx = new Sound('sounds/select.wav');
 		var scoreSfx = new Sound('sounds/score.wav');
+
+		canvas.addEventListener('touchstart', touchStartHand, false);
+		canvas.addEventListener('touchend', touchEndHand, false);
 
 		window.onmousedown = function(evt) {
 			var key = evt.which;
