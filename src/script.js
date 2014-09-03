@@ -115,7 +115,7 @@
 	const BGCOLOR1 = '#2463aa';
 	const BGCOLOR2 = '#a3a3a3';
 	const FONTCOLOR = '#fff';
-	const STARTTIME = 200; //3600 = 60 seconds
+	const STARTTIME = 3600; //3600 = 60 seconds
 
 	var slideTime = cellSize / SPEED;
 
@@ -1011,16 +1011,88 @@ function draw_destroy() {
 	}
 
 	/* Touch */
+	function cellTouch(evt) {
+		var x = evt.changedTouches[0].pageX - canvas.offsetLeft;
+		var y = evt.changedTouches[0].pageY - canvas.offsetTop;
+		var mouseCoord = { 'x': x, 'y': y };
+
+		if((mouseCoord.x >= 0) && (mouseCoord.x <= 320) && (mouseCoord.y >= 0) && (mouseCoord.y <= 320)) {
+			var clickedCell = {};
+
+			if((mouseCoord.x / 40) <= 1) {
+				clickedCell.x = 0;
+			} else if((mouseCoord.x / 40) <= 2) {
+				clickedCell.x = 1;
+			} else if((mouseCoord.x / 40) <= 3) {
+				clickedCell.x = 2;
+			} else if((mouseCoord.x / 40) <= 4) {
+				clickedCell.x = 3;
+			} else if((mouseCoord.x / 40) <= 5) {
+				clickedCell.x = 4;
+			} else if((mouseCoord.x / 40) <= 6) {
+				clickedCell.x = 5;
+			} else if((mouseCoord.x / 40) <= 7) {
+				clickedCell.x = 6;
+			} else if((mouseCoord.x / 40) <= 8) {
+				clickedCell.x = 7;
+			}
+
+			if((mouseCoord.y / 40) <= 1) {
+				clickedCell.y = 0;
+			} else if((mouseCoord.y / 40) <= 2) {
+				clickedCell.y = 1;
+			} else if((mouseCoord.y / 40) <= 3) {
+				clickedCell.y = 2;
+			} else if((mouseCoord.y / 40) <= 4) {
+				clickedCell.y = 3;
+			} else if((mouseCoord.y / 40) <= 5) {
+				clickedCell.y = 4;
+			} else if((mouseCoord.y / 40) <= 6) {
+				clickedCell.y = 5;
+			} else if((mouseCoord.y / 40) <= 7) {
+				clickedCell.y = 6;
+			} else if((mouseCoord.y / 40) <= 8) {
+				clickedCell.y = 7;
+			}
+
+			if(selectedCells.length === 0) {
+				selectedCells.push(clickedCell);
+				selSfx.play();
+			} else if(selectedCells.length === 1) {
+				selectedCells.push(clickedCell);
+				var firstCell = selectedCells[0];
+				var secondCell = selectedCells[1];
+				drawJewel(secondCell.x, secondCell.y, board[secondCell.y][secondCell.x], true, true);
+				if(secondCell.y === firstCell.y) {
+					if(secondCell.x + 1 === firstCell.x) {
+						swapJewels('left');
+					} else if(secondCell.x - 1 === firstCell.x) {
+						swapJewels('right');
+					}
+				} else if(secondCell.x === firstCell.x) {
+					if(secondCell.y + 1 === firstCell.y) {
+						swapJewels('up');
+					} else if(secondCell.y - 1 === firstCell.y) {
+						swapJewels('down');
+					}
+				} else {
+					illegalSfx.play();
+				}
+				selectedCells = [];
+			}
+		}
+	}
+
 	function touchStartHand(evt) {
 		evt.preventDefault();
 		console.log(evt.changedTouches[0].pageX, evt.changedTouches[0].pageY);
-		console.log(evt.which);
+		cellTouch(evt);
 	}
 
 	function touchEndHand(evt) {
 		evt.preventDefault();
 		console.log(evt.changedTouches[0].pageX, evt.changedTouches[0].pageY);
-		console.log(evt.which);
+		cellTouch(evt);
 	}
 
 	/* "main()" */
