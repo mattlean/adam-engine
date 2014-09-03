@@ -6,12 +6,12 @@
  * 2014
  */
 
-window.onload = function() {
-	var canvas = document.getElementById('canvas');
-	var ctx = canvas.getContext('2d');
-	var canvasWidth = canvas.width;
-	var canvasHeight = canvas.height;
-	var game_loop;
+ window.onload = function() {
+ 	var canvas = document.getElementById('canvas');
+ 	var ctx = canvas.getContext('2d');
+ 	var canvasWidth = canvas.width;
+ 	var canvasHeight = canvas.height;
+ 	var game_loop;
 	var cellSize = 40; //determines cell size. cell is always a square.
 	var boardSize = 8; //determines board size. at the moment the board is always square.
 	var board = [];
@@ -94,6 +94,10 @@ window.onload = function() {
 		'BHQ': 'images/BHQ.png',
 		'timer': 'images/tube.png'
 	};
+	var selSfx;
+	var swapSfx;
+	var scoreSfx;
+	var illegalSfx;
 
 	/* Constants */
 	const FRAMERATE = 1000 / 60;
@@ -136,10 +140,53 @@ window.onload = function() {
 		ctx.fillText(txt, posX + (btnWidth / 2), posY + (btnHeight / 2) + txtOffset);
 	}
 
+	/* Sound */
+	function Sound(source) {
+		if(!window.audioContext) {
+			audioCtx = new AudioContext;
+		}
+
+		var that = this;
+		that.source = source;
+		that.buffer = null;
+		that.isLoaded = false;
+
+		var getSound = new XMLHttpRequest();
+		getSound.open('GET', that.source, true);
+		getSound.responseType = 'arraybuffer';
+		getSound.onload = function() {
+			audioCtx.decodeAudioData(getSound.response, function(buffer) {
+				that.buffer = buffer;
+				that.isLoaded = true;
+			});
+		}
+
+		getSound.send();
+	}
+
+	Sound.prototype.play = function(volLevel) {
+		if(this.isLoaded === true) {
+			var playSound = audioCtx.createBufferSource();
+			playSound.buffer = this.buffer;
+
+			var volume = audioCtx.createGain();
+			playSound.connect(volume);
+			if(volLevel) {
+				volume.gain.value = volLevel;
+			} else {
+				volume.gain.value = 0.1;
+			}
+			volume.connect(audioCtx.destination);
+
+			playSound.start(0);
+		}
+	}
+
 	/* Start Game */
 	function start() {
 		game_loop = setInterval(draw_loading, FRAMERATE);
 
+		//load images
 		for(var key in imgPaths) {
 			var newImg = new Image();
 			newImg.onload = function() {
@@ -148,6 +195,12 @@ window.onload = function() {
 			newImg.src = imgPaths[key];
 			imgs[key] = newImg;
 		}
+
+		//load sounds
+		selSfx = new Sound('sounds/select.wav');
+		swapSfx = new Sound('sounds/swap.wav');
+		scoreSfx = new Sound('sounds/score.wav');
+		illegalSfx = new Sound('sounds/illegalmove.wav');
 	}
 
 	function draw_loading() {
@@ -358,7 +411,7 @@ window.onload = function() {
 		} else if(val === BHQ) {
 			img = imgs['BHQ'];
 		} else if(val === BLANK) {
-			ctx.fillStyle = '#000';
+			ctx.fillStyle = '#fff';
 		} else {
 			ctx.fillStyle = '#00ff00';
 		}
@@ -453,10 +506,12 @@ window.onload = function() {
 
 			//draw swapping animation
 			clickCtrl = -1; //disable clicking during animation
+			swapSfx.play();
 			game_loop = setInterval(function() {
 				draw_swap(cellsToAnimate, direction);
 			}, FRAMERATE);
 		} else {
+			illegalSfx.play();
 			verifyBoard = copyBoard(board);
 		}
 	}
@@ -531,28 +586,28 @@ window.onload = function() {
 			((direction === 'left') && (cellsToAnimate[0].prevX >= (cellsToAnimate[1].x * cellSize))) ||
 			((direction === 'up') && (cellsToAnimate[0].prevY >= (cellsToAnimate[1].y * cellSize))) ||
 			((direction === 'down') && (cellsToAnimate[0].prevY <= (cellsToAnimate[1].y * cellSize)))
-		) {
+			) {
 			drawJewel(cellsToAnimate[0].prevX, cellsToAnimate[0].prevY, board[cellsToAnimate[0].y][cellsToAnimate[0].x], false, false);
-			drawJewel(cellsToAnimate[1].prevX, cellsToAnimate[1].prevY, board[cellsToAnimate[1].y][cellsToAnimate[1].x], false, false);
-		} else {
-			completeSwap();
-		}
+		drawJewel(cellsToAnimate[1].prevX, cellsToAnimate[1].prevY, board[cellsToAnimate[1].y][cellsToAnimate[1].x], false, false);
+	} else {
+		completeSwap();
 	}
+}
 
-	function completeSwap() {
-		clearInterval(game_loop);
-		board = copyBoard(verifyBoard);
-		match(board, true, true);
-		cellsToAnimate = [];
-		destroyJewels();
-	}
+function completeSwap() {
+	clearInterval(game_loop);
+	board = copyBoard(verifyBoard);
+	match(board, true, true);
+	cellsToAnimate = [];
+	destroyJewels();
+}
 
-	function destroyJewels() {
-		game_loop = setInterval(draw_destroy, FRAMERATE);
-	}
+function destroyJewels() {
+	game_loop = setInterval(draw_destroy, FRAMERATE);
+}
 
-	function draw_destroy() {
-		if(opacity >= 0) {
+function draw_destroy() {
+	if(opacity >= 0) {
 			var opacityCheck = false; //set to true once opacity is decremented for iteration
 
 			//draw the background to clear previous frame
@@ -591,7 +646,7 @@ window.onload = function() {
 			ctx.font = '2em Helvetica';
 			var txtScoreVal = score;
 			ctx.fillText(txtScoreVal, 400, 60);
-		
+
 			ctx.textAlign = 'start';
 			ctx.font = '1.2em Helvetica';
 			var txtTime = 'Time:';
@@ -787,7 +842,7 @@ window.onload = function() {
 			ctx.font = '2em Helvetica';
 			var txtScoreVal = score;
 			ctx.fillText(txtScoreVal, 400, 60);
-		
+
 			ctx.textAlign = 'start';
 			ctx.font = '1.2em Helvetica';
 			var txtTime = 'Time:';
@@ -828,6 +883,7 @@ window.onload = function() {
 
 	function addScore(count) {
 		score += count * 10;
+		scoreSfx.play();
 	}
 
 	function draw_timeup() {
@@ -862,6 +918,7 @@ window.onload = function() {
 		if(key === 1) { //only respond to left-clicks
 			if(clickCtrl === 0) {
 				if((mouseCoord.x >= (canvasWidth / 2) - 100) && (mouseCoord.x <= (canvasWidth / 2) - 100 + 200) && (mouseCoord.y >= (canvasHeight / 2) + 20) && (mouseCoord.y <= (canvasHeight / 2) + 20 + 45)) {
+					selSfx.play();
 					init_game();
 				}
 			} else if(clickCtrl === 1) {
@@ -906,8 +963,7 @@ window.onload = function() {
 
 					if(selectedCells.length === 0) {
 						selectedCells.push(clickedCell);
-						selSound.currentTime = 0;
-						selSound.play();
+						selSfx.play();
 					} else if(selectedCells.length === 1) {
 						selectedCells.push(clickedCell);
 						var firstCell = selectedCells[0];
@@ -925,12 +981,15 @@ window.onload = function() {
 							} else if(secondCell.y - 1 === firstCell.y) {
 								swapJewels('down');
 							}
+						} else {
+							illegalSfx.play();
 						}
 						selectedCells = [];
 					}
 				}
 			} else if(clickCtrl === 2) {
 				if((mouseCoord.x >= (canvasWidth / 2) - 100) && (mouseCoord.x <= (canvasWidth / 2) - 100 + 200) && (mouseCoord.y >= (canvasHeight / 2) + 40) && (mouseCoord.y <= (canvasHeight / 2) + 40 + 45)) {
+					selSfx.play();
 					init_game();
 				}
 			}/* else {
@@ -942,24 +1001,6 @@ window.onload = function() {
 	window.onmousedown = function(evt) {
 		cellClick(evt, clickCtrl);
 	}
-
-	/* Sound */
-	var selSound = document.createElement('audio');
-	document.body.appendChild(selSound);
-	selSound.setAttribute('src', 'sounds/select.wav');
-
-	/*var audioCtx = new webkitAudioContext();
-	var laserSound;
-
-	var getLaser = new XMLHttpRequest();
-	getLaser.open('GET', 'sounds/select.wav', true);
-	getLaser.responseType = 'arraybuffer';
-	getLaser.onload = function() {
-		audioCtx.decodeAudioData(getLaser.response, function(buffer) {
-			laserSound = buffer;
-		});
-	}
-	getLaser.send();*/
 
 	/* "main()" */
 	start();
