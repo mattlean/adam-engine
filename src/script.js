@@ -109,7 +109,7 @@ window.onload = function() {
 	const SPECIAL = 6;
 	const DEBUG = 7;
 	const BGCOLOR1 = '#2463aa';
-	const BGCOLOR2 = '#000';
+	const BGCOLOR2 = '#fff';
 	const FONTCOLOR = '#fff';
 	const STARTTIME = 3600; //3600 = 60 seconds
 
@@ -369,13 +369,20 @@ window.onload = function() {
 		}
 
 		if((val === BLANK) || (val === DEBUG)) ctx.fillRect(x, y, cellSize, cellSize);
-		else ctx.drawImage(img, x, y, cellSize, cellSize);
+		else {
+			ctx.shadowColor = '#333';
+			ctx.shadowBlur = 50;
+			ctx.shadowOffsetY = 2;
+			ctx.drawImage(img, x, y, cellSize, cellSize);
+		}
 
 		if(highlight) {
 			ctx.lineWidth = 2;
 			ctx.strokeStyle = '#ff00ff';
 			ctx.strokeRect(x, y, cellSize, cellSize);
 		}
+
+		ctx.shadowColor = 'rgba(0,0,0,0)';
 	}
 
 	function draw_game() {

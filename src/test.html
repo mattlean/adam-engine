@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Dye Match Game [Test]</title>
+	<title>HTML5 Audio API Test</title>
 	<style>
 	body {
 		background-color: #CCC;
@@ -22,31 +22,62 @@
 		Canvas is not supported on your current browser.
 	</canvas>
 	<script>
+	function Sound(source) {
+		if(!window.audioContext) {
+			audioCtx = new AudioContext;
+		}
+
+		var that = this;
+		that.source = source;
+		that.buffer = null;
+		that.isLoaded = false;
+
+		var getSound = new XMLHttpRequest();
+		getSound.open('GET', that.source, true);
+		getSound.responseType = 'arraybuffer';
+		getSound.onload = function() {
+			audioCtx.decodeAudioData(getSound.response, function(buffer) {
+				that.buffer = buffer;
+				that.isLoaded = true;
+			});
+		}
+
+		getSound.send();
+	}
+
+	Sound.prototype.play = function(volLevel) {
+		if(this.isLoaded === true) {
+			var playSound = audioCtx.createBufferSource();
+			playSound.buffer = this.buffer;
+
+			var volume = audioCtx.createGain();
+			playSound.connect(volume);
+			if(volLevel) {
+				volume.gain.value = volLevel;
+			} else {
+				volume.gain.value = 0.1;
+			}
+			volume.connect(audioCtx.destination);
+
+			playSound.start(0);
+		}
+	}
+
 	window.onload = function() {
 		var canvas = document.getElementById('canvas');
 		var ctx = canvas.getContext('2d');
 		ctx.fillStyle = '#00ff00';
 		ctx.fillRect(10, 10, 10, 10);
 
-		var audioCtx = new webkitAudioContext();
-		var laserSound;
-
-		var getLaser = new XMLHttpRequest();
-		getLaser.open('GET', 'sounds/select.wav', true);
-		getLaser.responseType = 'arraybuffer';
-		getLaser.onload = function() {
-			audioCtx.decodeAudioData(getLaser.response, function(buffer) {
-				laserSound = buffer;
-			});
-		}
-		getLaser.send();
+		var selSfx = new Sound('sounds/select.wav');
+		var scoreSfx = new Sound('sounds/score.wav');
 
 		window.onmousedown = function(evt) {
-			console.log('Click');
-			var playSound = audioCtx.createBufferSource();
-			playSound.buffer = laserSound;
-			playSound.connect(audioCtx.destination);
-			playSound.start(0);
+			var key = evt.which;
+			if(key === 1)
+				selSfx.play();
+			else
+				scoreSfx.play(1);
 		}
 	}
 	</script>
