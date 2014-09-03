@@ -248,6 +248,7 @@
 		canvas.addEventListener('touchcancel', touchExitHandler, false);
 
 		board = [];
+		selectedCells = [];
 
 		//initialize board with randomly generated jewels
 		for(var y = 0; y < boardSize; ++y) {
