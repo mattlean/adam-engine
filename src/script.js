@@ -113,7 +113,7 @@
 	const SPECIAL = 6;
 	const DEBUG = 7;
 	const BGCOLOR1 = '#2463aa';
-	const BGCOLOR2 = '#fff';
+	const BGCOLOR2 = '#a3a3a3';
 	const FONTCOLOR = '#fff';
 	const STARTTIME = 3600; //3600 = 60 seconds
 
@@ -411,7 +411,7 @@
 		} else if(val === BHQ) {
 			img = imgs['BHQ'];
 		} else if(val === BLANK) {
-			ctx.fillStyle = '#fff';
+			ctx.fillStyle = BGCOLOR2;
 		} else {
 			ctx.fillStyle = '#00ff00';
 		}
