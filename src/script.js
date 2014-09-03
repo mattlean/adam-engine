@@ -424,7 +424,7 @@
 		if((val === BLANK) || (val === DEBUG)) ctx.fillRect(x, y, cellSize, cellSize);
 		else {
 			ctx.shadowColor = '#333';
-			ctx.shadowBlur = 50;
+			ctx.shadowBlur = 3;
 			ctx.shadowOffsetY = 2;
 			ctx.drawImage(img, x, y, cellSize, cellSize);
 		}
@@ -436,6 +436,8 @@
 		}
 
 		ctx.shadowColor = 'rgba(0,0,0,0)';
+		ctx.shadowBlur = 0;
+		ctx.shadowOffsetY = 0;
 	}
 
 	function draw_game() {

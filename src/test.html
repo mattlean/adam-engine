@@ -67,11 +67,13 @@
 	function touchStartHand(evt) {
 		evt.preventDefault();
 		console.log(evt.changedTouches[0].pageX, evt.changedTouches[0].pageY);
+		console.log(evt.which);
 	}
 
 	function touchEndHand(evt) {
 		evt.preventDefault();
 		console.log(evt.changedTouches[0].pageX, evt.changedTouches[0].pageY);
+		console.log(evt.which);
 	}
 
 	window.onload = function() {
