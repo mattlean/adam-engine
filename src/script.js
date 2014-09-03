@@ -238,8 +238,10 @@
 	/* Begins a new game */
 	function init_game() {
 		//replace default touch controls
-		canvas.addEventListener('touchstart', touchStartHand, false);
-		canvas.addEventListener('touchend', touchEndHand, false);
+		canvas.addEventListener('touchstart', touchHandler, false);
+		canvas.addEventListener('touchend', touchHandler, false);
+		canvas.addEventListener('touchleave', touchExitHandler, false);
+		canvas.addEventListener('touchcancel', touchExitHandler, false);
 
 		board = [];
 
@@ -447,8 +449,10 @@
 	function draw_game() {
 		if(time <= 0) {
 			clearInterval(game_loop);
-			canvas.removeEventListener('touchstart', touchStartHand, false);
-			canvas.removeEventListener('touchend', touchEndHand, false);
+			canvas.removeEventListener('touchstart', touchHandler, false);
+			canvas.removeEventListener('touchend', touchHandler, false);
+			canvas.removeEventListener('touchleave', touchExitHandler, false);
+			canvas.removeEventListener('touchcancel', touchExitHandler, false);
 			clickCtrl = 2;
 			game_loop = setInterval(draw_timeup, FRAMERATE);
 		}
@@ -1056,9 +1060,25 @@ function draw_destroy() {
 			}
 
 			if(selectedCells.length === 0) {
+				console.log('start: ', clickedCell);
 				selectedCells.push(clickedCell);
 				selSfx.play();
 			} else if(selectedCells.length === 1) {
+				console.log('end: ', clickedCell);
+				if((clickedCell.x === selectedCells[0].x) && (clickedCell.y === selectedCells[0].y)) {
+					selectedCells = [];
+					return
+				}
+				if(clickedCell.x > selectedCells[0].x) {
+					clickedCell.x = selectedCells[0].x + 1;
+				} else if (clickedCell.x < selectedCells[0].x) {
+					clickedCell.x = selectedCells[0].x - 1;
+				}
+				if(clickedCell.y > selectedCells[0].y) {
+					clickedCell.y = selectedCells[0].y + 1;
+				} else if (clickedCell.y < selectedCells[0].y) {
+					clickedCell.y = selectedCells[0].y - 1;
+				}
 				selectedCells.push(clickedCell);
 				var firstCell = selectedCells[0];
 				var secondCell = selectedCells[1];
@@ -1083,16 +1103,14 @@ function draw_destroy() {
 		}
 	}
 
-	function touchStartHand(evt) {
-		evt.preventDefault();
+	function touchHandler(evt) {
 		console.log(evt.changedTouches[0].pageX, evt.changedTouches[0].pageY);
 		cellTouch(evt);
 	}
 
-	function touchEndHand(evt) {
-		evt.preventDefault();
-		console.log(evt.changedTouches[0].pageX, evt.changedTouches[0].pageY);
-		cellTouch(evt);
+	function touchExitHandler(evt) {
+		console.log('exit');
+		selectedCells = [];
 	}
 
 	/* "main()" */
