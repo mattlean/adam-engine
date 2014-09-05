@@ -262,11 +262,92 @@
 		matchCycle(board, false);
 		verifyBoard = copyBoard(board);
 		score = 0;
-		time = STARTTIME;
+		time = 240; //3 seconds
 		//console.log(board);
 		if(typeof game_loop !== 'undefined') clearInterval(game_loop);
-		game_loop = setInterval(draw_game, FRAMERATE);
-		clickCtrl = 1;
+		game_loop = setInterval(draw_ready, FRAMERATE);
+		clickCtrl = -1;
+	}
+	
+	function draw_ready() {
+		if(time <= 0) {
+			clearInterval(game_loop);
+			time = STARTTIME;
+			game_loop = setInterval(draw_game, FRAMERATE);
+			clickCtrl = 1;
+		}
+
+		//draw the background to clear previous frame
+		ctx.fillStyle = BGCOLOR2;
+		ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+		ctx.fillStyle = BGCOLOR1;
+		ctx.fillRect(cellSize * board.length, 0, 200, canvasHeight);
+
+		ctx.globalAlpha = 0.5;
+		for(var y = 0; y < boardSize; ++y) {
+			for(var x = 0; x < boardSize; ++x) {
+				drawJewel(x, y, board[y][x], false, true);
+			}
+		}
+
+		if(selectedCells.length !== 0) {
+			drawJewel(selectedCells[0].x, selectedCells[0].y, board[selectedCells[0].y][selectedCells[0].x], true, true);
+		}
+
+		ctx.fillStyle = FONTCOLOR;
+		ctx.font = '1.2em Helvetica';
+		ctx.textAlign = 'start';
+		var txtScore = 'Score:';
+		ctx.fillText(txtScore, 325, 20);
+
+		ctx.textAlign = 'center';
+		ctx.font = '2em Helvetica';
+		var txtScoreVal = score;
+		ctx.fillText(txtScoreVal, 400, 60);
+		
+		ctx.textAlign = 'start';
+		ctx.font = '1.2em Helvetica';
+		var txtTime = 'Time:';
+		ctx.fillText(txtTime, 325, 110);
+
+		var seconds = Math.ceil(time / 60);
+		ctx.fillStyle = '#8cc63e';
+		ctx.fillRect(386, 153, 28, 147);
+		ctx.drawImage(imgs['timer'], 375, 120, 50, 187);
+		ctx.globalAlpha = 1;
+
+		ctx.fillStyle = 'rgba(0, 0, 0, 0.75)';
+		ctx.fillRect(30, 30, 420, 260);
+
+		var txtCount;
+		if(seconds > 3) {
+			ctx.fillStyle = '#ff0000';
+			txtCount = '3';
+		} else if(seconds > 2) {
+			ctx.fillStyle = '#ffd700';
+			txtCount = '2';
+		} else if(seconds > 1) {
+			ctx.fillStyle = '#8cc63e';
+			txtCount = '1';
+		} else {
+			ctx.fillStyle = '#00ff00';
+			txtCount = 'GO!';
+		}
+		ctx.font = 'bold 1.25em Helvetica';
+		ctx.textAlign = 'center';
+		var txtReady = 'Get ready!';
+		ctx.fillText(txtReady, 240, 100);
+		ctx.font = 'bold 3em Helvetica';
+		ctx.fillText(txtCount, 240, 150);
+
+		ctx.fillStyle = '#fff';
+		ctx.font = '1.5em Helvetica';
+		var txtFactTitle = 'Did you know?';
+		ctx.fillText(txtFactTitle, 240, 200);
+		ctx.font = '1.3em Helvetica';
+		var txtFact = 'BHQ dyes are awesome at multiplexing!';
+		ctx.fillText(txtFact, 240, 230);
+		time -= 1;
 	}
 
 	function match(inputBoard, trackScore, clearMatches) {
