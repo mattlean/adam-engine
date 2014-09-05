@@ -101,6 +101,7 @@
 	var countdownSfx;
 	var goSfx;
 	var sfxsLoaded = 0;
+	var RNGFact = 0;
 
 	/* Constants */
 	const FRAMERATE = 1000 / 60;
@@ -119,7 +120,7 @@
 	const BGCOLOR1 = '#2463aa';
 	const BGCOLOR2 = '#a3a3a3';
 	const FONTCOLOR = '#fff';
-	const STARTTIME = 3600; //3600 = 60 seconds
+	const STARTTIME = 280; //3600 = 60 seconds
 
 	var slideTime = cellSize / SPEED;
 
@@ -269,6 +270,7 @@
 		time = 240; //3 seconds
 		//console.log(board);
 		if(typeof game_loop !== 'undefined') clearInterval(game_loop);
+		RNGFact = Math.floor(Math.random() * 3);
 		game_loop = setInterval(draw_ready, FRAMERATE);
 		clickCtrl = -1;
 	}
@@ -353,9 +355,29 @@
 		var txtFactTitle = 'Did you know?';
 		ctx.fillText(txtFactTitle, 240, 200);
 		ctx.font = '1.3em Helvetica';
-		var txtFact = 'BHQ dyes are awesome at multiplexing!';
-		ctx.fillText(txtFact, 240, 230);
+		generateFact();
 		time -= 1;
+	}
+
+	function generateFact() {
+		var txtFact;
+		switch(RNGFact) {
+			case 0:
+				txtFact = 'BHQ dyes are awesome at multiplexing!';
+				ctx.fillText(txtFact, 240, 230);
+				break;
+			case 1:
+				txtFact = 'Fact #2';
+				ctx.fillText(txtFact, 240, 230);
+				break;
+			case 2:
+				txtFact = 'Fact #3';
+				ctx.fillText(txtFact, 240, 230);
+				break;
+			default:
+				txtFact = 'DEBUG MSG';
+				ctx.fillText(txtFact, 240, 230);
+		}
 	}
 
 	function match(inputBoard, trackScore, clearMatches) {
