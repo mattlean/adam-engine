@@ -98,12 +98,14 @@
 	var swapSfx;
 	var scoreSfx;
 	var illegalSfx;
+	var countdownSfx;
+	var goSfx;
 	var sfxsLoaded = 0;
 
 	/* Constants */
 	const FRAMERATE = 1000 / 60;
 	const NUMIMGS = 7; //number of images
-	const NUMSFXS = 4; //number of sound effects
+	const NUMSFXS = 6; //number of sound effects
 	const SPEED = 5; //speed in which the jewels move
 	const BLANK = -1;
 	const FAM = 0;
@@ -205,6 +207,8 @@
 		swapSfx = new Sound('sounds/swap.wav');
 		scoreSfx = new Sound('sounds/score.wav');
 		illegalSfx = new Sound('sounds/illegalmove.wav');
+		countdownSfx = new Sound('sounds/countdown.wav');
+		goSfx = new Sound('sounds/go.wav');
 	}
 
 	function draw_loading() {
@@ -323,15 +327,19 @@
 		if(seconds > 3) {
 			ctx.fillStyle = '#ff0000';
 			txtCount = '3';
+			if(time === 240) countdownSfx.play();
 		} else if(seconds > 2) {
 			ctx.fillStyle = '#ffd700';
 			txtCount = '2';
+			if(time === 180) countdownSfx.play();
 		} else if(seconds > 1) {
 			ctx.fillStyle = '#8cc63e';
 			txtCount = '1';
+			if(time === 120) countdownSfx.play();
 		} else {
 			ctx.fillStyle = '#00ff00';
 			txtCount = 'GO!';
+			if(time === 60) goSfx.play();
 		}
 		ctx.font = 'bold 1.25em Helvetica';
 		ctx.textAlign = 'center';
