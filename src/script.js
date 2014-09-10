@@ -120,7 +120,7 @@
 	const BGCOLOR1 = '#2463aa';
 	const BGCOLOR2 = '#a3a3a3';
 	const FONTCOLOR = '#fff';
-	const STARTTIME = 280; //3600 = 60 seconds
+	const STARTTIME = 3600; //3600 = 60 seconds
 
 	var slideTime = cellSize / SPEED;
 
@@ -267,12 +267,15 @@
 		matchCycle(board, false);
 		verifyBoard = copyBoard(board);
 		score = 0;
-		time = 240; //3 seconds
+		//time = 240; //3 seconds
+		time = STARTTIME;
 		//console.log(board);
 		if(typeof game_loop !== 'undefined') clearInterval(game_loop);
 		RNGFact = Math.floor(Math.random() * 3);
-		game_loop = setInterval(draw_ready, FRAMERATE);
-		clickCtrl = -1;
+		/*game_loop = setInterval(draw_ready, FRAMERATE);
+		clickCtrl = -1;*/
+		clickCtrl = 1;
+		game_loop = setInterval(draw_game, FRAMERATE);
 	}
 	
 	function draw_ready() {
@@ -589,25 +592,40 @@
 			drawJewel(selectedCells[0].x, selectedCells[0].y, board[selectedCells[0].y][selectedCells[0].x], true, true);
 		}
 
+		/* Draw score */
 		ctx.fillStyle = FONTCOLOR;
 		ctx.textAlign = 'start';
+		ctx.font = '1.2em Helvetica';
 		var txtScore = 'Score:';
 		ctx.fillText(txtScore, 325, 20);
 
-		ctx.textAlign = 'center';
-		ctx.font = '2em Helvetica';
 		var txtScoreVal = score;
-		ctx.fillText(txtScoreVal, 400, 60);
+		ctx.fillText(txtScoreVal, 386, 20);
+
+		/* Score graph */
+		ctx.beginPath();
+     	ctx.moveTo(328, 30);
+     	ctx.lineTo(328, 130);
+     	ctx.lineWidth = 2;
+     	ctx.strokeStyle = FONTCOLOR;
+      	ctx.stroke();
+
+      	ctx.beginPath();
+     	ctx.moveTo(328, 130);
+     	ctx.lineTo(475, 130);
+     	ctx.lineWidth = 2;
+     	ctx.strokeStyle = FONTCOLOR;
+      	ctx.stroke();
 		
 		ctx.textAlign = 'start';
 		ctx.font = '1.2em Helvetica';
 		var txtTime = 'Time:';
-		ctx.fillText(txtTime, 325, 110);
+		ctx.fillText(txtTime, 325, 160);
 
 		var seconds = Math.ceil(time / 60);
 		var tubeSegment = 147 / 60;
-		var tubeStartLevel = 153 + ((60 * tubeSegment) - (seconds * tubeSegment));
-		var tubeEndLevel = 147 - ((60 * tubeSegment) - (seconds * tubeSegment));
+		var tubeStartLevel = 196 + ((60 * tubeSegment) - (seconds * tubeSegment));
+		var tubeEndLevel = 115 - ((60 * tubeSegment) - (seconds * tubeSegment));
 		if(seconds > 30) {
 			ctx.fillStyle = '#8cc63e';
 		} else if(seconds >= 10) {
@@ -615,8 +633,8 @@
 		} else {
 			ctx.fillStyle = '#ff0000';
 		}
-		ctx.fillRect(386, tubeStartLevel, 28, tubeEndLevel);
-		ctx.drawImage(imgs['timer'], 375, 120, 50, 187);
+		ctx.fillRect(384, tubeStartLevel, 21, tubeEndLevel);
+		ctx.drawImage(imgs['timer'], 375, 170, 39, 147);
 		time -= 1;
 	}
 
