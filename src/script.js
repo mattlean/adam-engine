@@ -590,6 +590,8 @@
 		ctx.closePath();
 		ctx.fillStyle = "rgb(238, 62, 51)";
 		ctx.fill();
+		ctx.fillStyle = "#00ff00";
+		ctx.fillRect(740, 70, 300, 200);
 		ctx.restore();
 	}
 
