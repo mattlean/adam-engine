@@ -588,9 +588,10 @@
 		ctx.bezierCurveTo(236.3 + offsetX, 159.0 + offsetY, 230.2 + offsetX, 187.1 + offsetY, 214.4 + offsetX, 196.2 + offsetY);
 		ctx.bezierCurveTo(199.5 + offsetX, 204.8 + offsetY, 144.9 + offsetX, 205.5 + offsetY, 129.5 + offsetX, 205.5 + offsetY);
 		ctx.closePath();
-		ctx.fillStyle = "rgb(238, 62, 51)";
+		ctx.fillStyle = "#333";
 		ctx.fill();
-		ctx.fillStyle = "#00ff00";
+		ctx.clip();
+		ctx.fillStyle = "#ee3e33";
 		ctx.fillRect(740, 70, 300, 200);
 		ctx.restore();
 	}
