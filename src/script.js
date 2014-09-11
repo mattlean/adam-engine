@@ -102,6 +102,8 @@
 	var goSfx;
 	var sfxsLoaded = 0;
 	var RNGFact = 0;
+	var highscore = 5000;
+	var graphval = 0;
 
 	/* Constants */
 	const FRAMERATE = 1000 / 60;
@@ -121,6 +123,7 @@
 	const BGCOLOR2 = '#a3a3a3';
 	const FONTCOLOR = '#fff';
 	const STARTTIME = 3600; //3600 = 60 seconds
+	const MAXGRAPHFILL = 290;
 
 	var slideTime = cellSize / SPEED;
 
@@ -566,6 +569,20 @@
 	}
 
 	function paint_graph(offsetX, offsetY) {
+		ctx.beginPath();
+		ctx.moveTo(328, 30);
+		ctx.lineTo(328, 130);
+		ctx.lineWidth = 2;
+		ctx.strokeStyle = FONTCOLOR;
+		ctx.stroke();
+
+		ctx.beginPath();
+		ctx.moveTo(328, 130);
+		ctx.lineTo(475, 130);
+		ctx.lineWidth = 2;
+		ctx.strokeStyle = FONTCOLOR;
+		ctx.stroke();
+
 		ctx.save();
 		ctx.scale(0.45, 0.45);
 		ctx.beginPath();
@@ -588,12 +605,54 @@
 		ctx.bezierCurveTo(236.3 + offsetX, 159.0 + offsetY, 230.2 + offsetX, 187.1 + offsetY, 214.4 + offsetX, 196.2 + offsetY);
 		ctx.bezierCurveTo(199.5 + offsetX, 204.8 + offsetY, 144.9 + offsetX, 205.5 + offsetY, 129.5 + offsetX, 205.5 + offsetY);
 		ctx.closePath();
-		ctx.fillStyle = "#333";
+		ctx.fillStyle = '#333';
 		ctx.fill();
 		ctx.clip();
-		ctx.fillStyle = "#ee3e33";
-		ctx.fillRect(740, 70, 300, 200);
+		var scorepercent = score / highscore;
+		if (scorepercent <= 1) {
+			graphval = scorepercent * MAXGRAPHFILL;
+			ctx.fillStyle = '#ee3e33';
+		} else {
+			graphval = MAXGRAPHFILL;
+			ctx.fillStyle = '#00ff00';
+		}
+		
+		ctx.fillRect(744, 70, graphval, 200); //max is 290
 		ctx.restore();
+	}
+
+	function paint_sidebar() {
+		/* Draw score */
+		ctx.fillStyle = FONTCOLOR;
+		ctx.textAlign = 'start';
+		ctx.font = '1.2em Helvetica';
+		var txtScore = 'Score:';
+		ctx.fillText(txtScore, 325, 20);
+
+		var txtScoreVal = score;
+		ctx.fillText(txtScoreVal, 386, 20);
+
+		paint_graph(620, 50);
+		
+		/* Draw Time */
+		ctx.textAlign = 'start';
+		ctx.font = '1.2em Helvetica';
+		var txtTime = 'Time:';
+		ctx.fillText(txtTime, 325, 160);
+
+		var seconds = Math.ceil(time / 60);
+		var tubeSegment = 115 / 60;
+		var tubeStartLevel = 196 + ((60 * tubeSegment) - (seconds * tubeSegment));
+		var tubeEndLevel = 115 - ((60 * tubeSegment) - (seconds * tubeSegment));
+		if(seconds > 30) {
+			ctx.fillStyle = '#8cc63e';
+		} else if(seconds >= 10) {
+			ctx.fillStyle = '#ffd700';
+		} else {
+			ctx.fillStyle = '#ff0000';
+		}
+		ctx.fillRect(384, tubeStartLevel, 21, tubeEndLevel);
+		ctx.drawImage(imgs['timer'], 375, 170, 39, 147);
 	}
 
 	function draw_game() {
@@ -623,51 +682,7 @@
 			drawJewel(selectedCells[0].x, selectedCells[0].y, board[selectedCells[0].y][selectedCells[0].x], true, true);
 		}
 
-		/* Draw score */
-		ctx.fillStyle = FONTCOLOR;
-		ctx.textAlign = 'start';
-		ctx.font = '1.2em Helvetica';
-		var txtScore = 'Score:';
-		ctx.fillText(txtScore, 325, 20);
-
-		var txtScoreVal = score;
-		ctx.fillText(txtScoreVal, 386, 20);
-
-		/* Score graph */
-		ctx.beginPath();
-		ctx.moveTo(328, 30);
-		ctx.lineTo(328, 130);
-		ctx.lineWidth = 2;
-		ctx.strokeStyle = FONTCOLOR;
-		ctx.stroke();
-
-		ctx.beginPath();
-		ctx.moveTo(328, 130);
-		ctx.lineTo(475, 130);
-		ctx.lineWidth = 2;
-		ctx.strokeStyle = FONTCOLOR;
-		ctx.stroke();
-
-		paint_graph(620, 50);
-		
-		ctx.textAlign = 'start';
-		ctx.font = '1.2em Helvetica';
-		var txtTime = 'Time:';
-		ctx.fillText(txtTime, 325, 160);
-
-		var seconds = Math.ceil(time / 60);
-		var tubeSegment = 147 / 60;
-		var tubeStartLevel = 196 + ((60 * tubeSegment) - (seconds * tubeSegment));
-		var tubeEndLevel = 115 - ((60 * tubeSegment) - (seconds * tubeSegment));
-		if(seconds > 30) {
-			ctx.fillStyle = '#8cc63e';
-		} else if(seconds >= 10) {
-			ctx.fillStyle = '#ffd700';
-		} else {
-			ctx.fillStyle = '#ff0000';
-		}
-		ctx.fillRect(384, tubeStartLevel, 21, tubeEndLevel);
-		ctx.drawImage(imgs['timer'], 375, 170, 39, 147);
+		paint_sidebar();
 		time -= 1;
 	}
 
@@ -715,34 +730,7 @@
 			}
 		}
 
-		ctx.fillStyle = FONTCOLOR;
-		ctx.textAlign = 'start';
-		var txtScore = 'Score:';
-		ctx.fillText(txtScore, 325, 20);
-
-		ctx.textAlign = 'center';
-		ctx.font = '2em Helvetica';
-		var txtScoreVal = score;
-		ctx.fillText(txtScoreVal, 400, 60);
-		
-		ctx.textAlign = 'start';
-		ctx.font = '1.2em Helvetica';
-		var txtTime = 'Time:';
-		ctx.fillText(txtTime, 325, 110);
-
-		var seconds = Math.ceil(time / 60);
-		var tubeSegment = 147 / 60;
-		var tubeStartLevel = 153 + ((60 * tubeSegment) - (seconds * tubeSegment));
-		var tubeEndLevel = 147 - ((60 * tubeSegment) - (seconds * tubeSegment));
-		if(seconds > 30) {
-			ctx.fillStyle = '#8cc63e';
-		} else if(seconds >= 10) {
-			ctx.fillStyle = '#ffd700';
-		} else {
-			ctx.fillStyle = '#ff0000';
-		}
-		ctx.fillRect(386, tubeStartLevel, 28, tubeEndLevel);
-		ctx.drawImage(imgs['timer'], 375, 120, 50, 187);
+		paint_sidebar();
 		time -= 1;
 
 		if(direction === 'left') {
@@ -816,34 +804,7 @@ function draw_destroy() {
 
 			opacityCheck = false;
 
-			ctx.fillStyle = FONTCOLOR;
-			ctx.textAlign = 'start';
-			var txtScore = 'Score:';
-			ctx.fillText(txtScore, 325, 20);
-
-			ctx.textAlign = 'center';
-			ctx.font = '2em Helvetica';
-			var txtScoreVal = score;
-			ctx.fillText(txtScoreVal, 400, 60);
-
-			ctx.textAlign = 'start';
-			ctx.font = '1.2em Helvetica';
-			var txtTime = 'Time:';
-			ctx.fillText(txtTime, 325, 110);
-
-			var seconds = Math.ceil(time / 60);
-			var tubeSegment = 147 / 60;
-			var tubeStartLevel = 153 + ((60 * tubeSegment) - (seconds * tubeSegment));
-			var tubeEndLevel = 147 - ((60 * tubeSegment) - (seconds * tubeSegment));
-			if(seconds > 30) {
-				ctx.fillStyle = '#8cc63e';
-			} else if(seconds >= 10) {
-				ctx.fillStyle = '#ffd700';
-			} else {
-				ctx.fillStyle = '#ff0000';
-			}
-			ctx.fillRect(386, tubeStartLevel, 28, tubeEndLevel);
-			ctx.drawImage(imgs['timer'], 375, 120, 50, 187);
+			paint_sidebar();
 			time -= 1;
 		} else {
 			completeDestroy();
@@ -933,34 +894,7 @@ function draw_destroy() {
 
 		slideTime -= 1;
 
-		ctx.fillStyle = FONTCOLOR;
-		ctx.textAlign = 'start';
-		var txtScore = 'Score:';
-		ctx.fillText(txtScore, 325, 20);
-
-		ctx.textAlign = 'center';
-		ctx.font = '2em Helvetica';
-		var txtScoreVal = score;
-		ctx.fillText(txtScoreVal, 400, 60);
-		
-		ctx.textAlign = 'start';
-		ctx.font = '1.2em Helvetica';
-		var txtTime = 'Time:';
-		ctx.fillText(txtTime, 325, 110);
-
-		var seconds = Math.ceil(time / 60);
-		var tubeSegment = 147 / 60;
-		var tubeStartLevel = 153 + ((60 * tubeSegment) - (seconds * tubeSegment));
-		var tubeEndLevel = 147 - ((60 * tubeSegment) - (seconds * tubeSegment));
-		if(seconds > 30) {
-			ctx.fillStyle = '#8cc63e';
-		} else if(seconds >= 10) {
-			ctx.fillStyle = '#ffd700';
-		} else {
-			ctx.fillStyle = '#ff0000';
-		}
-		ctx.fillRect(386, tubeStartLevel, 28, tubeEndLevel);
-		ctx.drawImage(imgs['timer'], 375, 120, 50, 187);
+		paint_sidebar();
 		time -= 1;
 
 		if(slideTime <= 0) {
@@ -1012,34 +946,7 @@ function draw_destroy() {
 				}
 			}
 
-			ctx.fillStyle = FONTCOLOR;
-			ctx.textAlign = 'start';
-			var txtScore = 'Score:';
-			ctx.fillText(txtScore, 325, 20);
-
-			ctx.textAlign = 'center';
-			ctx.font = '2em Helvetica';
-			var txtScoreVal = score;
-			ctx.fillText(txtScoreVal, 400, 60);
-
-			ctx.textAlign = 'start';
-			ctx.font = '1.2em Helvetica';
-			var txtTime = 'Time:';
-			ctx.fillText(txtTime, 325, 110);
-
-			var seconds = Math.ceil(time / 60);
-			var tubeSegment = 147 / 60;
-			var tubeStartLevel = 153 + ((60 * tubeSegment) - (seconds * tubeSegment));
-			var tubeEndLevel = 147 - ((60 * tubeSegment) - (seconds * tubeSegment));
-			if(seconds > 30) {
-				ctx.fillStyle = '#8cc63e';
-			} else if(seconds >= 10) {
-				ctx.fillStyle = '#ffd700';
-			} else {
-				ctx.fillStyle = '#ff0000';
-			}
-			ctx.fillRect(386, tubeStartLevel, 28, tubeEndLevel);
-			ctx.drawImage(imgs['timer'], 375, 120, 50, 187);
+			paint_sidebar();
 			time -= 1;
 		} else {
 			completeFill();
