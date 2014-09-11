@@ -270,15 +270,15 @@
 		matchCycle(board, false);
 		verifyBoard = copyBoard(board);
 		score = 0;
-		//time = 240; //3 seconds
-		time = STARTTIME;
+		time = 240; //3 seconds
+		//time = STARTTIME;
 		//console.log(board);
 		if(typeof game_loop !== 'undefined') clearInterval(game_loop);
 		RNGFact = Math.floor(Math.random() * 3);
-		/*game_loop = setInterval(draw_ready, FRAMERATE);
-		clickCtrl = -1;*/
-		clickCtrl = 1;
-		game_loop = setInterval(draw_game, FRAMERATE);
+		game_loop = setInterval(draw_ready, FRAMERATE);
+		clickCtrl = -1;
+		/*clickCtrl = 1;
+		game_loop = setInterval(draw_game, FRAMERATE);*/
 	}
 	
 	function draw_ready() {
@@ -306,32 +306,33 @@
 			drawJewel(selectedCells[0].x, selectedCells[0].y, board[selectedCells[0].y][selectedCells[0].x], true, true);
 		}
 
+		/* Draw score */
 		ctx.fillStyle = FONTCOLOR;
-		ctx.font = '1.2em Helvetica';
 		ctx.textAlign = 'start';
+		ctx.font = '1.2em Helvetica';
 		var txtScore = 'Score:';
 		ctx.fillText(txtScore, 325, 20);
 
-		ctx.textAlign = 'center';
-		ctx.font = '2em Helvetica';
 		var txtScoreVal = score;
-		ctx.fillText(txtScoreVal, 400, 60);
+		ctx.fillText(txtScoreVal, 386, 20);
+
+		paint_graph(620, 50);
 		
+		/* Draw Time */
 		ctx.textAlign = 'start';
 		ctx.font = '1.2em Helvetica';
 		var txtTime = 'Time:';
-		ctx.fillText(txtTime, 325, 110);
-
-		var seconds = Math.ceil(time / 60);
+		ctx.fillText(txtTime, 325, 160);
 		ctx.fillStyle = '#8cc63e';
-		ctx.fillRect(386, 153, 28, 147);
-		ctx.drawImage(imgs['timer'], 375, 120, 50, 187);
-		ctx.globalAlpha = 1;
+		ctx.fillRect(384, 196, 21, 115);
+		ctx.drawImage(imgs['timer'], 375, 170, 39, 147);
 
+		ctx.globalAlpha = 1;
 		ctx.fillStyle = 'rgba(0, 0, 0, 0.75)';
 		ctx.fillRect(30, 30, 420, 260);
 
 		var txtCount;
+		var seconds = Math.ceil(time / 60);
 		if(seconds > 3) {
 			ctx.fillStyle = '#ff0000';
 			txtCount = '3';
