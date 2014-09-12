@@ -86,12 +86,12 @@
 	var imgs = {}; //dictionary of images
 	var imgsLoaded = 0;
 	var imgPaths = {
-		'FAM': 'images/FAM.png',
-		'GOLD': 'images/GOLD.png',
-		'ORANGE': 'images/ORANGE.png',
-		'RED': 'images/RED.png',
-		'QUASAR': 'images/QUASAR.png',
-		'BHQ': 'images/BHQ.png',
+		'FAM': 'images/FAM2.png',
+		'GOLD': 'images/GOLD2.png',
+		'ORANGE': 'images/ORANGE2.png',
+		'RED': 'images/RED2.png',
+		'QUASAR': 'images/QUASAR2.png',
+		'BHQ': 'images/BHQ2.png',
 		'timer': 'images/tube.png'
 	};
 	var selSfx;
