@@ -124,6 +124,7 @@
 	const FONTCOLOR = '#fff';
 	const STARTTIME = 3600; //3600 = 60 seconds
 	const MAXGRAPHFILL = 290;
+	const GAMETITLE = 'qPCR Crush';
 
 	var slideTime = cellSize / SPEED;
 
@@ -241,7 +242,7 @@
 
 		ctx.textAlign = 'center';
 		ctx.font = '2em Helvetica';
-		var txtTitle = 'DYE MATCH GAME TITLE';
+		var txtTitle = GAMETITLE;
 		ctx.fillText(txtTitle, canvasWidth / 2, (canvasHeight / 2) - 20);
 
 		drawBtn((canvasWidth / 2) - 100, (canvasHeight / 2) + 20, 200, 45, '#a6a6a6', 'START GAME', '1.5em Helvetica', '#fff', 8);
