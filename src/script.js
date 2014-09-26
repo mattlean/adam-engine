@@ -776,6 +776,59 @@
 
 	function paint_graph2(offsetX, offsetY) {
 		ctx.beginPath();
+		ctx.moveTo(328, 30);
+		ctx.lineTo(328, 130);
+		ctx.lineWidth = 2;
+		ctx.strokeStyle = FONTCOLOR;
+		ctx.stroke();
+
+		ctx.beginPath();
+		ctx.moveTo(328, 130);
+		ctx.lineTo(475, 130);
+		ctx.lineWidth = 2;
+		ctx.strokeStyle = FONTCOLOR;
+		ctx.stroke();
+
+		ctx.save();
+		ctx.scale(0.45, 0.45);
+		ctx.beginPath();
+		ctx.moveTo(129.5, 205.5);
+		ctx.bezierCurveTo(127.2 + offsetX, 205.5 + offsetY, 125.8 + offsetX, 205.5 + offsetY, 125.5 + offsetX, 205.5 + offsetY);
+		ctx.bezierCurveTo(124.1 + offsetX, 205.4 + offsetY, 123.0 + offsetX, 204.3 + offsetY, 123.0 + offsetX, 202.9 + offsetY);
+		ctx.bezierCurveTo(123.0 + offsetX, 201.6 + offsetY, 124.1 + offsetX, 200.5 + offsetY, 125.5 + offsetX, 200.5 + offsetY);
+		ctx.bezierCurveTo(125.5 + offsetX, 200.5 + offsetY, 125.5 + offsetX, 200.5 + offsetY, 125.5 + offsetX, 200.5 + offsetY);
+		ctx.bezierCurveTo(126.2 + offsetX, 200.5 + offsetY, 196.0 + offsetX, 201.1 + offsetY, 211.9 + offsetX, 191.9 + offsetY);
+		ctx.bezierCurveTo(225.8 + offsetX, 183.9 + offsetY, 231.6 + offsetX, 156.9 + offsetY, 237.2 + offsetX, 130.8 + offsetY);
+		ctx.bezierCurveTo(243.0 + offsetX, 104.0 + offsetY, 248.4 + offsetX, 78.7 + offsetY, 262.3 + offsetX, 68.6 + offsetY);
+		ctx.bezierCurveTo(269.7 + offsetX, 63.2 + offsetY, 281.6 + offsetX, 59.2 + offsetY, 294.9 + offsetX, 57.6 + offsetY);
+		ctx.bezierCurveTo(340.0 + offsetX, 52.2 + offsetY, 409.9 + offsetX, 52.9 + offsetY, 410.6 + offsetX, 52.9 + offsetY);
+		ctx.bezierCurveTo(412.0 + offsetX, 52.9 + offsetY, 413.1 + offsetX, 54.0 + offsetY, 413.1 + offsetX, 55.4 + offsetY);
+		ctx.bezierCurveTo(413.0 + offsetX, 56.8 + offsetY, 411.9 + offsetX, 57.9 + offsetY, 410.6 + offsetX, 57.9 + offsetY);
+		ctx.bezierCurveTo(410.5 + offsetX, 57.9 + offsetY, 410.5 + offsetX, 57.9 + offsetY, 410.5 + offsetX, 57.9 + offsetY);
+		ctx.bezierCurveTo(409.8 + offsetX, 57.9 + offsetY, 340.3 + offsetX, 57.2 + offsetY, 295.5 + offsetX, 62.6 + offsetY);
+		ctx.bezierCurveTo(283.2 + offsetX, 64.0 + offsetY, 271.9 + offsetX, 67.8 + offsetY, 265.2 + offsetX, 72.7 + offsetY);
+		ctx.bezierCurveTo(252.9 + offsetX, 81.7 + offsetY, 247.4 + offsetX, 107.2 + offsetY, 242.1 + offsetX, 131.9 + offsetY);
+		ctx.bezierCurveTo(236.3 + offsetX, 159.0 + offsetY, 230.2 + offsetX, 187.1 + offsetY, 214.4 + offsetX, 196.2 + offsetY);
+		ctx.bezierCurveTo(199.5 + offsetX, 204.8 + offsetY, 144.9 + offsetX, 205.5 + offsetY, 129.5 + offsetX, 205.5 + offsetY);
+		ctx.closePath();
+		ctx.fillStyle = '#333';
+ 		ctx.fill();
+		ctx.clip();
+		var scorepercent = score / highscore;
+		if (scorepercent <= 1) {
+			graphval = scorepercent * MAXGRAPHFILL;
+			ctx.fillStyle = '#ee3e33';
+		} else {
+			graphval = MAXGRAPHFILL;
+			ctx.fillStyle = '#00ff00';
+		}
+		
+		ctx.fillRect(120 + offsetX, 20 + offsetY, graphval, 200); //max is 290
+		ctx.restore();
+	}
+
+	/*function paint_graph2(offsetX, offsetY) {
+		ctx.beginPath();
 		ctx.moveTo(170, 80);
 		ctx.lineTo(170, 180);
 		ctx.lineWidth = 2;
@@ -823,7 +876,7 @@
 		
 		ctx.fillRect(744, 70, graphval, 200); //max is 290
 		ctx.restore();
-	}
+	}*/
 
 	function paint_sidebar() {
 		/* Draw score */
@@ -1197,7 +1250,7 @@ function draw_destroy() {
 
 		drawBtn((canvasWidth / 2) - 100, (canvasHeight / 2) + 35, 200, 45, '#a6a6a6', 'PLAY AGAIN', '1.5em Helvetica', '#fff', 8);
 	
-		paint_graph2(620, 80);
+		paint_graph2(620, 50);
 	}
 
 	/* Mouse Click */
