@@ -273,9 +273,8 @@
 		matchCycle(board, false);
 		verifyBoard = copyBoard(board);
 		score = 0;
-		//time = 240; //3 seconds
-		time = 1;
-		//time = STARTTIME;
+		time = 240; //3 seconds
+		//time = 1;
 		//console.log(board);
 		if(typeof game_loop !== 'undefined') clearInterval(game_loop);
 		RNGFact = Math.floor(Math.random() * NUMFACTS);
@@ -288,8 +287,8 @@
 	function draw_ready() {
 		if(time <= 0) {
 			clearInterval(game_loop);
-			//time = STARTTIME;
-			time = 1;
+			time = STARTTIME;
+			//time = 1;
 			game_loop = setInterval(draw_game, FRAMERATE);
 			clickCtrl = 1;
 		}
@@ -1251,6 +1250,8 @@ function draw_destroy() {
 		drawBtn((canvasWidth / 2) - 170, (canvasHeight / 2) + 75, 170, 35, BTNCOLOR, 'SUBMIT SCORE', '1.2em Helvetica', '#fff', 5);
 
 		paint_graph2(270, 170);
+
+		$('#formScore').html(score);
 	}
 
 	/* Mouse Click */

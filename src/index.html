@@ -9,7 +9,7 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 </head>
 <body>
-	<h1>qPCR Crush v0.0.3</h1>
+	<h1>qPCR Crush v0.0.2</h1>
 	<canvas id="canvas" width="480" height="320">
 		Please use a modern browser with JavaScript enabled to play the game!
 		Canvas is not supported on your current browser.
@@ -21,18 +21,18 @@
 	    <div class="modal-content">
 	      <div class="modal-header">
 	        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-	        <h4 class="modal-title" id="submitScoreFormLabel">Modal title</h4>
+	        <h4 class="modal-title" id="submitScoreFormLabel">Submit your score</h4>
 	      </div>
 	      <div class="modal-body">
-	      	<div class="col-xs-1">Score</div>
-	      	<div class="col-xs-11">Test</div>
-	      	<div class="col-xs-1">Alias</div>
+	      	<div class="col-xs-1"><strong>Score</strong></div>
+	      	<div class="col-xs-11" id="formScore">NUMBER</div>
+	      	<div class="col-xs-1"><strong>Alias</strong></div>
 	  		<div class="col-xs-11">
-	  			<input name="alias" type="text" class="form-control" placeholder="Alias" required autofocus>
+	  			<input name="alias" type="text" class="form-control" placeholder="Aliases belonging to top scorers will appear on leaderboard." required autofocus>
 	  		</div>
-	  		<div class="col-xs-1">Email</div>
+	  		<div class="col-xs-1"><strong>Email</strong></div>
 	  		<div class="col-xs-11">
-	  			<input name="email" type="email" class="form-control" placeholder="Email" required>
+	  			<input name="email" type="email" class="form-control" placeholder="Don’t worry, your information will be kept private." required>
 	  		</div>
 	      </div>
 	      <div class="modal-footer">
