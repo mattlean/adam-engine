@@ -5,21 +5,12 @@
  * www.mattlean.com
  * 2014
  */
-
- function checkIE() {
-        var ua = window.navigator.userAgent;
-        var msie = ua.indexOf("MSIE ");
-
-        if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./))
-        	return true
-        else
-        	return false
-}
-
- window.onload = function() {
- 	var isIE = checkIE();
- 	if(isIE) console.log('yes');
- 	else console.log('no');
+window.onload = function() {
+	var isIE = false;
+    var ua = window.navigator.userAgent;
+    var msie = ua.indexOf("MSIE ");
+    if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./))
+    	isIE = true;
 
  	var canvas = document.getElementById('canvas');
  	var ctx = canvas.getContext('2d');
@@ -122,7 +113,6 @@
 	/* Constants */
 	const FRAMERATE = 1000 / 60;
 	const NUMIMGS = 7; //number of images
-	const NUMSFXS = 6; //number of sound effects
 	const SPEED = 5; //speed in which the jewels move
 	const BLANK = -1;
 	const FAM = 0;
@@ -141,6 +131,12 @@
 	const MAXGRAPHFILL = 290;
 	const GAMETITLE = 'qPCR Crush';
 	const NUMFACTS = 24;
+
+	if(isIE) {
+		var NUMSFXS = 0; 
+	} else {
+		var NUMSFXS = 6; //number of sound effects
+	}
 
 	var slideTime = cellSize / SPEED;
 
@@ -167,45 +163,49 @@
 
 	/* Sound */
 	function Sound(source) {
-		if(!window.audioContext) {
-			audioCtx = new AudioContext;
+		if(!isIE) {
+			if(!window.audioContext) {
+				audioCtx = new AudioContext;
+			}
+
+			var that = this;
+			that.source = source;
+			that.buffer = null;
+			that.isLoaded = false;
+
+			var getSound = new XMLHttpRequest();
+			getSound.open('GET', that.source, true);
+			getSound.responseType = 'arraybuffer';
+			getSound.onload = function() {
+				audioCtx.decodeAudioData(getSound.response, function(buffer) {
+					that.buffer = buffer;
+					that.isLoaded = true;
+				});
+
+				++sfxsLoaded;
+			}
+
+			getSound.send();
 		}
-
-		var that = this;
-		that.source = source;
-		that.buffer = null;
-		that.isLoaded = false;
-
-		var getSound = new XMLHttpRequest();
-		getSound.open('GET', that.source, true);
-		getSound.responseType = 'arraybuffer';
-		getSound.onload = function() {
-			audioCtx.decodeAudioData(getSound.response, function(buffer) {
-				that.buffer = buffer;
-				that.isLoaded = true;
-			});
-
-			++sfxsLoaded;
-		}
-
-		getSound.send();
 	}
 
 	Sound.prototype.play = function(volLevel) {
-		if(this.isLoaded === true) {
-			var playSound = audioCtx.createBufferSource();
-			playSound.buffer = this.buffer;
+		if(!isIE) {
+			if(this.isLoaded === true) {
+				var playSound = audioCtx.createBufferSource();
+				playSound.buffer = this.buffer;
 
-			var volume = audioCtx.createGain();
-			playSound.connect(volume);
-			if(volLevel) {
-				volume.gain.value = volLevel;
-			} else {
-				volume.gain.value = 0.1;
+				var volume = audioCtx.createGain();
+				playSound.connect(volume);
+				if(volLevel) {
+					volume.gain.value = volLevel;
+				} else {
+					volume.gain.value = 0.1;
+				}
+				volume.connect(audioCtx.destination);
+
+				playSound.start(0);
 			}
-			volume.connect(audioCtx.destination);
-
-			playSound.start(0);
 		}
 	}
 
@@ -287,8 +287,8 @@
 		matchCycle(board, false);
 		verifyBoard = copyBoard(board);
 		score = 0;
-		//time = 240; //3 seconds
-		time = 1;
+		time = 240; //3 seconds
+		//time = 1;
 		//console.log(board);
 		if(typeof game_loop !== 'undefined') clearInterval(game_loop);
 		RNGFact = Math.floor(Math.random() * NUMFACTS);
@@ -301,8 +301,8 @@
 	function draw_ready() {
 		if(time <= 0) {
 			clearInterval(game_loop);
-			//time = STARTTIME;
-			time = 1;
+			time = STARTTIME;
+			//time = 1;
 			game_loop = setInterval(draw_game, FRAMERATE);
 			clickCtrl = 1;
 		}
