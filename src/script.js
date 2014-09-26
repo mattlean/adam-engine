@@ -1333,8 +1333,9 @@ function draw_destroy() {
 					}
 				}
 			} else if(clickCtrl === 2) {
-				if() {
-				} else if((mouseCoord.x >= (canvasWidth / 2) + 20) && (mouseCoord.x <= (canvasWidth / 2) + 20 + 170) && (mouseCoord.y >= (canvasHeight / 2) + 75) && (mouseCoord.y <= (canvasHeight / 2) + 75 + 35)) {
+				if((mouseCoord.x >= (canvasWidth / 2) - 170) && (mouseCoord.x <= (canvasWidth / 2)) && (mouseCoord.y >= (canvasHeight / 2) + 75) && (mouseCoord.y <= (canvasHeight / 2) + 75 + 35)) {
+					selSfx.play();
+				} else if((mouseCoord.x >= (canvasWidth / 2) + 20) && (mouseCoord.x <= (canvasWidth / 2) + 20 + 150) && (mouseCoord.y >= (canvasHeight / 2) + 75) && (mouseCoord.y <= (canvasHeight / 2) + 75 + 35)) {
 					selSfx.play();
 					init_game();
 				}
