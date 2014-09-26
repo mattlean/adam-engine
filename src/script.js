@@ -6,7 +6,21 @@
  * 2014
  */
 
+ function checkIE() {
+        var ua = window.navigator.userAgent;
+        var msie = ua.indexOf("MSIE ");
+
+        if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./))
+        	return true
+        else
+        	return false
+}
+
  window.onload = function() {
+ 	var isIE = checkIE();
+ 	if(isIE) console.log('yes');
+ 	else console.log('no');
+
  	var canvas = document.getElementById('canvas');
  	var ctx = canvas.getContext('2d');
  	var canvasWidth = canvas.width;
@@ -273,8 +287,8 @@
 		matchCycle(board, false);
 		verifyBoard = copyBoard(board);
 		score = 0;
-		time = 240; //3 seconds
-		//time = 1;
+		//time = 240; //3 seconds
+		time = 1;
 		//console.log(board);
 		if(typeof game_loop !== 'undefined') clearInterval(game_loop);
 		RNGFact = Math.floor(Math.random() * NUMFACTS);
@@ -287,8 +301,8 @@
 	function draw_ready() {
 		if(time <= 0) {
 			clearInterval(game_loop);
-			time = STARTTIME;
-			//time = 1;
+			//time = STARTTIME;
+			time = 1;
 			game_loop = setInterval(draw_game, FRAMERATE);
 			clickCtrl = 1;
 		}
