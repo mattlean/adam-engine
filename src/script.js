@@ -146,7 +146,7 @@
 		ctx.fillStyle = btnColor;
 		ctx.fillRect(posX, posY, btnWidth, btnHeight);
 		ctx.textAlign = 'center';
-		ctx.font = '1.5em Helvetica';
+		ctx.font = txtFont;
 		ctx.fillStyle = txtColor;
 		ctx.fillText(txt, posX + (btnWidth / 2), posY + (btnHeight / 2) + txtOffset);
 	}
@@ -273,7 +273,8 @@
 		matchCycle(board, false);
 		verifyBoard = copyBoard(board);
 		score = 0;
-		time = 240; //3 seconds
+		//time = 240; //3 seconds
+		time = 1;
 		//time = STARTTIME;
 		//console.log(board);
 		if(typeof game_loop !== 'undefined') clearInterval(game_loop);
@@ -287,7 +288,8 @@
 	function draw_ready() {
 		if(time <= 0) {
 			clearInterval(game_loop);
-			time = STARTTIME;
+			//time = STARTTIME;
+			time = 1;
 			game_loop = setInterval(draw_game, FRAMERATE);
 			clickCtrl = 1;
 		}
@@ -1245,8 +1247,9 @@ function draw_destroy() {
 		var txtFinal = 'Final score:' + score;
 		ctx.fillText(txtFinal, canvasWidth / 2, (canvasHeight / 2) + 50);
 
-		drawBtn((canvasWidth / 2) - 100, (canvasHeight / 2) + 75, 200, 45, BTNCOLOR, 'PLAY AGAIN', '1.5em Helvetica', '#fff', 8);
-	
+		drawBtn((canvasWidth / 2) + 20, (canvasHeight / 2) + 75, 150, 35, BTNCOLOR, 'PLAY AGAIN', '1.2em Helvetica', '#fff', 5);
+		drawBtn((canvasWidth / 2) - 170, (canvasHeight / 2) + 75, 170, 35, BTNCOLOR, 'SUBMIT SCORE', '1.2em Helvetica', '#fff', 5);
+
 		paint_graph2(270, 170);
 	}
 
