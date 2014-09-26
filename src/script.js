@@ -121,6 +121,7 @@
 	const DEBUG = 7;
 	const BGCOLOR1 = '#2463aa';
 	const BGCOLOR2 = '#a3a3a3';
+	const BTNCOLOR = '#ef3e33';
 	const FONTCOLOR = '#fff';
 	const STARTTIME = 3600; //3600 = 60 seconds
 	const MAXGRAPHFILL = 290;
@@ -246,7 +247,7 @@
 		var txtTitle = GAMETITLE;
 		ctx.fillText(txtTitle, canvasWidth / 2, (canvasHeight / 2) - 20);
 
-		drawBtn((canvasWidth / 2) - 100, (canvasHeight / 2) + 20, 200, 45, '#a6a6a6', 'START GAME', '1.5em Helvetica', '#fff', 8);
+		drawBtn((canvasWidth / 2) - 100, (canvasHeight / 2) + 20, 200, 45, BTNCOLOR, 'START GAME', '1.5em Helvetica', '#fff', 8);
 	}
 
 	/* Begins a new game */
@@ -271,8 +272,8 @@
 
 		matchCycle(board, false);
 		verifyBoard = copyBoard(board);
-		score = 1000;
-		time = 1; //3 seconds
+		score = 0;
+		time = 240; //3 seconds
 		//time = STARTTIME;
 		//console.log(board);
 		if(typeof game_loop !== 'undefined') clearInterval(game_loop);
@@ -286,7 +287,7 @@
 	function draw_ready() {
 		if(time <= 0) {
 			clearInterval(game_loop);
-			time = 1;
+			time = STARTTIME;
 			game_loop = setInterval(draw_game, FRAMERATE);
 			clickCtrl = 1;
 		}
@@ -776,15 +777,15 @@
 
 	function paint_graph2(offsetX, offsetY) {
 		ctx.beginPath();
-		ctx.moveTo(328, 30);
-		ctx.lineTo(328, 130);
+		ctx.moveTo(170, 80);
+		ctx.lineTo(170, 180);
 		ctx.lineWidth = 2;
 		ctx.strokeStyle = FONTCOLOR;
 		ctx.stroke();
 
 		ctx.beginPath();
-		ctx.moveTo(328, 130);
-		ctx.lineTo(475, 130);
+		ctx.moveTo(170, 180);
+		ctx.lineTo(317, 180);
 		ctx.lineWidth = 2;
 		ctx.strokeStyle = FONTCOLOR;
 		ctx.stroke();
@@ -811,8 +812,8 @@
 		ctx.bezierCurveTo(236.3 + offsetX, 159.0 + offsetY, 230.2 + offsetX, 187.1 + offsetY, 214.4 + offsetX, 196.2 + offsetY);
 		ctx.bezierCurveTo(199.5 + offsetX, 204.8 + offsetY, 144.9 + offsetX, 205.5 + offsetY, 129.5 + offsetX, 205.5 + offsetY);
 		ctx.closePath();
-		ctx.fillStyle = '#333';
- 		ctx.fill();
+		//ctx.fillStyle = '#333';
+ 		//ctx.fill();
 		ctx.clip();
 		var scorepercent = score / highscore;
 		if (scorepercent <= 1) {
@@ -1237,20 +1238,16 @@ function draw_destroy() {
 
 		ctx.textAlign = 'center';
 
-		ctx.font = '2em Helvetica';
-		var txtTimeUp = 'TIME\'S UP!';
-		ctx.fillText(txtTimeUp, canvasWidth / 2, (canvasHeight / 2) - 80);
-
 		ctx.font = '1.5em Helvetica';
-		var txtFinal = 'Your final score:';
-		ctx.fillText(txtFinal, canvasWidth / 2, (canvasHeight / 2) - 45);
+		var txtTimeUp = 'GAME OVER';
+		ctx.fillText(txtTimeUp, canvasWidth / 2, (canvasHeight / 2) - 100);
 
-		ctx.font = '3.5em Helvetica';
-		ctx.fillText(score, canvasWidth / 2, canvasHeight / 2 + 10);
+		var txtFinal = 'Final score:' + score;
+		ctx.fillText(txtFinal, canvasWidth / 2, (canvasHeight / 2) + 50);
 
-		drawBtn((canvasWidth / 2) - 100, (canvasHeight / 2) + 35, 200, 45, '#a6a6a6', 'PLAY AGAIN', '1.5em Helvetica', '#fff', 8);
+		drawBtn((canvasWidth / 2) - 100, (canvasHeight / 2) + 75, 200, 45, BTNCOLOR, 'PLAY AGAIN', '1.5em Helvetica', '#fff', 8);
 	
-		paint_graph2(620, 50);
+		paint_graph2(270, 170);
 	}
 
 	/* Mouse Click */
@@ -1394,11 +1391,11 @@ function draw_destroy() {
 				}
 
 				if(selectedCells.length === 0) {
-					console.log('start: ', clickedCell);
+					//console.log('start: ', clickedCell);
 					selectedCells.push(clickedCell);
 					selSfx.play();
 				} else if(selectedCells.length === 1) {
-					console.log('end: ', clickedCell);
+					//console.log('end: ', clickedCell);
 					if((clickedCell.x === selectedCells[0].x) && (clickedCell.y === selectedCells[0].y)) {
 						return
 					}
@@ -1438,12 +1435,12 @@ function draw_destroy() {
 	}
 
 	function touchHandler(evt) {
-		console.log(evt.changedTouches[0].pageX, evt.changedTouches[0].pageY);
+		//console.log(evt.changedTouches[0].pageX, evt.changedTouches[0].pageY);
 		cellTouch(evt);
 	}
 
 	function touchExitHandler(evt) {
-		console.log('exit');
+		//console.log('exit');
 		selectedCells = [];
 	}
 
