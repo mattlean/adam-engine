@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>qPCR Crush Test [Dev Build]</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 	<link href="style.css" rel="stylesheet">
@@ -15,34 +15,48 @@
 		Canvas is not supported on your current browser.
 	</canvas>
 	<!-- Modal -->
-<div class="modal fade" id="submitScoreForm" tabindex="-1" role="dialog" aria-labelledby="submitScoreFormLabel" aria-hidden="true">
-  <div class="modal-dialog">
-  	<form>
-	    <div class="modal-content">
-	      <div class="modal-header">
-	        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-	        <h4 class="modal-title" id="submitScoreFormLabel">Submit your score</h4>
-	      </div>
-	      <div class="modal-body">
-	      	<div class="col-xs-1"><strong>Score</strong></div>
-	      	<div class="col-xs-11" id="formScore">NUMBER</div>
-	      	<div class="col-xs-1"><strong>Alias</strong></div>
-	  		<div class="col-xs-11">
-	  			<input name="alias" type="text" class="form-control" placeholder="Aliases belonging to top scorers will appear on leaderboard." required autofocus>
-	  		</div>
-	  		<div class="col-xs-1"><strong>Email</strong></div>
-	  		<div class="col-xs-11">
-	  			<input name="email" type="email" class="form-control" placeholder="Don’t worry, your information will be kept private." required>
-	  		</div>
-	      </div>
-	      <div class="modal-footer">
-	        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-	        <input type="submit" value="Submit" class="btn btn-primary">
-	      </div>
-	    </div>
-	</form>
-  </div>
-</div>
+	<div class="modal fade" id="submitScoreForm" tabindex="-1" role="dialog" aria-labelledby="submitScoreFormLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<form role="form">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h4 class="modal-title" id="submitScoreFormLabel">Submit your score!</h4>
+					</div>
+					<div class="modal-body">
+						<p class="text-center">Submit your score to get a chance at making the leaderboards!</p>
+						<div class="form-group col-xs-12">
+							<label for="showScore" class="col-sm-1">
+								<strong>Score</strong>
+							</label>
+							<div id="showScore" class="col-sm-11 formScore">NUMBER</div>
+						</div>
+						<div class="form-group col-xs-12">
+							<label for="aliasField" class="col-sm-1">
+								<strong>Alias</strong>
+							</label>
+							<div id="aliasField" class="col-sm-11">
+								<input name="alias" type="text" class="form-control" placeholder="Your name as it will appear on the leaderboard" required autofocus>
+							</div>
+						</div>
+						<div class="form-group col-xs-12">
+							<label for="emailField" class="col-sm-1">
+								<strong>Email</strong>
+							</label>
+							<div id="emailField" class="col-sm-11">
+								<input name="email" type="email" class="form-control" placeholder="email@address.com" required>
+							</div>
+						</div>
+						<p class="text-center"><em>Don’t worry, your personal information will be kept private.</em></p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<input type="submit" value="Submit" class="btn btn-primary">
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 	<script src="script.js"></script>

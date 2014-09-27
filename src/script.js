@@ -6,11 +6,11 @@
  * 2014
  */
 window.onload = function() {
-	var isIE = false;
-    var ua = window.navigator.userAgent;
-    var msie = ua.indexOf("MSIE ");
-    if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./))
-    	isIE = true;
+ 	var isIE = false;
+ 	var ua = window.navigator.userAgent;
+ 	var msie = ua.indexOf("MSIE ");
+ 	if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./))
+ 		isIE = true;
 
  	var canvas = document.getElementById('canvas');
  	var ctx = canvas.getContext('2d');
@@ -287,8 +287,8 @@ window.onload = function() {
 		matchCycle(board, false);
 		verifyBoard = copyBoard(board);
 		score = 0;
-		time = 240; //3 seconds
-		//time = 1;
+		//time = 240; //3 seconds
+		time = 1;
 		//console.log(board);
 		if(typeof game_loop !== 'undefined') clearInterval(game_loop);
 		RNGFact = Math.floor(Math.random() * NUMFACTS);
@@ -301,8 +301,8 @@ window.onload = function() {
 	function draw_ready() {
 		if(time <= 0) {
 			clearInterval(game_loop);
-			time = STARTTIME;
-			//time = 1;
+			//time = STARTTIME;
+			time = 1;
 			game_loop = setInterval(draw_game, FRAMERATE);
 			clickCtrl = 1;
 		}
@@ -392,175 +392,175 @@ window.onload = function() {
 		/* Fact Size Limitations:
 		 * 50 character limit per line
 		 * max lines 3 */
-		switch(RNGFact) {
-			case 0:
-			txtFact = 'BHQ® dyes were launched back in 2000 and has since';
-			ctx.fillText(txtFact, 240, 230);
-			txtFact2 = 'become the quencher of choice for dual-labeled probes.';
-			ctx.fillText(txtFact2, 240, 250);
-			break;
-			case 1:
-			txtFact = 'BHQ®-0, BHQ-1, BHQ-2, and BHQ-3 dyes quench across';
-			ctx.fillText(txtFact, 240, 230);
-			txtFact2 = 'the visible spectrum.';
-			ctx.fillText(txtFact2, 240, 250);
-			break;
-			case 2:
-			txtFact = 'BHQ® dyes are true dark quenchers that are ideal';
-			ctx.fillText(txtFact, 240, 230);
-			txtFact2 = 'for multiplexing.';
-			ctx.fillText(txtFact2, 240, 250);
-			break;
-			case 3:
-			txtFact = 'BHQ®-2 dye is recommended to pair with Quasar® 670';
-			ctx.fillText(txtFact, 240, 230);
-			txtFact2 = 'and Quasar 705 due to static quenching.';
-			ctx.fillText(txtFact2, 240, 250);
-			break;
-			case 4:
-			txtFact = 'CAL Fluor® dyes are affordable alternatives to';
-			ctx.fillText(txtFact, 240, 230);
-			txtFact2 = 'VIC, TET, HEX, JOE, Texas Red®, TAMRA, and ROX.';
-			ctx.fillText(txtFact2, 240, 250);
-			break;
-			case 5:
-			txtFact = 'Quasar® dyes are affordable alternatives to';
-			ctx.fillText(txtFact, 240, 230);
-			txtFact2 = 'Cy™ 3, Cy 5, and Cy 5.5 dyes.';
-			ctx.fillText(txtFact2, 240, 250);
-			break;
-			case 6:
-			txtFact = 'You can design your qPCR probes and primers';
-			ctx.fillText(txtFact, 240, 230);
-			txtFact2 = 'for free using RealTimeDesign™ software.';
-			ctx.fillText(txtFact2, 240, 250);
-			break;
-			case 7:
-			txtFact = 'A 20 base oligo made with only A,T,C, and G';
-			ctx.fillText(txtFact, 240, 230);
-			txtFact2 = 'has over trillion possible combinations.';
-			ctx.fillText(txtFact2, 240, 250);
-			break;
-			case 8:
-			txtFact = 'BHQ® dyes absorb visible light and shift';
-			ctx.fillText(txtFact, 240, 230);
-			txtFact2 = 'the emission spectra far enough to be out of';
-			ctx.fillText(txtFact2, 240, 250);
-			txtFact3 = 'the visible range to be released as heat.';
-			ctx.fillText(txtFact3, 240, 270);
-			break;
-			case 9:
-			txtFact = 'Fluorescence was first described way back in 1852';
-			ctx.fillText(txtFact, 240, 230);
-			txtFact2 = ' by British Scientist Sir George Gabriel Stokes.';
-			ctx.fillText(txtFact2, 240, 250);
-			break;
-			case 10:
-			txtFact = 'Many common substances we use exhibit fluorescence';
-			ctx.fillText(txtFact, 240, 230);
-			txtFact2 = 'properties including vitamin B2, tonic water,';
-			ctx.fillText(txtFact2, 240, 250);
-			txtFact3 = 'and many laundry detergents.';
-			ctx.fillText(txtFact3, 240, 270);
-			break;
-			case 11:
-			txtFact = 'Synthetic DNA is essentially chemically identical';
-			ctx.fillText(txtFact, 240, 230);
-			txtFact2 = 'to natural DNA and yet they are produced by two';
-			ctx.fillText(txtFact2, 240, 250);
-			txtFact3 = 'entirely different methods.';
-			ctx.fillText(txtFact3, 240, 270);
-			break;
-			case 12:
-			txtFact = 'Taq polymerase was discovered in a bacteria';
-			ctx.fillText(txtFact, 240, 230);
-			txtFact2 = 'originally isolated in 1966 from a hot spring';
-			ctx.fillText(txtFact2, 240, 250);
-			txtFact3 = 'in Yellowstone National Park.';
-			ctx.fillText(txtFact3, 240, 270);
-			break;
-			case 13:
-			txtFact = 'Back in the 1980s, the synthesis of a single';
-			ctx.fillText(txtFact, 240, 230);
-			txtFact2 = 'oligo could cost thousands of dollars!';
-			ctx.fillText(txtFact2, 240, 250);
-			break;
-			case 14:
-			txtFact = 'BHQplus® probes can be used to detect SNPs';
-			ctx.fillText(txtFact, 240, 230);
-			txtFact2 = 'and AT-rich regions.';
-			ctx.fillText(txtFact2, 240, 250);
-			break;
-			case 15:
-			txtFact = 'Biosearch Technologies has been part of the';
-			ctx.fillText(txtFact, 240, 230);
-			txtFact2 = 'oligo synthesis industry since 1980.';
-			ctx.fillText(txtFact2, 240, 250);
-			break;
-			case 16:
-			txtFact = 'On select instruments, you can multiplex up';
-			ctx.fillText(txtFact, 240, 230);
-			txtFact2 = 'to 5 assays using BHQ® probes.';
-			ctx.fillText(txtFact2, 240, 250);
-			break;
-			case 17:
-			txtFact = 'For longer probe sequences (i.e. >30 bases)';
-			ctx.fillText(txtFact, 240, 230);
-			txtFact2 = 'you can position the BHQ® dye internally';
-			ctx.fillText(txtFact2, 240, 250);
-			txtFact3 = 'for improved quenching.';
-			ctx.fillText(txtFact3, 240, 270);
-			break;
-			case 18:
-			txtFact = 'In 1989, Taq polymerase was awarded the';
-			ctx.fillText(txtFact, 240, 230);
-			txtFact2 = 'first "Molecule of the Year" award by the';
-			ctx.fillText(txtFact2, 240, 250);
-			txtFact3 = 'journal Science.';
-			ctx.fillText(txtFact3, 240, 270);
-			break;
-			case 19:
-			txtFact = 'Kary Mullis received the Nobel Prize in 1993';
-			ctx.fillText(txtFact, 240, 230);
-			txtFact2 = 'for his research on the development of PCR.';
-			ctx.fillText(txtFact2, 240, 250);
-			break;
-			case 20:
-			txtFact = 'Save some time! Biosearch\'s ValuMix™ qPCR assay';
-			ctx.fillText(txtFact, 240, 230);
-			txtFact2 = 'combines custom primers and probes in a single tube.';
-			ctx.fillText(txtFact2, 240, 250);
-			break;
-			case 21:
-			txtFact = 'BHQplus® probes allow the design of shorter oligos';
-			ctx.fillText(txtFact, 240, 230);
-			txtFact2 = 'while maintaining the optimal Tm for qPCR.';
-			ctx.fillText(txtFact2, 240, 250);
-			break;
-			case 22:
-			txtFact = 'Taq polymerase can replicate a 1000 base pair';
-			ctx.fillText(txtFact, 240, 230);
-			txtFact2 = 'strand of DNA in under 10 seconds.';
-			ctx.fillText(txtFact2, 240, 250);
-			break;
-			case 23:
-			txtFact = 'CAL Fluor® dyes eliminate the multiple isomers';
-			ctx.fillText(txtFact, 240, 230);
-			txtFact2 = 'and low synthesis yields associated with typical';
-			ctx.fillText(txtFact2, 240, 250);
-			txtFact3 = 'xanthene dyes.';
-			ctx.fillText(txtFact3, 240, 270);
-			break;
-			default:
-			txtFact = 'DEBUG MSG';
-			ctx.fillText(txtFact, 240, 230);
+		 switch(RNGFact) {
+		 	case 0:
+		 	txtFact = 'BHQ® dyes were launched back in 2000 and has since';
+		 	ctx.fillText(txtFact, 240, 230);
+		 	txtFact2 = 'become the quencher of choice for dual-labeled probes.';
+		 	ctx.fillText(txtFact2, 240, 250);
+		 	break;
+		 	case 1:
+		 	txtFact = 'BHQ®-0, BHQ-1, BHQ-2, and BHQ-3 dyes quench across';
+		 	ctx.fillText(txtFact, 240, 230);
+		 	txtFact2 = 'the visible spectrum.';
+		 	ctx.fillText(txtFact2, 240, 250);
+		 	break;
+		 	case 2:
+		 	txtFact = 'BHQ® dyes are true dark quenchers that are ideal';
+		 	ctx.fillText(txtFact, 240, 230);
+		 	txtFact2 = 'for multiplexing.';
+		 	ctx.fillText(txtFact2, 240, 250);
+		 	break;
+		 	case 3:
+		 	txtFact = 'BHQ®-2 dye is recommended to pair with Quasar® 670';
+		 	ctx.fillText(txtFact, 240, 230);
+		 	txtFact2 = 'and Quasar 705 due to static quenching.';
+		 	ctx.fillText(txtFact2, 240, 250);
+		 	break;
+		 	case 4:
+		 	txtFact = 'CAL Fluor® dyes are affordable alternatives to';
+		 	ctx.fillText(txtFact, 240, 230);
+		 	txtFact2 = 'VIC, TET, HEX, JOE, Texas Red®, TAMRA, and ROX.';
+		 	ctx.fillText(txtFact2, 240, 250);
+		 	break;
+		 	case 5:
+		 	txtFact = 'Quasar® dyes are affordable alternatives to';
+		 	ctx.fillText(txtFact, 240, 230);
+		 	txtFact2 = 'Cy™ 3, Cy 5, and Cy 5.5 dyes.';
+		 	ctx.fillText(txtFact2, 240, 250);
+		 	break;
+		 	case 6:
+		 	txtFact = 'You can design your qPCR probes and primers';
+		 	ctx.fillText(txtFact, 240, 230);
+		 	txtFact2 = 'for free using RealTimeDesign™ software.';
+		 	ctx.fillText(txtFact2, 240, 250);
+		 	break;
+		 	case 7:
+		 	txtFact = 'A 20 base oligo made with only A,T,C, and G';
+		 	ctx.fillText(txtFact, 240, 230);
+		 	txtFact2 = 'has over trillion possible combinations.';
+		 	ctx.fillText(txtFact2, 240, 250);
+		 	break;
+		 	case 8:
+		 	txtFact = 'BHQ® dyes absorb visible light and shift';
+		 	ctx.fillText(txtFact, 240, 230);
+		 	txtFact2 = 'the emission spectra far enough to be out of';
+		 	ctx.fillText(txtFact2, 240, 250);
+		 	txtFact3 = 'the visible range to be released as heat.';
+		 	ctx.fillText(txtFact3, 240, 270);
+		 	break;
+		 	case 9:
+		 	txtFact = 'Fluorescence was first described way back in 1852';
+		 	ctx.fillText(txtFact, 240, 230);
+		 	txtFact2 = ' by British Scientist Sir George Gabriel Stokes.';
+		 	ctx.fillText(txtFact2, 240, 250);
+		 	break;
+		 	case 10:
+		 	txtFact = 'Many common substances we use exhibit fluorescence';
+		 	ctx.fillText(txtFact, 240, 230);
+		 	txtFact2 = 'properties including vitamin B2, tonic water,';
+		 	ctx.fillText(txtFact2, 240, 250);
+		 	txtFact3 = 'and many laundry detergents.';
+		 	ctx.fillText(txtFact3, 240, 270);
+		 	break;
+		 	case 11:
+		 	txtFact = 'Synthetic DNA is essentially chemically identical';
+		 	ctx.fillText(txtFact, 240, 230);
+		 	txtFact2 = 'to natural DNA and yet they are produced by two';
+		 	ctx.fillText(txtFact2, 240, 250);
+		 	txtFact3 = 'entirely different methods.';
+		 	ctx.fillText(txtFact3, 240, 270);
+		 	break;
+		 	case 12:
+		 	txtFact = 'Taq polymerase was discovered in a bacteria';
+		 	ctx.fillText(txtFact, 240, 230);
+		 	txtFact2 = 'originally isolated in 1966 from a hot spring';
+		 	ctx.fillText(txtFact2, 240, 250);
+		 	txtFact3 = 'in Yellowstone National Park.';
+		 	ctx.fillText(txtFact3, 240, 270);
+		 	break;
+		 	case 13:
+		 	txtFact = 'Back in the 1980s, the synthesis of a single';
+		 	ctx.fillText(txtFact, 240, 230);
+		 	txtFact2 = 'oligo could cost thousands of dollars!';
+		 	ctx.fillText(txtFact2, 240, 250);
+		 	break;
+		 	case 14:
+		 	txtFact = 'BHQplus® probes can be used to detect SNPs';
+		 	ctx.fillText(txtFact, 240, 230);
+		 	txtFact2 = 'and AT-rich regions.';
+		 	ctx.fillText(txtFact2, 240, 250);
+		 	break;
+		 	case 15:
+		 	txtFact = 'Biosearch Technologies has been part of the';
+		 	ctx.fillText(txtFact, 240, 230);
+		 	txtFact2 = 'oligo synthesis industry since 1980.';
+		 	ctx.fillText(txtFact2, 240, 250);
+		 	break;
+		 	case 16:
+		 	txtFact = 'On select instruments, you can multiplex up';
+		 	ctx.fillText(txtFact, 240, 230);
+		 	txtFact2 = 'to 5 assays using BHQ® probes.';
+		 	ctx.fillText(txtFact2, 240, 250);
+		 	break;
+		 	case 17:
+		 	txtFact = 'For longer probe sequences (i.e. >30 bases)';
+		 	ctx.fillText(txtFact, 240, 230);
+		 	txtFact2 = 'you can position the BHQ® dye internally';
+		 	ctx.fillText(txtFact2, 240, 250);
+		 	txtFact3 = 'for improved quenching.';
+		 	ctx.fillText(txtFact3, 240, 270);
+		 	break;
+		 	case 18:
+		 	txtFact = 'In 1989, Taq polymerase was awarded the';
+		 	ctx.fillText(txtFact, 240, 230);
+		 	txtFact2 = 'first "Molecule of the Year" award by the';
+		 	ctx.fillText(txtFact2, 240, 250);
+		 	txtFact3 = 'journal Science.';
+		 	ctx.fillText(txtFact3, 240, 270);
+		 	break;
+		 	case 19:
+		 	txtFact = 'Kary Mullis received the Nobel Prize in 1993';
+		 	ctx.fillText(txtFact, 240, 230);
+		 	txtFact2 = 'for his research on the development of PCR.';
+		 	ctx.fillText(txtFact2, 240, 250);
+		 	break;
+		 	case 20:
+		 	txtFact = 'Save some time! Biosearch\'s ValuMix™ qPCR assay';
+		 	ctx.fillText(txtFact, 240, 230);
+		 	txtFact2 = 'combines custom primers and probes in a single tube.';
+		 	ctx.fillText(txtFact2, 240, 250);
+		 	break;
+		 	case 21:
+		 	txtFact = 'BHQplus® probes allow the design of shorter oligos';
+		 	ctx.fillText(txtFact, 240, 230);
+		 	txtFact2 = 'while maintaining the optimal Tm for qPCR.';
+		 	ctx.fillText(txtFact2, 240, 250);
+		 	break;
+		 	case 22:
+		 	txtFact = 'Taq polymerase can replicate a 1000 base pair';
+		 	ctx.fillText(txtFact, 240, 230);
+		 	txtFact2 = 'strand of DNA in under 10 seconds.';
+		 	ctx.fillText(txtFact2, 240, 250);
+		 	break;
+		 	case 23:
+		 	txtFact = 'CAL Fluor® dyes eliminate the multiple isomers';
+		 	ctx.fillText(txtFact, 240, 230);
+		 	txtFact2 = 'and low synthesis yields associated with typical';
+		 	ctx.fillText(txtFact2, 240, 250);
+		 	txtFact3 = 'xanthene dyes.';
+		 	ctx.fillText(txtFact3, 240, 270);
+		 	break;
+		 	default:
+		 	txtFact = 'DEBUG MSG';
+		 	ctx.fillText(txtFact, 240, 230);
+		 }
 		}
-	}
 
-	function match(inputBoard, trackScore, clearMatches) {
-		var count = 1;
-		var prevVal = -1;
-		var matchFound = 0;
+		function match(inputBoard, trackScore, clearMatches) {
+			var count = 1;
+			var prevVal = -1;
+			var matchFound = 0;
 
 		//initialize boardClearMarked which tells game which tiles should be deleted
 		var boardClearMarked = [];
@@ -829,16 +829,16 @@ window.onload = function() {
 		ctx.closePath();
 		//ctx.fillStyle = '#333';
  		//ctx.fill();
-		ctx.clip();
-		var scorepercent = score / highscore;
-		if (scorepercent <= 1) {
-			graphval = scorepercent * MAXGRAPHFILL;
-			ctx.fillStyle = '#ee3e33';
-		} else {
-			graphval = MAXGRAPHFILL;
-			ctx.fillStyle = '#00ff00';
-		}
-		
+ 		ctx.clip();
+ 		var scorepercent = score / highscore;
+ 		if (scorepercent <= 1) {
+ 			graphval = scorepercent * MAXGRAPHFILL;
+ 			ctx.fillStyle = '#ee3e33';
+ 		} else {
+ 			graphval = MAXGRAPHFILL;
+ 			ctx.fillStyle = '#00ff00';
+ 		}
+
 		ctx.fillRect(120 + offsetX, 20 + offsetY, graphval, 200); //max is 290
 		ctx.restore();
 	}
@@ -1265,7 +1265,7 @@ function draw_destroy() {
 
 		paint_graph2(270, 170);
 
-		$('#formScore').html(score);
+		$('.formScore').html(score);
 	}
 
 	/* Mouse Click */
