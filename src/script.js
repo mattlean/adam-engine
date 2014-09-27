@@ -1,6 +1,6 @@
 /*
  * DYE MATCH GAME
- * Version: 0.0.2
+ * Version: 0.0.3
  * Developed by Matthew Lean
  * www.mattlean.com
  * 2014
@@ -1245,17 +1245,15 @@ function draw_destroy() {
 
 	function draw_timeup() {
 		//draw the background to clear previous frame
-		ctx.fillStyle = BGCOLOR1;
-		ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+		paintBG();
+
 		ctx.fillStyle = FONTCOLOR;
-
 		ctx.textAlign = 'center';
-
 		ctx.font = '1.5em Helvetica';
 		var txtTimeUp = 'GAME OVER';
 		ctx.fillText(txtTimeUp, canvasWidth / 2, (canvasHeight / 2) - 100);
 
-		var txtFinal = 'Final score:' + score;
+		var txtFinal = 'Final score: ' + score;
 		ctx.fillText(txtFinal, canvasWidth / 2, (canvasHeight / 2) + 50);
 
 		drawBtn((canvasWidth / 2) + 20, (canvasHeight / 2) + 75, 150, 35, BTNCOLOR, 'PLAY AGAIN', '1.2em Helvetica', '#fff', 5);
