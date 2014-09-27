@@ -97,7 +97,8 @@ window.onload = function() {
 		'RED': 'images/RED2.png',
 		'QUASAR': 'images/QUASAR2.png',
 		'BHQ': 'images/BHQ2.png',
-		'timer': 'images/tube.png'
+		'timer': 'images/tube.png',
+		'bg': 'images/bg.png'
 	};
 	var selSfx;
 	var swapSfx;
@@ -112,7 +113,7 @@ window.onload = function() {
 
 	/* Constants */
 	const FRAMERATE = 1000 / 60;
-	const NUMIMGS = 7; //number of images
+	const NUMIMGS = 8; //number of images
 	const SPEED = 5; //speed in which the jewels move
 	const BLANK = -1;
 	const FAM = 0;
@@ -124,12 +125,12 @@ window.onload = function() {
 	const SPECIAL = 6;
 	const DEBUG = 7;
 	const BGCOLOR1 = '#2463aa';
-	const BGCOLOR2 = '#a3a3a3';
+	const BGCOLOR2 = 'rgba(0, 0, 0, 0.25)';
 	const BTNCOLOR = '#ef3e33';
 	const FONTCOLOR = '#fff';
 	const STARTTIME = 3600; //3600 = 60 seconds
 	const MAXGRAPHFILL = 290;
-	const GAMETITLE = 'qPCR Crush';
+	const GAMETITLE = 'qPCR Crush™ Game';
 	const NUMFACTS = 24;
 
 	if(isIE) {
@@ -159,6 +160,10 @@ window.onload = function() {
 		ctx.font = txtFont;
 		ctx.fillStyle = txtColor;
 		ctx.fillText(txt, posX + (btnWidth / 2), posY + (btnHeight / 2) + txtOffset);
+	}
+
+	function paintBG() {
+		ctx.drawImage(imgs['bg'], -70, 0);
 	}
 
 	/* Sound */
@@ -252,8 +257,7 @@ window.onload = function() {
 
 	function draw_start() {
 		//draw the background to clear previous frame
-		ctx.fillStyle = BGCOLOR1;
-		ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+		paintBG();
 		ctx.fillStyle = FONTCOLOR;
 
 		ctx.textAlign = 'center';
@@ -308,10 +312,9 @@ window.onload = function() {
 		}
 
 		//draw the background to clear previous frame
+		paintBG();
 		ctx.fillStyle = BGCOLOR2;
-		ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-		ctx.fillStyle = BGCOLOR1;
-		ctx.fillRect(cellSize * board.length, 0, 200, canvasHeight);
+		ctx.fillRect(0, 0, 320, 320);
 
 		ctx.globalAlpha = 0.5;
 		for(var y = 0; y < boardSize; ++y) {
@@ -710,7 +713,7 @@ window.onload = function() {
 		} else if(val === BHQ) {
 			img = imgs['BHQ'];
 		} else if(val === BLANK) {
-			ctx.fillStyle = BGCOLOR2;
+			ctx.fillStyle = 'rgba(0, 0, 0, 0)';
 		} else {
 			ctx.fillStyle = '#00ff00';
 		}
@@ -940,10 +943,9 @@ window.onload = function() {
 		}
 
 		//draw the background to clear previous frame
+		paintBG();
 		ctx.fillStyle = BGCOLOR2;
-		ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-		ctx.fillStyle = BGCOLOR1;
-		ctx.fillRect(cellSize * board.length, 0, 200, canvasHeight);
+		ctx.fillRect(0, 0, 320, 320);
 
 		for(var y = 0; y < boardSize; ++y) {
 			for(var x = 0; x < boardSize; ++x) {
@@ -985,10 +987,9 @@ window.onload = function() {
 
 	function draw_swap(cellsToAnimate, direction) {
 		//draw the background to clear previous frame
+		paintBG();
 		ctx.fillStyle = BGCOLOR2;
-		ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-		ctx.fillStyle = BGCOLOR1;
-		ctx.fillRect(cellSize * board.length, 0, 200, canvasHeight);
+		ctx.fillRect(0, 0, 320, 320);
 
 		for(var y = 0; y < boardSize; ++y) {
 			for(var x = 0; x < boardSize; ++x) {
@@ -1051,10 +1052,9 @@ function draw_destroy() {
 			var opacityCheck = false; //set to true once opacity is decremented for iteration
 
 			//draw the background to clear previous frame
+			paintBG();
 			ctx.fillStyle = BGCOLOR2;
-			ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-			ctx.fillStyle = BGCOLOR1;
-			ctx.fillRect(cellSize * board.length, 0, 200, canvasHeight);
+			ctx.fillRect(0, 0, 320, 320);
 
 			for(var y = 0; y < boardSize; ++y) {
 				for(var x = 0; x < boardSize; ++x) {
@@ -1141,10 +1141,9 @@ function draw_destroy() {
 
 	function draw_slide(cellsToSlide) {
 		//draw the background to clear previous frame
+		paintBG();
 		ctx.fillStyle = BGCOLOR2;
-		ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-		ctx.fillStyle = BGCOLOR1;
-		ctx.fillRect(cellSize * board.length, 0, 200, canvasHeight);
+		ctx.fillRect(0, 0, 320, 320);
 
 		//iterate through board
 		for(var x = 0; x < boardSize; ++x) {
@@ -1195,10 +1194,9 @@ function draw_destroy() {
 			var opacityCheck = false; //set to true once opacity is incremented for iteration
 
 			//draw the background to clear previous frame
+			paintBG();
 			ctx.fillStyle = BGCOLOR2;
-			ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-			ctx.fillStyle = BGCOLOR1;
-			ctx.fillRect(cellSize * board.length, 0, 200, canvasHeight);
+			ctx.fillRect(0, 0, 320, 320);
 
 			for(var y = 0; y < boardSize; ++y) {
 				for(var x = 0; x < boardSize; ++x) {
