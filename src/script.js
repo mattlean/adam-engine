@@ -287,8 +287,8 @@ window.onload = function() {
 		matchCycle(board, false);
 		verifyBoard = copyBoard(board);
 		score = 0;
-		//time = 240; //3 seconds
-		time = 1;
+		time = 240; //3 seconds
+		//time = 1;
 		//console.log(board);
 		if(typeof game_loop !== 'undefined') clearInterval(game_loop);
 		RNGFact = Math.floor(Math.random() * NUMFACTS);
@@ -301,8 +301,8 @@ window.onload = function() {
 	function draw_ready() {
 		if(time <= 0) {
 			clearInterval(game_loop);
-			//time = STARTTIME;
-			time = 1;
+			time = STARTTIME;
+			//time = 1;
 			game_loop = setInterval(draw_game, FRAMERATE);
 			clickCtrl = 1;
 		}
@@ -392,7 +392,7 @@ window.onload = function() {
 		/* Fact Size Limitations:
 		 * 50 character limit per line
 		 * max lines 3 */
-		 switch(RNGFact) {
+		switch(RNGFact) {
 		 	case 0:
 		 	txtFact = 'BHQ® dyes were launched back in 2000 and has since';
 		 	ctx.fillText(txtFact, 240, 230);
@@ -555,12 +555,12 @@ window.onload = function() {
 		 	txtFact = 'DEBUG MSG';
 		 	ctx.fillText(txtFact, 240, 230);
 		 }
-		}
+	}
 
-		function match(inputBoard, trackScore, clearMatches) {
-			var count = 1;
-			var prevVal = -1;
-			var matchFound = 0;
+	function match(inputBoard, trackScore, clearMatches) {
+		var count = 1;
+		var prevVal = -1;
+		var matchFound = 0;
 
 		//initialize boardClearMarked which tells game which tiles should be deleted
 		var boardClearMarked = [];
@@ -1275,7 +1275,7 @@ function draw_destroy() {
 		var y = evt.pageY - canvas.offsetTop;
 		var mouseCoord = { 'x': x, 'y': y };
 
-		if(key === 1) { //only respond to left-clicks
+		if(key === 1 && evt.target.id === 'canvas') { //only respond to left-clicks in canvas
 			if(clickCtrl === 0) {
 				if((mouseCoord.x >= (canvasWidth / 2) - 100) && (mouseCoord.x <= (canvasWidth / 2) - 100 + 200) && (mouseCoord.y >= (canvasHeight / 2) + 20) && (mouseCoord.y <= (canvasHeight / 2) + 20 + 45)) {
 					selSfx.play();
