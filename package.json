@@ -1,6 +1,6 @@
 {
   "name": "adam-engine",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "HTML5 canvas game/application engine",
   "main": "src/index.html",
   "scripts": {

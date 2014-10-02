@@ -1,6 +1,6 @@
 /*
  * DYE MATCH GAME
- * Version: 0.0.3
+ * Version: 0.0.4
  * Developed by Matthew Lean
  * www.mattlean.com
  * 2014
@@ -290,7 +290,7 @@ window.onload = function() {
 
 		matchCycle(board, false);
 		verifyBoard = copyBoard(board);
-		score = 0;
+		score = 1000;
 		time = 240; //3 seconds
 		//time = 1;
 		//console.log(board);
@@ -331,11 +331,8 @@ window.onload = function() {
 		ctx.fillStyle = FONTCOLOR;
 		ctx.textAlign = 'start';
 		ctx.font = '1.2em Helvetica';
-		var txtScore = 'Score:';
+		var txtScore = 'Score: 0';
 		ctx.fillText(txtScore, 325, 20);
-
-		var txtScoreVal = score;
-		ctx.fillText(txtScoreVal, 386, 20);
 
 		paint_graph(620, 50);
 		
@@ -902,11 +899,8 @@ window.onload = function() {
 		ctx.fillStyle = FONTCOLOR;
 		ctx.textAlign = 'start';
 		ctx.font = '1.2em Helvetica';
-		var txtScore = 'Score:';
+		var txtScore = 'Score: ' + score;
 		ctx.fillText(txtScore, 325, 20);
-
-		var txtScoreVal = score;
-		ctx.fillText(txtScoreVal, 386, 20);
 
 		paint_graph(620, 50);
 		
@@ -1261,7 +1255,7 @@ function draw_destroy() {
 
 		paint_graph2(270, 170);
 
-		$('.formScore').html(score);
+		$('#scoreField').val(score);
 	}
 
 	/* Mouse Click */

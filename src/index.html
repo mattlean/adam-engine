@@ -9,7 +9,7 @@
 	<link href="style.css" rel="stylesheet">
 </head>
 <body>
-	<h1>qPCR Crush v0.0.3</h1>
+	<h1>qPCR Crush v0.0.4</h1>
 	<canvas id="canvas" width="480" height="320">
 		Please use a modern browser with JavaScript enabled to play the game!
 		Canvas is not supported on your current browser.
@@ -17,7 +17,7 @@
 	<!-- Modal -->
 	<div class="modal fade" id="submitScoreForm" tabindex="-1" role="dialog" aria-labelledby="submitScoreFormLabel" aria-hidden="true">
 		<div class="modal-dialog">
-			<form role="form">
+			<form role="form" action="http://qpcr.azurewebsites.net/api/fun" method="post">
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
@@ -26,25 +26,27 @@
 					<div class="modal-body">
 						<p class="text-center">Submit your score for a chance at the leaderboard!</p>
 						<div class="form-group col-xs-12">
-							<label for="showScore" class="col-sm-1">
-								<strong>Score</strong>
+							<label for="scoreField" class="control-label col-sm-1">
+								Score
 							</label>
-							<div id="showScore" class="col-sm-11 formScore">NUMBER</div>
-						</div>
-						<div class="form-group col-xs-12">
-							<label for="aliasField" class="col-sm-1">
-								<strong>Alias</strong>
-							</label>
-							<div id="aliasField" class="col-sm-11">
-								<input name="alias" type="text" class="form-control" placeholder="Your name as it will appear on the leaderboard" required autofocus>
+							<div id="scoreCell" class="col-sm-11">
+								<input name="score" id="scoreField" type="text" class="form-control" value="-1" readonly>
 							</div>
 						</div>
 						<div class="form-group col-xs-12">
-							<label for="emailField" class="col-sm-1">
-								<strong>Email</strong>
+							<label for="aliasField" class="control-label col-sm-1">
+								Alias
 							</label>
-							<div id="emailField" class="col-sm-11">
-								<input name="email" type="email" class="form-control" placeholder="email@address.com" required>
+							<div id="aliasCell" class="col-sm-11">
+								<input name="name" id="aliasField" type="text" class="form-control" placeholder="Your name as it will appear on the leaderboard" required autofocus>
+							</div>
+						</div>
+						<div class="form-group col-xs-12">
+							<label for="emailField" class="control-label col-sm-1">
+								Email
+							</label>
+							<div id="emailCell" class="col-sm-11">
+								<input name="email" id="emailField" type="email" class="form-control" placeholder="email@address.com" required>
 							</div>
 						</div>
 						<p class="text-center"><em>Don’t worry, your email address will be kept private.</em></p>
