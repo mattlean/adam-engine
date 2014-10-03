@@ -1,6 +1,6 @@
 /*
  * DYE MATCH GAME
- * Version: 0.0.4
+ * Version: 0.0.5
  * Developed by Matthew Lean
  * www.mattlean.com
  * 2014
