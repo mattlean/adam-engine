@@ -1475,7 +1475,18 @@ function draw_destroy() {
   		});
 
   		posting.fail(function() {
-  			$( ".modal-content" ).html('No! Something went wrong and your score wasn\'t submitted! :(');
+  			$( ".modal-content" ).html('<div class="modal-header"> \
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button> \
+						<h4 class="modal-title">Score Submission Fail</h4> \
+					</div> \
+					<div class="modal-body"> \
+						<p class="text-center">Oh no! Something went wrong with the score submission.</p> \
+					</div> \
+					<div class="modal-footer"> \
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button> \
+					</div>');
+  		
+  			//set variable to something so when submit score is reclicked it shows original form
   		});
 	});
 
