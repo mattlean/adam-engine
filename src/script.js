@@ -290,9 +290,9 @@ window.onload = function() {
 
 		matchCycle(board, false);
 		verifyBoard = copyBoard(board);
-		score = 1000;
-		//time = 240; //3 seconds
-		time = 1;
+		score = 0;
+		time = 240; //3 seconds
+		//time = 1;
 		//console.log(board);
 		if(typeof game_loop !== 'undefined') clearInterval(game_loop);
 		RNGFact = Math.floor(Math.random() * NUMFACTS);
@@ -305,8 +305,8 @@ window.onload = function() {
 	function draw_ready() {
 		if(time <= 0) {
 			clearInterval(game_loop);
-			//time = STARTTIME;
-			time = 1;
+			time = STARTTIME;
+			//time = 1;
 			game_loop = setInterval(draw_game, FRAMERATE);
 			clickCtrl = 1;
 		}
@@ -331,7 +331,7 @@ window.onload = function() {
 		ctx.fillStyle = FONTCOLOR;
 		ctx.textAlign = 'start';
 		ctx.font = '1.2em Helvetica';
-		var txtScore = 'Score: 0';
+		var txtScore = 'Amplicons: 0';
 		ctx.fillText(txtScore, 325, 20);
 
 		paint_graph(620, 50);
@@ -899,7 +899,7 @@ window.onload = function() {
 		ctx.fillStyle = FONTCOLOR;
 		ctx.textAlign = 'start';
 		ctx.font = '1.2em Helvetica';
-		var txtScore = 'Score: ' + score;
+		var txtScore = 'Amplicons: ' + score;
 		ctx.fillText(txtScore, 325, 20);
 
 		paint_graph(620, 50);
@@ -1247,7 +1247,7 @@ function draw_destroy() {
 		var txtTimeUp = 'GAME OVER';
 		ctx.fillText(txtTimeUp, canvasWidth / 2, (canvasHeight / 2) - 100);
 
-		var txtFinal = 'Final score: ' + score;
+		var txtFinal = 'Final Amplicons: ' + score;
 		ctx.fillText(txtFinal, canvasWidth / 2, (canvasHeight / 2) + 50);
 
 		drawBtn((canvasWidth / 2) + 20, (canvasHeight / 2) + 75, 150, 35, BTNCOLOR, 'PLAY AGAIN', '1.2em Helvetica', '#fff', 5);
