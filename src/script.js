@@ -291,8 +291,8 @@ window.onload = function() {
 		matchCycle(board, false);
 		verifyBoard = copyBoard(board);
 		score = 1000;
-		time = 240; //3 seconds
-		//time = 1;
+		//time = 240; //3 seconds
+		time = 1;
 		//console.log(board);
 		if(typeof game_loop !== 'undefined') clearInterval(game_loop);
 		RNGFact = Math.floor(Math.random() * NUMFACTS);
@@ -305,8 +305,8 @@ window.onload = function() {
 	function draw_ready() {
 		if(time <= 0) {
 			clearInterval(game_loop);
-			time = STARTTIME;
-			//time = 1;
+			//time = STARTTIME;
+			time = 1;
 			game_loop = setInterval(draw_game, FRAMERATE);
 			clickCtrl = 1;
 		}
@@ -1456,6 +1456,28 @@ function draw_destroy() {
 		//console.log('exit');
 		selectedCells = [];
 	}
+
+	$('#scoreForm').submit(function(evt) {
+		evt.preventDefault();
+
+		var form = $(this);
+		var nameVal = form.find( "input[name='name']" ).val();
+		var emailVal = form.find( "input[name='email']" ).val();
+
+		var posting = $.post('http://qpcr.azurewebsites.net/api/fun', {
+			name: nameVal,
+			email: emailVal,
+			score: score
+		});
+
+		posting.done(function() {
+    		$( ".modal-content" ).html('Yes! Your score was submitted. :)');
+  		});
+
+  		posting.fail(function() {
+  			$( ".modal-content" ).html('No! Something went wrong and your score wasn\'t submitted! :(');
+  		});
+	});
 
 	/* "main()" */
 	start();
