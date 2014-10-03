@@ -13,7 +13,13 @@
 	<canvas id="canvas" width="480" height="320">
 		Please use a modern browser with JavaScript enabled to play the game!
 		Canvas is not supported on your current browser.
-	</canvas>
+	</canvas><br>
+	<a class="twitter-share-button" data-size="large" data-count="none" href="https://twitter.com/intent/tweet?button_hashtag=qPCRCrush&text=Check%20out%20this%20awesome%20game!" data-related="twitter"> \
+		Tweet #qPCRCrush
+	</a>
+	<script type="text/javascript">
+	window.twttr=(function(d,s,id){var t,js,fjs=d.getElementsByTagName(s)[0];if(d.getElementById(id)){return}js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);return window.twttr||(t={_e:[],ready:function(f){t._e.push(f)}})}(document,"script","twitter-wjs"));
+	</script>
 	<!-- Modal -->
 	<div class="modal fade" id="submitScoreForm" tabindex="-1" role="dialog" aria-labelledby="submitScoreFormLabel" aria-hidden="true">
 		<div class="modal-dialog">
@@ -30,7 +36,7 @@
 								Score
 							</label>
 							<div id="scoreCell" class="col-sm-11">
-								<input name="score" id="scoreField" type="text" class="form-control" value="-1" readonly>
+								<input name="score" id="scoreField" type="text" class="form-control" value="-1" disabled>
 							</div>
 						</div>
 						<div class="form-group col-xs-12">
@@ -38,7 +44,7 @@
 								Alias
 							</label>
 							<div id="aliasCell" class="col-sm-11">
-								<input name="name" id="aliasField" type="text" class="form-control" placeholder="Your name as it will appear on the leaderboard" required autofocus>
+								<input name="name" id="aliasField" type="text" class="form-control" placeholder="Your name as it will appear on the leaderboard" required>
 							</div>
 						</div>
 						<div class="form-group col-xs-12">

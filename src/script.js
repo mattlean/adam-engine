@@ -1471,7 +1471,22 @@ function draw_destroy() {
 		});
 
 		posting.done(function() {
-    		$( ".modal-content" ).html('Yes! Your score was submitted. :)');
+    		$( ".modal-content" ).html('<div class="modal-header"> \
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button> \
+						<h4 class="modal-title">Score Submission Success</h4> \
+					</div> \
+					<div class="modal-body"> \
+						<p class="text-center">Your score has been submitted to the leaderboards. Why don\'t you share your score on Twitter and show the world your score?</p> \
+						<a class="twitter-share-button center-block" data-size="large" data-count="none" href="https://twitter.com/intent/tweet?text=I%20just%20scored%20' + score + '%20amplicons%20on%20#qPCRCrush%20game.%20Can%20you%20beat%20that%3F" data-related="twitter"> \
+							Tweet #qPCRCrush \
+						</a> \
+						<script type="text/javascript"> \
+							window.twttr=(function(d,s,id){var t,js,fjs=d.getElementsByTagName(s)[0];if(d.getElementById(id)){return}js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);return window.twttr||(t={_e:[],ready:function(f){t._e.push(f)}})}(document,"script","twitter-wjs")); \
+						</script> \
+					</div> \
+					<div class="modal-footer"> \
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button> \
+					</div>');
   		});
 
   		posting.fail(function() {
