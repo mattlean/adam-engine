@@ -20,66 +20,6 @@ window.onload = function() {
 	var cellSize = 40; //determines cell size. cell is always a square.
 	var boardSize = 8; //determines board size. at the moment the board is always square.
 	var board = [];
-	/*var board = [
-	[1, 2, 0, 1, 2, 2, 2, 0],
-	[2, 0, 0, 2, 1, 2, 2, 0],
-	[1, 0, 1, 0, 2, 2, 1, 2],
-	[1, 2, 1, 1, 0, 0, 2, 1],
-	[1, 2, 2, 1, 2, 2, 0, 0],
-	[0, 0, 1, 2, 2, 2, 1, 0],
-	[1, 2, 0, 0, 2, 2, 2, 0],
-	[0, 1, 0, 0, 1, 1, 2, 2]
-	];*/
-	/*var board = [
-	[1, 2, 2, 0, 0, 2, 0, 2],
-	[1, 1, 2, 2, 0, 2, 0, 2],
-	[0, 2, 1, 2, 2, 0, 2, 0],
-	[1, 2, 2, 0, 0, 1, 0, 1],
-	[2, 1, 2, 2, 1, 0, 2, 0],
-	[1, 2, 0, 1, 2, 0, 1, 2],
-	[1, 2, 2, 1, 2, 2, 1, 1],
-	[0, 1, 1, 0, 1, 1, 2, 2]
-	];*/
-	/*var board = [
-	[1, 5, 3, 4, 5, 2, 1, 1],
-	[0, 3, 2, 5, 1, 2, 4, 4],
-	[4, 1, 4, 0, 4, 1, 1, 5],
-	[2, 2, 3, 1, 5, 5, 3, 4],
-	[0, 4, 3, 0 ,4, 5, 4, 0],
-	[5, 4, 1, 3, 1, 1, 0, 5],
-	[5, 0, 3, 1, 0 ,1, 3, 1],
-	[4, 3, 3, 1, 1, 3, 4, 3]
-	];*/
-	/*var board = [
-	[1, 5, 3, 4, 5, 2, 1, 1],
-	[0, 3, 2, 5, 1, 2, 4, 4],
-	[4, 1, 4, 0, 4, 1, 1, 5],
-	[2, 2, 3, 1, 5, 5, 3, 4],
-	[0, 4, 3, 0 ,4, 5, 4, 0],
-	[5, 4, 1, -1, 3, 1, 0, 5],
-	[5, 0, 3, -1, 0 ,1, 3, 1],
-	[4, 3, 3, -1, 1, 3, 4, 3]
-	];*/
-	/*var board = [
-	[1, 5, 3, -1, 5, 2, 1, 1],
-	[0, 3, 2, -1, 1, 2, 4, 4],
-	[4, 1, 4, -1, 4, 1, 1, 5],
-	[2, 2, 3, -1, 5, 5, 3, 4],
-	[0, 4, 3, 0 ,4, 5, 4, 0],
-	[5, 4, 1, 3, 1, 1, 0, 5],
-	[5, 0, 3, 1, 0 ,1, 3, 1],
-	[4, 3, 3, 1, 1, 3, 4, 3]
-	];*/
-	/*var board = [
-	[1, 5, 3, 1, 5, 2, 1, 1],
-	[0, 3, 2, -1, 1, 2, 4, 4],
-	[4, 1, 4, -1, 4, 1, 1, 5],
-	[2, 2, 3, -1, 5, 5, 3, 4],
-	[0, 4, 3, 1 ,4, 5, 4, 0],
-	[5, 4, 1, 0, 1, 1, 0, 5],
-	[5, 0, 3, -1, 0 ,1, 3, 1],
-	[4, 3, 3, 1, 1, 3, 4, 3]
-	];*/
 	var verifyBoard = [];
 	var selectedCells = [];
 	var cellsToAnimate = [];
@@ -290,9 +230,9 @@ window.onload = function() {
 
 		matchCycle(board, false);
 		verifyBoard = copyBoard(board);
-		score = 0;
-		time = 240; //3 seconds
-		//time = 1;
+		score = 1000;
+		//time = 240; //3 seconds
+		time = 1;
 		//console.log(board);
 		if(typeof game_loop !== 'undefined') clearInterval(game_loop);
 		RNGFact = Math.floor(Math.random() * NUMFACTS);
@@ -305,8 +245,8 @@ window.onload = function() {
 	function draw_ready() {
 		if(time <= 0) {
 			clearInterval(game_loop);
-			time = STARTTIME;
-			//time = 1;
+			//time = STARTTIME;
+			time = 1;
 			game_loop = setInterval(draw_game, FRAMERATE);
 			clickCtrl = 1;
 		}
@@ -1473,16 +1413,10 @@ function draw_destroy() {
 		posting.done(function() {
     		$( ".modal-content" ).html('<div class="modal-header"> \
 						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button> \
-						<h4 class="modal-title">Score Submission Success</h4> \
+						<h4 class="modal-title">Score Submission Fail</h4> \
 					</div> \
 					<div class="modal-body"> \
-						<p class="text-center">Your score has been submitted to the leaderboards. Why don\'t you share your score on Twitter and show the world your score?</p> \
-						<a class="twitter-share-button center-block" data-size="large" data-count="none" href="https://twitter.com/intent/tweet?text=I%20just%20scored%20' + score + '%20amplicons%20on%20#qPCRCrush%20game.%20Can%20you%20beat%20that%3F" data-related="twitter"> \
-							Tweet #qPCRCrush \
-						</a> \
-						<script type="text/javascript"> \
-							window.twttr=(function(d,s,id){var t,js,fjs=d.getElementsByTagName(s)[0];if(d.getElementById(id)){return}js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);return window.twttr||(t={_e:[],ready:function(f){t._e.push(f)}})}(document,"script","twitter-wjs")); \
-						</script> \
+						<p class="text-center">Oh no! Something went wrong with the score submission.</p> \
 					</div> \
 					<div class="modal-footer"> \
 						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button> \
@@ -1492,10 +1426,16 @@ function draw_destroy() {
   		posting.fail(function() {
   			$( ".modal-content" ).html('<div class="modal-header"> \
 						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button> \
-						<h4 class="modal-title">Score Submission Fail</h4> \
+						<h4 class="modal-title">Score Submission Success</h4> \
 					</div> \
 					<div class="modal-body"> \
-						<p class="text-center">Oh no! Something went wrong with the score submission.</p> \
+						<p class="text-center">Your score has been submitted to the leaderboards. Why don\'t you share your score on Twitter and show the world your score?</p> \
+						<a class="twitter-share-button center-block" data-size="large" data-count="none" href="https://twitter.com/intent/tweet?text=I%20just%20scored%20' + score + '%20amplicons%20on%20%23qPCRCrush%20game.%20Can%20you%20beat%20that%3F" data-related="twitter"> \
+							Tweet #qPCRCrush \
+						</a> \
+						<script type="text/javascript"> \
+							window.twttr=(function(d,s,id){var t,js,fjs=d.getElementsByTagName(s)[0];if(d.getElementById(id)){return}js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);return window.twttr||(t={_e:[],ready:function(f){t._e.push(f)}})}(document,"script","twitter-wjs")); \
+						</script> \
 					</div> \
 					<div class="modal-footer"> \
 						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button> \
