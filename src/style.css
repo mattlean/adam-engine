@@ -11,19 +11,5 @@ body {
 }
 
 #canvas {
-	/*width: 1024px;*/
-	/*border: 1px solid #000;*/
 	background-color: #000;
 }
-
-/*@media (max-width: 1023px) {
-	#canvas {
-		width: 800px;
-	}
-}
-
-@media (max-width: 799px) {
-	#canvas {
-		width: 480px;
-	}
-}*/
