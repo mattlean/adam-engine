@@ -1373,7 +1373,10 @@ function draw_destroy() {
   		});
 
   		posting.fail(function() {
-  			$( ".modal-content" ).html('<div class="modal-header"> \
+  			$('#submitScoreForm').modal('hide');
+  			$('#tweetScoreBtn').attr('src', 'http://platform.twitter.com/widgets/tweet_button.html?text=I%20just%20scored%20' + score + '%20amplicons%20on%20%23qPCRCrush%20game.%20Can%20you%20beat%20that%3F');
+  			$('#tweetScoreModal').modal('show');
+  			/*$( ".modal-content" ).html('<div class="modal-header"> \
 						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button> \
 						<h4 class="modal-title">Score Submission Success</h4> \
 					</div> \
@@ -1388,7 +1391,7 @@ function draw_destroy() {
 					</div> \
 					<div class="modal-footer"> \
 						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button> \
-					</div>');
+					</div>');*/
   		
   			//set variable to something so when submit score is reclicked it shows original form
   		});

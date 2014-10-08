@@ -16,9 +16,6 @@
 	<a class="twitter-share-button" data-size="large" data-count="none" href="https://twitter.com/intent/tweet?button_hashtag=qPCRCrush&text=Check%20out%20this%20awesome%20game!" data-related="twitter"> \
 		Tweet #qPCRCrush
 	</a>
-	<script type="text/javascript">
-	window.twttr=(function(d,s,id){var t,js,fjs=d.getElementsByTagName(s)[0];if(d.getElementById(id)){return}js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);return window.twttr||(t={_e:[],ready:function(f){t._e.push(f)}})}(document,"script","twitter-wjs"));
-	</script>
 	<div class="fb-share-button" data-href="http://mattlean.com/match-game/9"></div>
 	<div class="modal fade" id="submitScoreForm" tabindex="-1" role="dialog" aria-labelledby="submitScoreFormLabel" aria-hidden="true">
 		<div class="modal-dialog">
@@ -64,19 +61,30 @@
 			</form>
 		</div>
 	</div>
-	<div class="modal fade">
+	<div class="modal fade" id="tweetScoreModal">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-					<h4 class="modal-title">Modal title</h4>
+					<h4 class="modal-title">Score Submission Success</h4>
 				</div>
 				<div class="modal-body">
-					<p>One fine body&hellip;</p>
+					<p class="text-center">Your score has been submitted to the leaderboards. Why don't you share your score on Twitter and show the world your score?</p>
+					<!--<a class="twitter-share-button center-block" id="tweetScoreBtn" data-size="large" data-count="none" href="https://twitter.com/intent/tweet?button_hashtag=qPCRCrush&text=Check%20out%20this%20awesome%20game!" data-related="twitter">
+						Tweet #qPCRCrush
+					</a>-->
+					<iframe
+					id="tweetScoreBtn"
+					allowtransparency="true"
+					frameborder="0"
+					scrolling="no"
+					src="http://platform.twitter.com/widgets/tweet_button.html?text=I%20just%20scored%20-1%20amplicons%20on%20%23qPCRCrush%20game.%20Can%20you%20beat%20that%3F"
+					style="width: 107px; height: 20px;"
+					class="center-block"
+					></iframe>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary">Save changes</button>
 				</div>
 			</div><!-- /.modal-content -->
 		</div><!-- /.modal-dialog -->
@@ -84,6 +92,9 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 	<script src="script.js"></script>
+	<script type="text/javascript">
+	window.twttr=(function(d,s,id){var t,js,fjs=d.getElementsByTagName(s)[0];if(d.getElementById(id)){return}js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);return window.twttr||(t={_e:[],ready:function(f){t._e.push(f)}})}(document,"script","twitter-wjs"));
+	</script>
 	<div id="fb-root"></div>
 	<script>(function(d, s, id) {
 		var js, fjs = d.getElementsByTagName(s)[0];
