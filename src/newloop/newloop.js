@@ -22,27 +22,21 @@ var canvas = document.getElementById('canvas');
 	};
 
 /*
- * INPUT
+ * INPUTS
  */
 document.addEventListener('keydown', onkeydown);
 
 function onkeydown(evt) {
 	var key = evt.which;
-	switch(key) {
-		case DIRECTION.UP:
-			snake.direction = DIRECTION.UP;
-			break;
-		case DIRECTION.DOWN:
-			snake.direction = DIRECTION.DOWN;
-			break;
-		case DIRECTION.LEFT:
-			snake.direction = DIRECTION.LEFT;
-			break;
-		case DIRECTION.RIGHT:
-			snake.direction = DIRECTION.RIGHT;
-			break;
-	}
-	console.log(snake.direction);
+	if(key === DIRECTION.UP && snake.direction !== DIRECTION.DOWN){
+		snake.direction = DIRECTION.UP;
+	} else if(key === DIRECTION.DOWN && snake.direction !== DIRECTION.UP){
+		snake.direction = DIRECTION.DOWN;
+	} else if(key === DIRECTION.LEFT && snake.direction !== DIRECTION.RIGHT){
+		snake.direction = DIRECTION.LEFT;
+	} else if(key === DIRECTION.RIGHT && snake.direction !== DIRECTION.LEFT) {
+		snake.direction = DIRECTION.RIGHT;
+	}	
 }
 
 function game_init() {
@@ -91,7 +85,6 @@ function render(){
 	}
 	
 	snake.bodyPos.unshift(tail);
-	//console.log(snake.bodyPos);
 
 	//draw the snake
 	for(var i = 0; i < snake.bodyPos.length; ++i){
