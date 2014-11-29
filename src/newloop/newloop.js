@@ -18,7 +18,39 @@ var canvas = document.getElementById('canvas');
 	snake = {
 		startLength: 5,
 		bodyPos: [],
-		direction: DIRECTION.RIGHT
+		direction: DIRECTION.RIGHT,
+		move: function() {
+			var tail = snake.bodyPos.pop();
+			var head = snake.bodyPos[0];
+			switch(snake.direction) {
+				case DIRECTION.UP:
+					tail.x = head.x;
+					tail.y = head.y - 1;
+					break;
+				case DIRECTION.DOWN:
+					tail.x = head.x;
+					tail.y = head.y + 1;
+					break;
+				case DIRECTION.LEFT:
+					tail.x = head.x - 1;
+					tail.y = head.y;
+					break;
+				case DIRECTION.RIGHT:
+					tail.x = head.x + 1;
+					tail.y = head.y;
+					break;
+			}
+			snake.bodyPos.unshift(tail);
+		},
+		draw: function() {
+			for(var i = 0; i < snake.bodyPos.length; ++i) {
+				var cell = snake.bodyPos[i];
+				ctx.fillStyle = '#00ff00';
+				ctx.fillRect(cell.x * cellSize, cell.y * cellSize, cellSize, cellSize);
+				ctx.strokeStyle = '#fff';
+				ctx.strokeRect(cell.x * cellSize, cell.y * cellSize, cellSize, cellSize);
+			}
+		}
 	};
 
 /*
@@ -43,58 +75,34 @@ function game_init() {
 	for(var i = snake.startLength - 1; i >= 0; --i) {
 		snake.bodyPos.push({x: i, y: 0});
 	}
-	console.log(snake.bodyPos);
 }
 
-function game_loop(){
+function game_loop() {
 	update();
 	render();
-	requestAnimationFrame(game_loop); //request next frame
+	game_loop_ref = requestAnimationFrame(game_loop); //request next frame
 }
 
 function update() {
+	snake.move();
+
+	var head = snake.bodyPos[0];
+	if(head.x === -1 || head.x === canvasWidth/cellSize || head.y === -1 || head.y === canvasHeight/cellSize) {
+		window.cancelAnimationFrame(game_loop_ref);
+		console.log('GAME OVER');
+	}
 }
 
-function render(){
+function render() {
 	//draw the background to clear previous frame 
 	ctx.fillStyle = '#fff';
 	ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 	ctx.strokeStyle = '#000'
 	ctx.strokeRect(0, 0, canvasWidth, canvasHeight);
 
-	//move snake
-	var tail = snake.bodyPos.pop();
-	var head = snake.bodyPos[0];
-	switch(snake.direction) {
-		case DIRECTION.UP:
-			tail.x = head.x;
-			tail.y = head.y - 1;
-			break;
-		case DIRECTION.DOWN:
-			tail.x = head.x;
-			tail.y = head.y + 1;
-			break;
-		case DIRECTION.LEFT:
-			tail.x = head.x - 1;
-			tail.y = head.y;
-			break;
-		case DIRECTION.RIGHT:
-			tail.x = head.x + 1;
-			tail.y = head.y;
-			break;
-	}
-	
-	snake.bodyPos.unshift(tail);
-
 	//draw the snake
-	for(var i = 0; i < snake.bodyPos.length; ++i){
-		var cell = snake.bodyPos[i];
-		ctx.fillStyle = '#00ff00';
-		ctx.fillRect(cell.x * cellSize, cell.y * cellSize, cellSize, cellSize);
-		ctx.strokeStyle = '#fff';
-		ctx.strokeRect(cell.x * cellSize, cell.y * cellSize, cellSize, cellSize);
-	}
+	snake.draw();
 }
 
 game_init();
-requestAnimationFrame(game_loop); //start the first frame
+var game_loop_ref = requestAnimationFrame(game_loop); //start the first frame
