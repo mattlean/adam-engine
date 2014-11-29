@@ -29,17 +29,18 @@ document.addEventListener('keydown', onkeydown);
 function onkeydown(evt) {
 	var key = evt.which;
 	switch(key) {
-		case DIRECTION.LEFT:
-			snake.direction = DIRECTION.LEFT;
-			break;
 		case DIRECTION.UP:
 			snake.direction = DIRECTION.UP;
+			break;
+		case DIRECTION.DOWN:
+			snake.direction = DIRECTION.DOWN;
+			break;
+		case DIRECTION.LEFT:
+			snake.direction = DIRECTION.LEFT;
 			break;
 		case DIRECTION.RIGHT:
 			snake.direction = DIRECTION.RIGHT;
 			break;
-		case DIRECTION.DOWN:
-			snake.direction = DIRECTION.DOWN;
 	}
 	console.log(snake.direction);
 }
@@ -69,7 +70,26 @@ function render(){
 
 	//move snake
 	var tail = snake.bodyPos.pop();
-	tail.x = snake.bodyPos[0].x + 1;
+	var head = snake.bodyPos[0];
+	switch(snake.direction) {
+		case DIRECTION.UP:
+			tail.x = head.x;
+			tail.y = head.y - 1;
+			break;
+		case DIRECTION.DOWN:
+			tail.x = head.x;
+			tail.y = head.y + 1;
+			break;
+		case DIRECTION.LEFT:
+			tail.x = head.x - 1;
+			tail.y = head.y;
+			break;
+		case DIRECTION.RIGHT:
+			tail.x = head.x + 1;
+			tail.y = head.y;
+			break;
+	}
+	
 	snake.bodyPos.unshift(tail);
 	//console.log(snake.bodyPos);
 
