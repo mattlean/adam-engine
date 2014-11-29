@@ -1,17 +1,48 @@
 console.log('Hello world!');
 
 /*
- * GAME CONSTANTS AND VARIABLES
+ * CONSTANTS AND VARIABLES
  */
+const DIRECTION = {
+		LEFT:37,
+	    UP: 38,
+	    RIGHT: 39,
+	    DOWN: 40
+	},
+	cellSize = 10;
+
 var canvas = document.getElementById('canvas');
 	ctx = canvas.getContext('2d'),
 	canvasWidth = canvas.width,
 	canvasHeight = canvas.height,
-	cellSize = 10,
 	snake = {
 		startLength: 5,
-		bodyPos: []
+		bodyPos: [],
+		direction: DIRECTION.RIGHT
 	};
+
+/*
+ * INPUT
+ */
+document.addEventListener('keydown', onkeydown);
+
+function onkeydown(evt) {
+	var key = evt.which;
+	switch(key) {
+		case DIRECTION.LEFT:
+			snake.direction = DIRECTION.LEFT;
+			break;
+		case DIRECTION.UP:
+			snake.direction = DIRECTION.UP;
+			break;
+		case DIRECTION.RIGHT:
+			snake.direction = DIRECTION.RIGHT;
+			break;
+		case DIRECTION.DOWN:
+			snake.direction = DIRECTION.DOWN;
+	}
+	console.log(snake.direction);
+}
 
 function game_init() {
 	for(var i = snake.startLength - 1; i >= 0; --i) {
