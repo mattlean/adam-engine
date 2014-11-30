@@ -1,5 +1,3 @@
-console.log('Hello world!');
-
 /*
  * CONSTANTS AND VARIABLES
  */
@@ -40,7 +38,7 @@ var canvas = document.getElementById('canvas');
 					tail.y = head.y;
 					break;
 			}
-			snake.bodyPos.unshift(tail);
+			snake.bodyPos.unshift(tail); //add the tail in front of the head
 		},
 		draw: function() {
 			for(var i = 0; i < snake.bodyPos.length; ++i) {
@@ -62,10 +60,8 @@ var canvas = document.getElementById('canvas');
 	};
 
 /*
- * INPUTS
+ * UPDATING
  */
-document.addEventListener('keydown', onkeydown);
-
 function onkeydown(evt) {
 	var key = evt.which;
 	if(key === DIRECTION.UP && snake.direction !== DIRECTION.DOWN){
@@ -100,6 +96,9 @@ function update() {
 	}
 }
 
+/*
+ * RENDERING
+ */
 function draw_cell(x, y) {
 	ctx.fillStyle = '#00ff00';
 	ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
@@ -117,6 +116,11 @@ function render() {
 	snake.draw();
 	food.draw();
 }
+
+/*
+ * GAME LOOP
+ */
+document.addEventListener('keydown', onkeydown);
 
 function main_loop() {
 	update();
