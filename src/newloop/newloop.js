@@ -71,7 +71,10 @@ function onkeydown(evt) {
 	}	
 }
 
-function game_init() {
+function game_start() {
+	snake.bodyPos = [];
+	snake.direction = DIRECTION.RIGHT;
+
 	for(var i = snake.startLength - 1; i >= 0; --i) {
 		snake.bodyPos.push({x: i, y: 0});
 	}
@@ -88,8 +91,9 @@ function update() {
 
 	var head = snake.bodyPos[0];
 	if(head.x === -1 || head.x === canvasWidth/cellSize || head.y === -1 || head.y === canvasHeight/cellSize) {
-		window.cancelAnimationFrame(game_loop_ref);
+		//window.cancelAnimationFrame(game_loop_ref);
 		console.log('GAME OVER');
+		game_start();
 	}
 }
 
@@ -104,5 +108,5 @@ function render() {
 	snake.draw();
 }
 
-game_init();
+game_start();
 var game_loop_ref = requestAnimationFrame(game_loop); //start the first frame
