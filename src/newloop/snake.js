@@ -23,7 +23,7 @@ var canvas = document.getElementById('canvas');
 	canvasWidth = canvas.width,
 	canvasHeight = canvas.height,
 	snake = {
-		startLength: 40,
+		startLength: 5,
 		bodyPos: [],
 		direction: DIRECTION.RIGHT,
 		move: function() {
@@ -96,10 +96,17 @@ var canvas = document.getElementById('canvas');
 	},
 	score = {
 		val: 0,
+		high: 0,
 		draw: function() {
-			var txtScore = 'Score: ' + this.val;
+			var txtCurrScore = 'Current Score: ' + this.val;
 			ctx.fillStyle = '#000';
-			ctx.fillText(txtScore, 5, canvasHeight - 5)
+			ctx.textAlign = 'left';
+			ctx.fillText(txtCurrScore, 5, canvasHeight - 5);
+
+			var txtHighScore = 'High Score: ' + this.high;
+			ctx.fillStyle = '#000';
+			ctx.textAlign = 'right';
+			ctx.fillText(txtHighScore, canvasWidth - 5, canvasHeight - 5)
 		}
 	};
 
@@ -132,7 +139,9 @@ function game_start() {
 }
 
 function game_over() {
-	console.log('GAME OVER - Final Score: ' + score.val);
+	if(score.val > score.high) {
+		score.high = score.val;
+	}
 	game_start();
 }
 
