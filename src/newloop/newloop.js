@@ -18,13 +18,13 @@ var canvas = document.getElementById('canvas');
 		bodyPos: [],
 		direction: DIRECTION.RIGHT,
 		move: function() {
-			var head = snake.bodyPos[0];
+			var currHead = this.bodyPos[0];
 			var newHead = {
-				x: head.x,
-				y: head.y
+				x: currHead.x,
+				y: currHead.y
 			}
 
-			switch(snake.direction) {
+			switch(this.direction) {
 				case DIRECTION.UP:
 					--newHead.y;
 					break;
@@ -42,11 +42,22 @@ var canvas = document.getElementById('canvas');
 			if(newHead.x === food.x && newHead.y === food.y) {
 				food.create();
 			} else {
-				snake.bodyPos.pop();
+				this.bodyPos.pop();
 			}
 
-			snake.bodyPos.unshift(newHead); //add the tail in front of the head
-			//console.log(snake.bodyPos.length);
+			this.bodyPos.unshift(newHead); //add the tail in front of the head
+			
+			//if the snake hits itself game over
+			for(var i = 1; i < this.bodyPos.length; ++i) {
+				if(this.bodyPos[i].x === newHead.x && this.bodyPos[i].y === newHead.y) {
+					game_over();
+				}
+			}
+
+			//if the snake hits a wall game over
+			if(newHead.x === -1 || newHead.x === canvasWidth / cellSize || newHead.y === -1 || newHead.y === canvasHeight / cellSize) {
+				game_over();
+			}
 		},
 		draw: function() {
 			for(var i = 0; i < snake.bodyPos.length; ++i) {
@@ -94,14 +105,13 @@ function game_start() {
 	food.create();
 }
 
+function game_over() {
+	console.log('GAME OVER');
+	game_start();
+}
+
 function update() {
 	snake.move();
-
-	//if the snake hits a wall start a new game
-	var head = snake.bodyPos[0];
-	if(head.x === -1 || head.x === canvasWidth/cellSize || head.y === -1 || head.y === canvasHeight/cellSize) {
-		game_start();
-	}
 }
 
 /*
