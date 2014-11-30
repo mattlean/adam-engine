@@ -18,27 +18,35 @@ var canvas = document.getElementById('canvas');
 		bodyPos: [],
 		direction: DIRECTION.RIGHT,
 		move: function() {
-			var tail = snake.bodyPos.pop();
 			var head = snake.bodyPos[0];
+			var newHead = {
+				x: head.x,
+				y: head.y
+			}
+
 			switch(snake.direction) {
 				case DIRECTION.UP:
-					tail.x = head.x;
-					tail.y = head.y - 1;
+					--newHead.y;
 					break;
 				case DIRECTION.DOWN:
-					tail.x = head.x;
-					tail.y = head.y + 1;
+					++newHead.y
 					break;
 				case DIRECTION.LEFT:
-					tail.x = head.x - 1;
-					tail.y = head.y;
+					--newHead.x;
 					break;
 				case DIRECTION.RIGHT:
-					tail.x = head.x + 1;
-					tail.y = head.y;
+					++newHead.x;
 					break;
 			}
-			snake.bodyPos.unshift(tail); //add the tail in front of the head
+
+			if(newHead.x === food.x && newHead.y === food.y) {
+				food.create();
+			} else {
+				snake.bodyPos.pop();
+			}
+
+			snake.bodyPos.unshift(newHead); //add the tail in front of the head
+			//console.log(snake.bodyPos.length);
 		},
 		draw: function() {
 			for(var i = 0; i < snake.bodyPos.length; ++i) {
