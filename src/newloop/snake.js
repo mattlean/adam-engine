@@ -110,6 +110,8 @@ var canvas = document.getElementById('canvas');
 		}
 	};
 
+var meter = new FPSMeter({ graph: true, position: 'relative', width: 100 });
+
 /*
  * UPDATING
  */
@@ -177,9 +179,11 @@ function render() {
 document.addEventListener('keydown', onkeydown);
 
 function main_loop() {
+	meter.tickStart();
 	update();
 	render();
 	requestAnimationFrame(main_loop); //request next frame
+	meter.tick();
 }
 
 game_start();
