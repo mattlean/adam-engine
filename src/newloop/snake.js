@@ -10,7 +10,8 @@
 /*
  * CONSTANTS AND VARIABLES
  */
-const DIRECTION = {
+const FPS = 30,
+	DIRECTION = {
 		LEFT:37,
 	    UP: 38,
 	    RIGHT: 39,
@@ -178,10 +179,24 @@ function render() {
  */
 document.addEventListener('keydown', onkeydown);
 
+var now,
+	dt = 0,
+	last = window.performance.now(),
+	step = 1 / FPS;
+
 function main_loop() {
 	meter.tickStart();
-	update();
-	render();
+	now = window.performance.now();
+	dt = dt + (now - last) / 1000;
+
+	while(dt > step) {
+		dt = dt - step;
+		update(step);
+	}
+	
+	render(dt);
+
+	last = now;
 	requestAnimationFrame(main_loop); //request next frame
 	meter.tick();
 }
