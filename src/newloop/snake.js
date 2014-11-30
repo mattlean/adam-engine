@@ -1,4 +1,13 @@
 /*
+ * SNAKE
+ * Version: 0.1.0
+ * Developed by Matthew Isaac Lean
+ * Built with Adam Engine
+ * www.mattlean.com
+ * 2014
+ */
+
+/*
  * CONSTANTS AND VARIABLES
  */
 const DIRECTION = {
@@ -14,7 +23,7 @@ var canvas = document.getElementById('canvas');
 	canvasWidth = canvas.width,
 	canvasHeight = canvas.height,
 	snake = {
-		startLength: 5,
+		startLength: 40,
 		bodyPos: [],
 		direction: DIRECTION.RIGHT,
 		move: function() {
@@ -46,7 +55,7 @@ var canvas = document.getElementById('canvas');
 				this.bodyPos.pop();
 			}
 
-			this.bodyPos.unshift(newHead); //add the tail in front of the head
+			this.bodyPos.unshift(newHead); //add the newHead in front of the snake
 			
 			//if the snake hits itself game over
 			for(var i = 1; i < this.bodyPos.length; ++i) {
@@ -73,6 +82,13 @@ var canvas = document.getElementById('canvas');
 		create: function() {
 			this.x = Math.round(Math.random() * (canvasWidth - cellSize) / cellSize);
 			this.y = Math.round(Math.random() * (canvasHeight - cellSize) / cellSize);
+
+			//if food is created within the snake, recreate it until it isn't
+			for(var i = 0; i < snake.bodyPos.length; ++i) {
+				if(snake.bodyPos[i].x === this.x && snake.bodyPos[i].y === this.y) {
+					food.create();
+				}
+			}
 		},
 		draw: function() {
 			draw_cell(this.x, this.y, '#ff0000');
