@@ -45,11 +45,19 @@ var canvas = document.getElementById('canvas');
 		draw: function() {
 			for(var i = 0; i < snake.bodyPos.length; ++i) {
 				var cell = snake.bodyPos[i];
-				ctx.fillStyle = '#00ff00';
-				ctx.fillRect(cell.x * cellSize, cell.y * cellSize, cellSize, cellSize);
-				ctx.strokeStyle = '#fff';
-				ctx.strokeRect(cell.x * cellSize, cell.y * cellSize, cellSize, cellSize);
+				draw_cell(cell.x, cell.y);
 			}
+		}
+	},
+	food = {
+		x: null,
+		y: null,
+		create: function() {
+			this.x = Math.round(Math.random() * (canvasWidth - cellSize) / cellSize);
+			this.y = Math.round(Math.random() * (canvasHeight - cellSize) / cellSize);
+		},
+		draw: function() {
+			draw_cell(this.x, this.y);
 		}
 	};
 
@@ -72,29 +80,31 @@ function onkeydown(evt) {
 }
 
 function game_start() {
-	snake.bodyPos = [];
+	snake.bodyPos = []; //clear previous snake bodyPos from previous game
 	snake.direction = DIRECTION.RIGHT;
 
 	for(var i = snake.startLength - 1; i >= 0; --i) {
 		snake.bodyPos.push({x: i, y: 0});
 	}
-}
 
-function game_loop() {
-	update();
-	render();
-	game_loop_ref = requestAnimationFrame(game_loop); //request next frame
+	food.create();
 }
 
 function update() {
 	snake.move();
 
+	//if the snake hits a wall start a new game
 	var head = snake.bodyPos[0];
 	if(head.x === -1 || head.x === canvasWidth/cellSize || head.y === -1 || head.y === canvasHeight/cellSize) {
-		//window.cancelAnimationFrame(game_loop_ref);
-		console.log('GAME OVER');
 		game_start();
 	}
+}
+
+function draw_cell(x, y) {
+	ctx.fillStyle = '#00ff00';
+	ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+	ctx.strokeStyle = '#fff';
+	ctx.strokeRect(x * cellSize, y * cellSize, cellSize, cellSize);
 }
 
 function render() {
@@ -104,9 +114,15 @@ function render() {
 	ctx.strokeStyle = '#000'
 	ctx.strokeRect(0, 0, canvasWidth, canvasHeight);
 
-	//draw the snake
 	snake.draw();
+	food.draw();
+}
+
+function main_loop() {
+	update();
+	render();
+	requestAnimationFrame(main_loop); //request next frame
 }
 
 game_start();
-var game_loop_ref = requestAnimationFrame(game_loop); //start the first frame
+requestAnimationFrame(main_loop); //start the first frame
