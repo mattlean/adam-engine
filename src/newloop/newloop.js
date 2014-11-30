@@ -40,6 +40,7 @@ var canvas = document.getElementById('canvas');
 			}
 
 			if(newHead.x === food.x && newHead.y === food.y) {
+				++score.val;
 				food.create();
 			} else {
 				this.bodyPos.pop();
@@ -62,7 +63,7 @@ var canvas = document.getElementById('canvas');
 		draw: function() {
 			for(var i = 0; i < snake.bodyPos.length; ++i) {
 				var cell = snake.bodyPos[i];
-				draw_cell(cell.x, cell.y);
+				draw_cell(cell.x, cell.y, '#00ff00');
 			}
 		}
 	},
@@ -74,7 +75,15 @@ var canvas = document.getElementById('canvas');
 			this.y = Math.round(Math.random() * (canvasHeight - cellSize) / cellSize);
 		},
 		draw: function() {
-			draw_cell(this.x, this.y);
+			draw_cell(this.x, this.y, '#ff0000');
+		}
+	},
+	score = {
+		val: 0,
+		draw: function() {
+			var txtScore = 'Score: ' + this.val;
+			ctx.fillStyle = '#000';
+			ctx.fillText(txtScore, 5, canvasHeight - 5)
 		}
 	};
 
@@ -97,6 +106,7 @@ function onkeydown(evt) {
 function game_start() {
 	snake.bodyPos = []; //clear previous snake bodyPos from previous game
 	snake.direction = DIRECTION.RIGHT;
+	score.val = 0;
 
 	for(var i = snake.startLength - 1; i >= 0; --i) {
 		snake.bodyPos.push({x: i, y: 0});
@@ -106,7 +116,7 @@ function game_start() {
 }
 
 function game_over() {
-	console.log('GAME OVER');
+	console.log('GAME OVER - Final Score: ' + score.val);
 	game_start();
 }
 
@@ -117,8 +127,8 @@ function update() {
 /*
  * RENDERING
  */
-function draw_cell(x, y) {
-	ctx.fillStyle = '#00ff00';
+function draw_cell(x, y, color) {
+	ctx.fillStyle = color;
 	ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
 	ctx.strokeStyle = '#fff';
 	ctx.strokeRect(x * cellSize, y * cellSize, cellSize, cellSize);
@@ -133,6 +143,7 @@ function render() {
 
 	snake.draw();
 	food.draw();
+	score.draw();
 }
 
 /*
