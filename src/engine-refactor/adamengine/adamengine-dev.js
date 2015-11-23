@@ -44,6 +44,7 @@ var animate = function() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	ctx.drawImage(frames[currFrame], 100, 100);
 	currFrame = (currFrame + 1) % frames.length;
+	requestAnimationFrame(animate);
 }
 
-setInterval(animate, 1000/30);
+requestAnimationFrame(animate);
