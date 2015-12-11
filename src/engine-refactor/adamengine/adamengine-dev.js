@@ -66,6 +66,11 @@ function parseAtlasDefinition(atlasJSON) {
 }
 
 function main() {
+	function onClick(e) {
+		var canvasOffset = canvas.getBoundingClientRect();
+		console.log((e.clientX - canvasOffset.left) + ', ' + (e.clientY - canvasOffset.top));
+	}
+
 	var atlasJson = null;
 
 	var image = new Image();
@@ -79,7 +84,6 @@ function main() {
 		xhrAtlasJson.onload = function() {
 			// store atlas JSON
 			atlasJson = this.response;
-			console.log('atlasJson', atlasJson);
 
 			ctx.drawImage(
 				image,
@@ -98,6 +102,10 @@ function main() {
 				atlasJson.frames['FAM2.png'].sourceSize.h,
 				100, 100, 70, 70
 			);
+
+			console.log(canvas);
+			console.log(onClick);
+			canvas.addEventListener('click', onClick);
 		};
 		xhrAtlasJson.send();
 	};
