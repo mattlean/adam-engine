@@ -66,18 +66,11 @@ function parseAtlasDefinition(atlasJSON) {
 }
 
 function main() {
-	var atlasPng = null;
 	var atlasJson = null;
 
-	// attempt dl of atlas PNG
-	var xhrAtlasPng = new XMLHttpRequest();
-	xhrAtlasPng.open('GET', '/img/atlas.png', true);
-	xhrAtlasPng.responseType = 'arraybuffer';
-	xhrAtlasPng.onload = function() {
-		// store atlas PNG
-		atlasPng = this.response;
-		console.log(atlasPng);
-
+	var image = new Image();
+	image.src = 'img/atlas.png';
+	image.onload = function() {
 		// attempt dl of atlas JSON
 		var xhrAtlasJson = new XMLHttpRequest();
 		xhrAtlasJson.responseType = 'json';
@@ -86,11 +79,28 @@ function main() {
 		xhrAtlasJson.onload = function() {
 			// store atlas JSON
 			atlasJson = this.response;
-			console.log(atlasJson);
-		}
+			console.log('atlasJson', atlasJson);
+
+			ctx.drawImage(
+				image,
+				atlasJson.frames['BHQ2.png'].frame.x,
+				atlasJson.frames['BHQ2.png'].frame.y,
+				atlasJson.frames['BHQ2.png'].sourceSize.w,
+				atlasJson.frames['BHQ2.png'].sourceSize.h,
+				10, 10, 70, 70
+			);
+
+			ctx.drawImage(
+				image,
+				atlasJson.frames['FAM2.png'].frame.x,
+				atlasJson.frames['FAM2.png'].frame.y,
+				atlasJson.frames['FAM2.png'].sourceSize.w,
+				atlasJson.frames['FAM2.png'].sourceSize.h,
+				100, 100, 70, 70
+			);
+		};
 		xhrAtlasJson.send();
 	};
-	xhrAtlasPng.send();
 }
 
 main();
