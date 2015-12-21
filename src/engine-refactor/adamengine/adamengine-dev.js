@@ -112,3 +112,27 @@ function main() {
 }
 
 main();
+
+var AdamEngine = (function() {
+
+	var adamEngine = {};
+	var gameObjFactory = {};
+
+	adamEngine.createGameObj = function(gameObj) {
+		gameObj;
+	};
+
+	adamEngine.update = function() {
+		console.log('update() called');
+	};
+
+	adamEngine.render = function() {
+		console.log('render() called')
+	};
+
+	return adamEngine;
+
+})();
+
+
+// initialize all game objects first
