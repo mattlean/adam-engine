@@ -113,26 +113,37 @@ function main() {
 
 main();
 
-var AdamEngine = (function() {
+var AdamEngine = function() {
+	this.gameObjs = {};
+}
 
-	var adamEngine = {};
-	var gameObjFactory = {};
-
-	adamEngine.createGameObj = function(gameObj) {
-		gameObj;
+AdamEngine.prototype.createGameObj = function(gameObjName) {
+	this.gameObjs[gameObjName] = {
+		state: {},
+		setup: function() {},
+		update: function() {}
 	};
 
-	adamEngine.update = function() {
-		console.log('update() called');
-	};
+	return this.gameObjs[gameObjName];
+};
 
-	adamEngine.render = function() {
-		console.log('render() called')
-	};
+AdamEngine.prototype.deleteGameObj = function(gameObjName) {
+	delete this.gameObjs[gameObjName];
+};
 
-	return adamEngine;
+AdamEngine.prototype.update = function() {};
 
-})();
+AdamEngine.prototype.render = function() {};
+
+var AE = new AdamEngine();
+var Grid = AE.createGameObj('Grid');
+Grid.setup = function() {
+	this.state.grid = [];
+	this.state.grid.push([])
+};
+
+AE.update();
+
 
 
 // initialize all game objects first
