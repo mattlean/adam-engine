@@ -1,11 +1,6 @@
 var body = document.querySelector('body');
-var canvas = document.createElement('canvas');
+var canvas = document.getElementById('adam-engine');
 var ctx = canvas.getContext('2d');
-
-canvas.width = 800;
-canvas.height = 600;
-
-body.appendChild(canvas);
 
 /* Animation test */
 // var assets = [
@@ -114,6 +109,7 @@ body.appendChild(canvas);
 // main();
 
 var AdamEngine = {
+	canvas: null,
 	worldObjs: {},
 	storeObjs: {},
 
@@ -126,7 +122,9 @@ var AdamEngine = {
 	},
 
 	// Initialize the game engine so everything can start working
-	construct: function () {
+	setup: function(canvas) {
+		canvas = canvas;
+
 		// world objs inherit from game obj
 		this.worldObj = Object.create(this.gameObj);
 		this.worldObj.type = 'worldObj';
@@ -143,6 +141,43 @@ var AdamEngine = {
 		// store objs inherit from game obj
 		this.storeObj = Object.create(this.gameObj);
 		this.storeObj.type = 'storeObj';
+	},
+
+	InputManager: {
+		inputMap: {},
+
+		inputState: {},
+
+		setup: function() {
+			document.addEventListener('keydown', function(e) {
+				if(this.inputMap[e.keyCode] !== undefined) {
+					this.inputState[this.inputMap[e.keyCode]] = true;
+					console.log(this.inputMap[e.keyCode], this.inputState[this.inputMap[e.keyCode]]);
+				}
+			}.bind(this));
+
+			document.addEventListener('keyup', function(e) {
+				if(this.inputMap[e.keyCode] !== undefined) {
+					this.inputState[this.inputMap[e.keyCode]] = false;
+					console.log(this.inputMap[e.keyCode], this.inputState[this.inputMap[e.keyCode]]);
+				}
+			}.bind(this));			
+		},
+
+		addInput: function(keyCode, name) {
+			this.inputMap[keyCode] = name;
+			this.inputState[name] = false;
+		},
+
+		removeInput: function(keyCode, name) {
+			delete this.inputMap[keyCode];
+		},
+
+		resetState: function() {
+			for(var i in this.inputState) {
+				this.inputState[i] = false;
+			}
+		}
 	},
 
 	/* Game Object Creators/Destroyers */
@@ -212,11 +247,16 @@ var AdamEngine = {
 	}
 }
 
-AdamEngine.construct();
+AdamEngine.InputManager.addInput(37, 'LEFT');
+AdamEngine.InputManager.addInput(38, 'UP');
+AdamEngine.InputManager.addInput(39, 'RIGHT');
+AdamEngine.InputManager.addInput(40, 'DOWN');
+AdamEngine.InputManager.setup();
+AdamEngine.setup(canvas);
 
-var block = AdamEngine.createWorldObj('block');
+var player = AdamEngine.createWorldObj('player');
 
-block.setup = function() {
+player.setup = function() {
 	this.state.pos = {
 		x: 10,
 		y: 10
@@ -236,9 +276,21 @@ block.setup = function() {
 	};
 };
 
-block.update = function() {
-	this.state.pos.x += 1;
-	this.state.pos.y += 1;
+player.update = function() {
+	// this.state.pos.x += 1;
+	// this.state.pos.y += 1;
+
+	if(AdamEngine.InputManager.inputState.LEFT) {
+		this.state.pos.x -= 1;
+	} else if(AdamEngine.InputManager.inputState.RIGHT) {
+		this.state.pos.x += 1;
+	}
+
+	if(AdamEngine.InputManager.inputState.UP) {
+		this.state.pos.y -= 1;
+	} else if(AdamEngine.InputManager.inputState.DOWN) {
+		this.state.pos.y += 1;
+	}
 };
 
 AdamEngine.start();
