@@ -176,18 +176,18 @@ var AdamEngine = {
 			this.worldObjs[worldObjName].setup();
 		}
 
-		AdamEngine.update(); // start game loop
+		requestAnimationFrame(this.gameLoop.bind(this));
 	},
 
 	update: function(cb) {
 		for(var worldObjName in this.worldObjs) {
 			this.worldObjs[worldObjName].update();
 		}
-
-		this.render();
 	},
 
 	render: function() {
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+
 		// render all pos x & y of all world objs
 		for(var worldObjName in this.worldObjs) {
 			var worldObj = this.worldObjs[worldObjName];
@@ -198,11 +198,17 @@ var AdamEngine = {
 
 					if(worldObj.state.stroke !== null) {
 						ctx.strokeStyle = worldObj.state.stroke.color;
-						ctx.strokeRect(worldObj.state.stroke.x, worldObj.state.stroke.y, worldObj.state.stroke.w, worldObj.state.stroke.h);
+						ctx.strokeRect(worldObj.state.stroke.pos.x, worldObj.state.stroke.pos.y, worldObj.state.stroke.size.w, worldObj.state.stroke.size.h);
 					}
 				}
 			}
-		}
+		}		
+	},
+
+	gameLoop: function() {
+		this.update();
+		this.render();
+		requestAnimationFrame(this.gameLoop.bind(this));
 	}
 }
 
@@ -223,13 +229,16 @@ block.setup = function() {
 
 	this.state.worldObjType = 'rect';
 	this.state.color = '#00FF00';
-	this.state.stroke = {x: 10, y: 10, w: 10, h: 10, color: '#FFF'};
+	this.state.stroke = {
+		pos: this.state.pos,
+		size: this.state.size,
+		color: '#FFF'
+	};
 };
 
 block.update = function() {
-	this.state.pos.x += 100;
+	this.state.pos.x += 1;
+	this.state.pos.y += 1;
 };
 
 AdamEngine.start();
-
-
