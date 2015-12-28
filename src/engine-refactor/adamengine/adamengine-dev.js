@@ -1,112 +1,5 @@
 var body = document.querySelector('body');
 var canvasId = 'adam-engine';
-//var ctx = canvas.getContext('2d');
-
-/* Animation test */
-// var assets = [
-// 	'/img/robowalk/robowalk00.png',
-// 	'/img/robowalk/robowalk01.png',
-// 	'/img/robowalk/robowalk02.png',
-// 	'/img/robowalk/robowalk03.png',
-// 	'/img/robowalk/robowalk04.png',
-// 	'/img/robowalk/robowalk05.png',
-// 	'/img/robowalk/robowalk06.png',
-// 	'/img/robowalk/robowalk07.png',
-// 	'/img/robowalk/robowalk08.png',
-// 	'/img/robowalk/robowalk09.png',
-// 	'/img/robowalk/robowalk10.png',
-// 	'/img/robowalk/robowalk11.png',
-// 	'/img/robowalk/robowalk12.png',
-// 	'/img/robowalk/robowalk13.png',
-// 	'/img/robowalk/robowalk14.png',
-// 	'/img/robowalk/robowalk15.png',
-// 	'/img/robowalk/robowalk16.png',
-// 	'/img/robowalk/robowalk17.png',
-// 	'/img/robowalk/robowalk18.png'
-// ];
-// var frames = [];
-// var currFrame = 0;
-
-// for(var i=0; i < assets.length; ++i) {
-// 	var newImg = new Image();
-// 	newImg.onload = function() {
-// 		console.log('image loaded');
-// 	};
-// 	newImg.src = assets[i];
-// 	frames[i] = newImg;
-// }
-
-// var animate = function() {
-// 	ctx.clearRect(0, 0, canvas.width, canvas.height);
-// 	ctx.drawImage(frames[currFrame], 100, 100);
-// 	currFrame = (currFrame + 1) % frames.length;
-// 	requestAnimationFrame(animate);
-// }
-
-// requestAnimationFrame(animate);
-
-/* Atlas test */
-// function parseAtlasDefinition(atlasJSON) {
-// 	var parsed = JSON.parse(atlasJSON);
-
-// 	/*for(var key in parsed.frames) {
-// 		var sprite = parsed.frames[key];
-// 		// define center of sprite as offset
-// 		var cx = -sprite.frame.w * 0.5;
-// 		var cy = -sprite.frame.h * 0.5;
-
-// 		// define the sprite for this sheet
-// 		//this.defSprite(key, sprite.frame.x, sprite.frame.y, sprite.frame.w, sprite.frame.h, cx, cy);
-// 	}*/
-// }
-
-// function main() {
-// 	function onClick(e) {
-// 		var canvasOffset = canvas.getBoundingClientRect();
-// 		console.log((e.clientX - canvasOffset.left) + ', ' + (e.clientY - canvasOffset.top));
-// 	}
-
-// 	var atlasJson = null;
-
-// 	var image = new Image();
-// 	image.src = 'img/atlas.png';
-// 	image.onload = function() {
-// 		// attempt dl of atlas JSON
-// 		var xhrAtlasJson = new XMLHttpRequest();
-// 		xhrAtlasJson.responseType = 'json';
-// 		xhrAtlasJson.open('GET', '/img/atlas.json', true);
-// 		xhrAtlasJson.responseType = 'json';
-// 		xhrAtlasJson.onload = function() {
-// 			// store atlas JSON
-// 			atlasJson = this.response;
-
-// 			ctx.drawImage(
-// 				image,
-// 				atlasJson.frames['BHQ2.png'].frame.x,
-// 				atlasJson.frames['BHQ2.png'].frame.y,
-// 				atlasJson.frames['BHQ2.png'].sourceSize.w,
-// 				atlasJson.frames['BHQ2.png'].sourceSize.h,
-// 				10, 10, 70, 70
-// 			);
-
-// 			ctx.drawImage(
-// 				image,
-// 				atlasJson.frames['FAM2.png'].frame.x,
-// 				atlasJson.frames['FAM2.png'].frame.y,
-// 				atlasJson.frames['FAM2.png'].sourceSize.w,
-// 				atlasJson.frames['FAM2.png'].sourceSize.h,
-// 				100, 100, 70, 70
-// 			);
-
-// 			// console.log(canvas);
-// 			// console.log(onClick);
-// 			canvas.addEventListener('click', onClick);
-// 		};
-// 		xhrAtlasJson.send();
-// 	};
-// }
-
-// main();
 
 // AdamEngine class
 var AdamEngine = function(canvasId) {
@@ -115,7 +8,8 @@ var AdamEngine = function(canvasId) {
 	var canvas = document.getElementById(canvasId);
 	var canvasData = canvas.getBoundingClientRect();
 	var ctx = canvas.getContext('2d');
-	var focus = false; // determines if canvas is in focus or not
+	var focus = false; // true if canvas is in focus or not
+	var loading = true; // true if engine is still loading assets
 	
 
 
@@ -306,6 +200,66 @@ var AdamEngine = function(canvasId) {
 
 
 
+	/*** ASSET MANAGER ***/
+	// AssetManager class
+	function AssetManager() {
+		// private properties
+		var loadedAssets = 0;
+		var totalAssets = 0;
+		var atlases = [];
+
+		// private methods
+		function loadFinishCheck() {
+			if(loadedAssets === totalAssets) {
+				loading = false;
+				console.log('Loading completed!');
+			}
+		}
+
+		// privileged methods
+		this.newAtlas = function(imageLoc, dataLoc) {
+			var image = new Image();
+			image.imageLoc = imageLoc;
+			image.onload = function() {
+				++loadedAssets;
+				console.log('Loaded assets: ' + loadedAssets);
+
+				loadFinishCheck();
+			};
+
+			var data = new XMLHttpRequest();
+			data.responseType = 'json';
+			data.open('GET', dataLoc, true);
+			data.responseType = 'json';
+			data.onload = function(response) {
+				++loadedAssets;
+				console.log('Loaded assets: ' + loadedAssets);
+
+				loadFinishCheck();
+			};
+
+			// TODO: onerror retry load
+
+			totalAssets = totalAssets + 2;
+
+			var atlas = {image: image, data: data};
+			atlases.push(atlas);
+		};
+
+		this.loadAssets = function() {
+			for(var i in atlases) {
+				atlases[i].image.src = atlases[i].image.imageLoc;
+				atlases[i].data.send();
+			}
+		};
+	}
+
+
+	/* ASSET MANAGER: PUBLIC PROPERTIES */
+	this.assetMan = new AssetManager();
+
+
+
 	/*** GAME LOOP ***/
 	/* GAME LOOP: PRIVATE METHODS */
 	function setupWorldObjs() {
@@ -316,8 +270,6 @@ var AdamEngine = function(canvasId) {
 		}
 
 		renderPipe.sort(function(a, b) {
-			console.log(a, b);
-			//debugger;
 			if(a.state.zIndex > b.state.zIndex) {
 				return 1;
 			}
@@ -369,7 +321,12 @@ var AdamEngine = function(canvasId) {
 };
 
 
+
 var AE = new AdamEngine(canvasId);
+
+AE.assetMan.newAtlas('/img/atlas.png', '/img/atlas.json');
+AE.assetMan.loadAssets();
+
 AE.inputMan.addKeyInput(37, 'LEFT');
 AE.inputMan.addKeyInput(38, 'UP');
 AE.inputMan.addKeyInput(39, 'RIGHT');
