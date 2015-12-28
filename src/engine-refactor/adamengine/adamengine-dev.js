@@ -220,7 +220,7 @@ var AdamEngine = function(canvasId) {
 					var keyName = inputMap.keys[e.keyCode];
 					if(keyName) {
 						inputState.keys[keyName] = true;
-						console.log(keyName, inputState.keys[keyName]);
+						// console.log(keyName, inputState.keys[keyName]);
 					}
 				}
 			}.bind(this));
@@ -230,7 +230,7 @@ var AdamEngine = function(canvasId) {
 					var keyName = inputMap.keys[e.keyCode];
 					if(keyName) {
 						inputState.keys[keyName] = false;
-						console.log(keyName, inputState.keys[keyName]);
+						// console.log(keyName, inputState.keys[keyName]);
 					}
 				}
 			}.bind(this));
@@ -247,7 +247,7 @@ var AdamEngine = function(canvasId) {
 					inputState.mbs[mbName].isActive = true;
 					inputState.mbs[mbName].pos.x = e.clientX - canvasData.left;
 					inputState.mbs[mbName].pos.y = e.clientY - canvasData.top;
-					console.log(mbName, inputState.mbs[mbName]);
+					// console.log(mbName, inputState.mbs[mbName]);
 				}
 			}.bind(this));
 
@@ -255,7 +255,7 @@ var AdamEngine = function(canvasId) {
 				var mbName = inputMap.mbs[e.button];
 				if(mbName && (e.target === canvas)) {
 					inputState.mbs[mbName].isActive = false;
-					console.log(mbName, inputState.mbs[mbName]);
+					// console.log(mbName, inputState.mbs[mbName]);
 				}
 			}.bind(this));
 
@@ -397,6 +397,22 @@ test2.update = function() {
 	this.state.pos.y += 2;
 }
 
+var zone = AE.createWorldObj('zone');
+zone.setup = function() {
+	this.state.pos = {
+		x: 50,
+		y: 50
+	};
+
+	this.state.size = {
+		w: 30,
+		h: 30
+	};
+
+	this.state.worldObjType = 'rect';
+	this.state.color = '#000';
+}
+
 var player = AE.createWorldObj('player');
 player.setup = function() {
 	this.state.pos = {
@@ -416,6 +432,7 @@ player.setup = function() {
 		size: this.state.size,
 		color: '#FFF'
 	};
+	this.state.zone = zone;
 };
 
 player.update = function() {
@@ -434,22 +451,15 @@ player.update = function() {
 	if(AE.inputMan.getMBState('LEFTCLICK').isActive) {
 		console.log('teehee~');
 	}
+
+	if(
+		(this.state.pos.x < (this.state.zone.state.pos.x + this.state.zone.state.size.w)) &&
+		((this.state.pos.x + this.state.size.w) > this.state.zone.state.pos.x) &&
+		(this.state.pos.y < (this.state.zone.state.pos.y + this.state.zone.state.size.h)) &&
+		((this.state.pos.y + this.state.size.h) > this.state.zone.state.pos.y)
+	) {
+		console.log('player collision with zone');
+	}
 };
-
-var item = AE.createWorldObj('item');
-item.setup = function() {
-	this.state.pos = {
-		x: 50,
-		y: 50
-	};
-
-	this.state.size = {
-		w: 30,
-		h: 30
-	};
-
-	this.state.worldObjType = 'rect';
-	this.state.color = '#000';
-}
 
 AE.start();
