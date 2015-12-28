@@ -115,7 +115,7 @@ var AdamEngine = function(canvasId) {
 	var canvas = document.getElementById(canvasId);
 	var canvasData = canvas.getBoundingClientRect();
 	var ctx = canvas.getContext('2d');
-	var focus = false;
+	var focus = false; // determines if canvas is in focus or not
 	
 
 
@@ -156,6 +156,7 @@ var AdamEngine = function(canvasId) {
 		this.state.image = null;
 		this.state.color = null;
 		this.state.stroke = null;
+		this.state.zIndex = 0;
 	}
 
 	// WorldObj public methods
@@ -166,12 +167,17 @@ var AdamEngine = function(canvasId) {
 	/* GAME OBJECTS: PRIVATE PROPERTIES */
 	var worldObjs = {};
 	var storeObjs = {};
+	var renderPipe = []; // determines rendering order of world objs
 
 
 	/* GAME OBJECTS: PRIVATE METHODS */
 	function createWorldObj(worldObjName) {
-		worldObjs[worldObjName] = new WorldObj();
-		return worldObjs[worldObjName];
+		if(worldObjs[worldObjName]) {
+			console.error('A world object with the name "' + worldObjName + '" already exists!');
+		} else {
+			worldObjs[worldObjName] = new WorldObj();
+			return worldObjs[worldObjName];
+		}
 	}
 
 	function deleteWorldObj(worldObjName) {
@@ -295,6 +301,7 @@ var AdamEngine = function(canvasId) {
 		};
 	}
 
+	/* INPUT MANAGER: PUBLIC PROPERTIES */
 	this.inputMan = new InputManager();
 
 
@@ -302,9 +309,23 @@ var AdamEngine = function(canvasId) {
 	/*** GAME LOOP ***/
 	/* GAME LOOP: PRIVATE METHODS */
 	function setupWorldObjs() {
+		renderPipe = []; // recreate renderPipe
 		for(var worldObjName in worldObjs) {
 			worldObjs[worldObjName].setup();
+			renderPipe.push(worldObjs[worldObjName]);
 		}
+
+		renderPipe.sort(function(a, b) {
+			console.log(a, b);
+			//debugger;
+			if(a.state.zIndex > b.state.zIndex) {
+				return 1;
+			}
+			if(a.state.zIndex < b.state.zIndex) {
+				return -1;
+			}
+			return 0;
+		});
 	}
 
 	function update() {
@@ -317,8 +338,8 @@ var AdamEngine = function(canvasId) {
 		ctx.clearRect(0, 0, canvasData.width, canvasData.height);
 
 		// render all pos x & y of all world objs
-		for(var worldObjName in worldObjs) {
-			var worldObj = worldObjs[worldObjName];
+		for(var i in renderPipe) {
+			var worldObj = renderPipe[i];
 			if(worldObj.getType() === 'world-obj') {
 				if(worldObj.state.worldObjType === 'rect') {
 					ctx.fillStyle = worldObj.state.color;
@@ -391,6 +412,7 @@ test2.setup = function() {
 
 	this.state.worldObjType = 'rect';
 	this.state.color = '#FF0000';
+	this.state.zIndex = 200;
 };
 
 test2.update = function() {
@@ -411,6 +433,7 @@ zone.setup = function() {
 
 	this.state.worldObjType = 'rect';
 	this.state.color = '#000';
+	this.state.zIndex = 9001;
 }
 
 var player = AE.createWorldObj('player');
@@ -433,6 +456,24 @@ player.setup = function() {
 		color: '#FFF'
 	};
 	this.state.zone = zone;
+	this.state.zIndex = 200;
+};
+
+var zone2 = AE.createWorldObj('zone2');
+zone2.setup = function() {
+	this.state.pos = {
+		x: 100,
+		y: 50
+	};
+
+	this.state.size = {
+		w: 40,
+		h: 40
+	};
+
+	this.state.worldObjType = 'rect';
+	this.state.color = '#000';
+	this.state.zIndex = 100;
 };
 
 player.update = function() {
