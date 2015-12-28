@@ -1,6 +1,6 @@
 var body = document.querySelector('body');
 var canvas = document.getElementById('adam-engine');
-var ctx = canvas.getContext('2d');
+//var ctx = canvas.getContext('2d');
 
 /* Animation test */
 // var assets = [
@@ -108,164 +108,112 @@ var ctx = canvas.getContext('2d');
 
 // main();
 
-var AdamEngine = {
-	canvas: null,
-	worldObjs: {},
-	storeObjs: {},
+// AdamEngine class
+var AdamEngine2 = function(canvas) {
+	/*** GENERAL ***/
+	/* GENERAL: PRIVATE PROPERTIES */
+	var ctx = canvas.getContext('2d');
+	var canvas = canvas.getBoundingClientRect();
+	canvas.ele = canvas;
+	
 
-	/* Classes */
-	gameObj: {
-		type: null,
-		state: {},
-		setup: function() {},
-		update: function() {}
-	},
 
-	setup: function(canvas) {
-		this.canvas = canvas.getBoundingClientRect();
-		this.canvas.ele = canvas;
+	/*** GAME OBJECTS ***/
+	/* GAME OBJECTS: CLASSES */
+	// GameObj class
+	var GameObj = function(typeName) {
+		/* private properties */
+		var type = typeName;
 
-		// world objs inherit from game obj
-		this.worldObj = Object.create(this.gameObj);
-		this.worldObj.type = 'worldObj';
-		this.worldObj.state = {
-			worldObjType: null,
-			pos: {x: 0, y: 0},
-			size: {w: 0, h: 0},
-			image: null,
-			color: null,
-			stroke: null
+		// public properties
+		this.state = {};
+
+		// private methods
+		function getType() {
+			return type;
+		}
+
+		// privileged methods
+		this.getType = function() {
+			return getType();
 		};
-		this.worldObj.render= function() {};
+	};
 
-		// store objs inherit from game obj
-		this.storeObj = Object.create(this.gameObj);
-		this.storeObj.type = 'storeObj';
-	},
+	// GameObj public methods
+	GameObj.prototype.setup = function() {
+		console.error('Game object setup() undefined');
+	};
 
-	InputManager: {
-		inputMap: {
-			keys: {},
-			mbs: {}
-		},
+	GameObj.prototype.update = function() {
+		console.error('Game object update() undefined');
+	};
 
-		inputState: {
-			keys: {},
-			mbs: {}
-		},
+	// WorldObj class
+	function WorldObj() {
+		GameObj.call(this, 'world-obj'); // inherit from GameObj
 
-		setup: function() {
-			document.addEventListener('keydown', function(e) {
-				var inputKeyName = this.inputMap.keys[e.keyCode];
-				if(inputKeyName) {
-					this.inputState.keys[inputKeyName] = true;
-					// console.log(inputKeyName, this.inputState.keys[inputKeyName]);
-				}
-			}.bind(this));
+		// set default state
+		this.state.worldObjType = null;
+		this.state.pos = {x: 0, y: 0};
+		this.state.size = {w: 0, h: 0};
+		this.state.image = null;
+		this.state.color = null;
+		this.state.stroke = null;
+	}
 
-			document.addEventListener('keyup', function(e) {
-				var inputKeyName = this.inputMap.keys[e.keyCode];
-				if(inputKeyName) {
-					this.inputState.keys[inputKeyName] = false;
-					// console.log(inputKeyName, this.inputState.keys[inputKeyName]);
-				}
-			}.bind(this));	
+	// WorldObj public methods
+	WorldObj.prototype = Object.create(GameObj.prototype);
+	WorldObj.prototype.constructor = WorldObj;
 
-			document.addEventListener('mousedown', function(e) {
-				var inputMBName = this.inputMap.mbs[e.button];
-				if(inputMBName && (e.target === AdamEngine.canvas.ele)) {
-					this.inputState.mbs[inputMBName].isActive = true;
-					this.inputState.mbs[inputMBName].pos.x = e.clientX - AdamEngine.canvas.left;
-					this.inputState.mbs[inputMBName].pos.y = e.clientY - AdamEngine.canvas.top;
-					// console.log(inputMBName, this.inputState.mbs[inputMBName]);
-				}
-			}.bind(this));
 
-			document.addEventListener('mouseup', function(e) {
-				var inputMBName = this.inputMap.mbs[e.button];
-				if(inputMBName) {
-					this.inputState.mbs[inputMBName].isActive = false;
-					// console.log(inputMBName, this.inputState.mbs[inputMBName]);
-				}
-			}.bind(this));
+	/* GAME OBJECTS: PRIVATE PROPERTIES */
+	var worldObjs = {};
+	var storeObjs = {};
 
-			// TODO: add listener for mousemove
-		},
 
-		addKeyInput: function(keyCode, inputKeyName) {
-			this.inputMap.keys[keyCode] = inputKeyName;
-			this.inputState.keys[inputKeyName] = false;
-		},
+	/* GAME OBJECTS: PRIVATE METHODS */
+	function createWorldObj(worldObjName) {
+		worldObjs[worldObjName] = new WorldObj();
+		return worldObjs[worldObjName];
+	}
 
-		removeKeyInput: function(inputKeyName) {},
+	function deleteWorldObj(worldObjName) {
+		delete worldObjs[worldObjName];
+	}
 
-		resetKeyState: function() {
-			for(var i in this.inputState) {
-				this.inputState[i] = false;
-			}
-		},
 
-		addMBInput: function(button, inputMBName) {
-			this.inputMap.mbs[button] = inputMBName;
-			this.inputState.mbs[inputMBName] = {
-				isActive: false,
-				pos: {
-					x: null,
-					y: null
-				}
-			};
-		},
+	/* GAME OBJECTS: PRIVILEGED METHODS */
+	this.createWorldObj = function(worldObjName) {
+		return createWorldObj(worldObjName);
+	}
 
-		removeMBInput: function(inputMBName) {},
-	},
+	this.deleteWorldObj = function(worldObjName) {
+		return deleteWorldObj(worldObjName);
+	}
 
-	/* Game Object Creators/Destroyers */
-	createWorldObj: function(worldObjName) {
-		this.worldObjs[worldObjName] = Object.create(this.worldObj);
-		return this.worldObjs[worldObjName];
-	},
 
-	deleteWorldObj: function(worldObjName) {
-		delete this.worldObjs[worldObjName];
-	},
 
-	createStoreObj: function(storeObjName) {
-		this.storeObjs[storeObjName] = Object.create(this.storeObj);
-		return this.storeObjs[storeObjName];
-	},
-
-	deleteStoreObj: function(storeObjName) {
-		this.storeObjs[storeObjName] = Object.create(this.storeObj);
-		return this.storeObjs[storeObjName];
-	},
-
-	/* Game Loop */
-	start: function() {
-		// run setup for all game objs
-		for(var storeObjName in this.storeObjs) {
-			this.storeObjs[storeObjName].setup();
+	/*** GAME LOOP ***/
+	/* GAME LOOP: PRIVATE METHODS */
+	function setupWorldObjs() {
+		for(var worldObjName in worldObjs) {
+			worldObjs[worldObjName].setup();
 		}
+	}
 
-		for(var worldObjName in this.worldObjs) {
-			this.worldObjs[worldObjName].setup();
+	function update() {
+		for(var worldObjName in worldObjs) {
+			worldObjs[worldObjName].update();
 		}
+	}
 
-		requestAnimationFrame(this.gameLoop.bind(this));
-	},
-
-	update: function(cb) {
-		for(var worldObjName in this.worldObjs) {
-			this.worldObjs[worldObjName].update();
-		}
-	},
-
-	render: function() {
+	function render() {
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 
 		// render all pos x & y of all world objs
-		for(var worldObjName in this.worldObjs) {
-			var worldObj = this.worldObjs[worldObjName];
-			if(worldObj.type === 'worldObj') {
+		for(var worldObjName in worldObjs) {
+			var worldObj = worldObjs[worldObjName];
+			if(worldObj.getType() === 'world-obj') {
 				if(worldObj.state.worldObjType === 'rect') {
 					ctx.fillStyle = worldObj.state.color;
 					ctx.fillRect(worldObj.state.pos.x, worldObj.state.pos.y, worldObj.state.size.w, worldObj.state.size.h);
@@ -276,27 +224,34 @@ var AdamEngine = {
 					}
 				}
 			}
-		}		
-	},
-
-	gameLoop: function() {
-		this.update();
-		this.render();
-		requestAnimationFrame(this.gameLoop.bind(this));
+		}
 	}
-}
 
-AdamEngine.InputManager.addKeyInput(37, 'LEFT');
-AdamEngine.InputManager.addKeyInput(38, 'UP');
-AdamEngine.InputManager.addKeyInput(39, 'RIGHT');
-AdamEngine.InputManager.addKeyInput(40, 'DOWN');
-AdamEngine.InputManager.addMBInput(0, 'LEFTCLICK');
-AdamEngine.InputManager.setup();
-AdamEngine.setup(canvas);
+	function gameLoop() {
+		update();
+		render();
+		requestAnimationFrame(gameLoop);
+	}
 
-var player = AdamEngine.createWorldObj('player');
 
-player.setup = function() {
+	/* GAME LOOP: PRIVILEGED METHODS */
+	this.start = function() {
+		setupWorldObjs(); // run setup for all world objs
+		requestAnimationFrame(gameLoop); // start game loop
+	};
+};
+
+/* AdamEngine public methods */
+AdamEngine2.prototype.setup = function() {};
+
+AdamEngine2.prototype.update = function() {};
+
+var AE = new AdamEngine2(canvas);
+
+var test = AE.createWorldObj('test');
+test.setup = function() {
+	console.log('test setup');
+
 	this.state.pos = {
 		x: 10,
 		y: 10
@@ -316,22 +271,267 @@ player.setup = function() {
 	};
 };
 
-player.update = function() {
-	if(AdamEngine.InputManager.inputState.keys.LEFT) {
-		this.state.pos.x -= 1;
-	} else if(AdamEngine.InputManager.inputState.keys.RIGHT) {
-		this.state.pos.x += 1;
-	}
+test.update = function() {
+	console.log('test update');
 
-	if(AdamEngine.InputManager.inputState.keys.UP) {
-		this.state.pos.y -= 1;
-	} else if(AdamEngine.InputManager.inputState.keys.DOWN) {
-		this.state.pos.y += 1;
-	}
+	this.state.pos.x += 1;
+	this.state.pos.y += 1;
+}
 
-	if(AdamEngine.InputManager.inputState.mbs.LEFTCLICK.isActive) {
-		console.log('teehee~', '(x: ' + AdamEngine.InputManager.inputState.mbs.LEFTCLICK.pos.x + ', y: ' + AdamEngine.InputManager.inputState.mbs.LEFTCLICK.pos.y + ')');
-	}
+var test2 = AE.createWorldObj('test2');
+test2.setup = function() {
+	console.log('test2 setup');
+
+	this.state.pos = {
+		x: 5,
+		y: 5
+	};
+
+	this.state.size = {
+		w: 20,
+		h: 20
+	};
+
+	this.state.worldObjType = 'rect';
+	this.state.color = '#FF0000';
+	this.state.stroke = {
+		pos: this.state.pos,
+		size: this.state.size,
+		color: '#FFF'
+	};
 };
 
-AdamEngine.start();
+test2.update = function() {
+	console.log('test2 update');
+
+	this.state.pos.y += 2;
+}
+
+AE.start();
+
+// var AdamEngine = {
+// 	canvas: null,
+// 	worldObjs: {},
+// 	storeObjs: {},
+
+// 	/* Classes */
+// 	gameObj: {
+// 		type: null,
+// 		state: {},
+// 		setup: function() {},
+// 		update: function() {}
+// 	},
+
+// 	setup: function(canvas) {
+// 		this.canvas = canvas.getBoundingClientRect();
+// 		this.canvas.ele = canvas;
+
+// 		// world objs inherit from game obj
+// 		this.worldObj = Object.create(this.gameObj);
+// 		this.worldObj.type = 'worldObj';
+// 		this.worldObj.state = {
+// 			worldObjType: null,
+// 			pos: {x: 0, y: 0},
+// 			size: {w: 0, h: 0},
+// 			image: null,
+// 			color: null,
+// 			stroke: null
+// 		};
+
+// 		// store objs inherit from game obj
+// 		this.storeObj = Object.create(this.gameObj);
+// 		this.storeObj.type = 'storeObj';
+// 	},
+
+// 	InputManager: {
+// 		inputMap: {
+// 			keys: {},
+// 			mbs: {}
+// 		},
+
+// 		inputState: {
+// 			keys: {},
+// 			mbs: {}
+// 		},
+
+// 		setup: function() {
+// 			document.addEventListener('keydown', function(e) {
+// 				var inputKeyName = this.inputMap.keys[e.keyCode];
+// 				if(inputKeyName) {
+// 					this.inputState.keys[inputKeyName] = true;
+// 					// console.log(inputKeyName, this.inputState.keys[inputKeyName]);
+// 				}
+// 			}.bind(this));
+
+// 			document.addEventListener('keyup', function(e) {
+// 				var inputKeyName = this.inputMap.keys[e.keyCode];
+// 				if(inputKeyName) {
+// 					this.inputState.keys[inputKeyName] = false;
+// 					// console.log(inputKeyName, this.inputState.keys[inputKeyName]);
+// 				}
+// 			}.bind(this));	
+
+// 			document.addEventListener('mousedown', function(e) {
+// 				var inputMBName = this.inputMap.mbs[e.button];
+// 				if(inputMBName && (e.target === AdamEngine.canvas.ele)) {
+// 					this.inputState.mbs[inputMBName].isActive = true;
+// 					this.inputState.mbs[inputMBName].pos.x = e.clientX - AdamEngine.canvas.left;
+// 					this.inputState.mbs[inputMBName].pos.y = e.clientY - AdamEngine.canvas.top;
+// 					// console.log(inputMBName, this.inputState.mbs[inputMBName]);
+// 				}
+// 			}.bind(this));
+
+// 			document.addEventListener('mouseup', function(e) {
+// 				var inputMBName = this.inputMap.mbs[e.button];
+// 				if(inputMBName) {
+// 					this.inputState.mbs[inputMBName].isActive = false;
+// 					// console.log(inputMBName, this.inputState.mbs[inputMBName]);
+// 				}
+// 			}.bind(this));
+
+// 			// TODO: add listener for mousemove
+// 		},
+
+// 		addKeyInput: function(keyCode, inputKeyName) {
+// 			this.inputMap.keys[keyCode] = inputKeyName;
+// 			this.inputState.keys[inputKeyName] = false;
+// 		},
+
+// 		removeKeyInput: function(inputKeyName) {},
+
+// 		resetKeyState: function() {
+// 			for(var i in this.inputState) {
+// 				this.inputState[i] = false;
+// 			}
+// 		},
+
+// 		addMBInput: function(button, inputMBName) {
+// 			this.inputMap.mbs[button] = inputMBName;
+// 			this.inputState.mbs[inputMBName] = {
+// 				isActive: false,
+// 				pos: {
+// 					x: null,
+// 					y: null
+// 				}
+// 			};
+// 		},
+
+// 		removeMBInput: function(inputMBName) {},
+// 	},
+
+// 	/* Game Object Creators/Destroyers */
+// 	createWorldObj: function(worldObjName) {
+// 		this.worldObjs[worldObjName] = Object.create(this.worldObj);
+// 		return this.worldObjs[worldObjName];
+// 	},
+
+// 	deleteWorldObj: function(worldObjName) {
+// 		delete this.worldObjs[worldObjName];
+// 	},
+
+// 	createStoreObj: function(storeObjName) {
+// 		this.storeObjs[storeObjName] = Object.create(this.storeObj);
+// 		return this.storeObjs[storeObjName];
+// 	},
+
+// 	deleteStoreObj: function(storeObjName) {
+// 		this.storeObjs[storeObjName] = Object.create(this.storeObj);
+// 		return this.storeObjs[storeObjName];
+// 	},
+
+// 	/* Game Loop */
+// 	start: function() {
+// 		// run setup for all game objs
+// 		for(var storeObjName in this.storeObjs) {
+// 			this.storeObjs[storeObjName].setup();
+// 		}
+
+// 		for(var worldObjName in this.worldObjs) {
+// 			this.worldObjs[worldObjName].setup();
+// 		}
+
+// 		requestAnimationFrame(this.gameLoop.bind(this));
+// 	},
+
+// 	update: function(cb) {
+// 		for(var worldObjName in this.worldObjs) {
+// 			this.worldObjs[worldObjName].update();
+// 		}
+// 	},
+
+// 	render: function() {
+// 		ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+// 		// render all pos x & y of all world objs
+// 		for(var worldObjName in this.worldObjs) {
+// 			var worldObj = this.worldObjs[worldObjName];
+// 			if(worldObj.type === 'worldObj') {
+// 				if(worldObj.state.worldObjType === 'rect') {
+// 					ctx.fillStyle = worldObj.state.color;
+// 					ctx.fillRect(worldObj.state.pos.x, worldObj.state.pos.y, worldObj.state.size.w, worldObj.state.size.h);
+
+// 					if(worldObj.state.stroke !== null) {
+// 						ctx.strokeStyle = worldObj.state.stroke.color;
+// 						ctx.strokeRect(worldObj.state.stroke.pos.x, worldObj.state.stroke.pos.y, worldObj.state.stroke.size.w, worldObj.state.stroke.size.h);
+// 					}
+// 				}
+// 			}
+// 		}		
+// 	},
+
+// 	gameLoop: function() {
+// 		this.update();
+// 		this.render();
+// 		requestAnimationFrame(this.gameLoop.bind(this));
+// 	}
+// }
+
+// AdamEngine.InputManager.addKeyInput(37, 'LEFT');
+// AdamEngine.InputManager.addKeyInput(38, 'UP');
+// AdamEngine.InputManager.addKeyInput(39, 'RIGHT');
+// AdamEngine.InputManager.addKeyInput(40, 'DOWN');
+// AdamEngine.InputManager.addMBInput(0, 'LEFTCLICK');
+// AdamEngine.InputManager.setup();
+// AdamEngine.setup(canvas);
+
+// var player = AdamEngine.createWorldObj('player');
+
+// player.setup = function() {
+	// this.state.pos = {
+	// 	x: 10,
+	// 	y: 10
+	// };
+
+	// this.state.size = {
+	// 	w: 10,
+	// 	h: 10
+	// };
+
+	// this.state.worldObjType = 'rect';
+	// this.state.color = '#00FF00';
+	// this.state.stroke = {
+	// 	pos: this.state.pos,
+	// 	size: this.state.size,
+	// 	color: '#FFF'
+	// };
+// };
+
+// player.update = function() {
+// 	if(AdamEngine.InputManager.inputState.keys.LEFT) {
+// 		this.state.pos.x -= 1;
+// 	} else if(AdamEngine.InputManager.inputState.keys.RIGHT) {
+// 		this.state.pos.x += 1;
+// 	}
+
+// 	if(AdamEngine.InputManager.inputState.keys.UP) {
+// 		this.state.pos.y -= 1;
+// 	} else if(AdamEngine.InputManager.inputState.keys.DOWN) {
+// 		this.state.pos.y += 1;
+// 	}
+
+// 	if(AdamEngine.InputManager.inputState.mbs.LEFTCLICK.isActive) {
+// 		console.log('teehee~', '(x: ' + AdamEngine.InputManager.inputState.mbs.LEFTCLICK.pos.x + ', y: ' + AdamEngine.InputManager.inputState.mbs.LEFTCLICK.pos.y + ')');
+// 	}
+// };
+
+// AdamEngine.start();
