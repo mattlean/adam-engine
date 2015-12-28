@@ -115,6 +115,7 @@ var AdamEngine = function(canvasId) {
 	var canvas = document.getElementById(canvasId);
 	var canvasData = canvas.getBoundingClientRect();
 	var ctx = canvas.getContext('2d');
+	var focus = false;
 	
 
 
@@ -140,13 +141,9 @@ var AdamEngine = function(canvasId) {
 	};
 
 	// GameObj public methods
-	GameObj.prototype.setup = function() {
-		console.error('Game object setup() undefined');
-	};
+	GameObj.prototype.setup = function() {};
 
-	GameObj.prototype.update = function() {
-		console.error('Game object update() undefined');
-	};
+	GameObj.prototype.update = function() {};
 
 	// WorldObj class
 	function WorldObj() {
@@ -218,24 +215,35 @@ var AdamEngine = function(canvasId) {
 		// privileged methods
 		this.setup = function() {
 			document.addEventListener('keydown', function(e) {
-				var keyName = inputMap.keys[e.keyCode];
-				if(keyName) {
-					inputState.keys[keyName] = true;
-					console.log(keyName, inputState.keys[keyName]);
+				if(focus) {
+					e.preventDefault();
+					var keyName = inputMap.keys[e.keyCode];
+					if(keyName) {
+						inputState.keys[keyName] = true;
+						console.log(keyName, inputState.keys[keyName]);
+					}
 				}
 			}.bind(this));
 
 			document.addEventListener('keyup', function(e) {
-				var keyName = inputMap.keys[e.keyCode];
-				if(keyName) {
-					inputState.keys[keyName] = false;
-					console.log(keyName, inputState.keys[keyName]);
+				if(focus) {
+					var keyName = inputMap.keys[e.keyCode];
+					if(keyName) {
+						inputState.keys[keyName] = false;
+						console.log(keyName, inputState.keys[keyName]);
+					}
 				}
 			}.bind(this));
 
 			document.addEventListener('mousedown', function(e) {
+				if(e.target === canvas) {
+					focus = true;
+				} else {
+					focus = false;
+				}
+
 				var mbName = inputMap.mbs[e.button];
-				if(mbName && (e.target === canvas)) {
+				if((mbName) && (e.target === canvas)) {
 					inputState.mbs[mbName].isActive = true;
 					inputState.mbs[mbName].pos.x = e.clientX - canvasData.left;
 					inputState.mbs[mbName].pos.y = e.clientY - canvasData.top;
@@ -427,5 +435,21 @@ player.update = function() {
 		console.log('teehee~');
 	}
 };
+
+var item = AE.createWorldObj('item');
+item.setup = function() {
+	this.state.pos = {
+		x: 50,
+		y: 50
+	};
+
+	this.state.size = {
+		w: 30,
+		h: 30
+	};
+
+	this.state.worldObjType = 'rect';
+	this.state.color = '#000';
+}
 
 AE.start();
