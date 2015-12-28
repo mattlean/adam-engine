@@ -121,9 +121,9 @@ var AdamEngine = {
 		update: function() {}
 	},
 
-	// Initialize the game engine so everything can start working
 	setup: function(canvas) {
-		canvas = canvas;
+		this.canvas = canvas.getBoundingClientRect();
+		this.canvas.ele = canvas;
 
 		// world objs inherit from game obj
 		this.worldObj = Object.create(this.gameObj);
@@ -144,40 +144,79 @@ var AdamEngine = {
 	},
 
 	InputManager: {
-		inputMap: {},
+		inputMap: {
+			keys: {},
+			mbs: {}
+		},
 
-		inputState: {},
+		inputState: {
+			keys: {},
+			mbs: {}
+		},
 
 		setup: function() {
 			document.addEventListener('keydown', function(e) {
-				if(this.inputMap[e.keyCode] !== undefined) {
-					this.inputState[this.inputMap[e.keyCode]] = true;
-					console.log(this.inputMap[e.keyCode], this.inputState[this.inputMap[e.keyCode]]);
+				var inputKeyName = this.inputMap.keys[e.keyCode];
+				if(inputKeyName) {
+					this.inputState.keys[inputKeyName] = true;
+					// console.log(inputKeyName, this.inputState.keys[inputKeyName]);
 				}
 			}.bind(this));
 
 			document.addEventListener('keyup', function(e) {
-				if(this.inputMap[e.keyCode] !== undefined) {
-					this.inputState[this.inputMap[e.keyCode]] = false;
-					console.log(this.inputMap[e.keyCode], this.inputState[this.inputMap[e.keyCode]]);
+				var inputKeyName = this.inputMap.keys[e.keyCode];
+				if(inputKeyName) {
+					this.inputState.keys[inputKeyName] = false;
+					// console.log(inputKeyName, this.inputState.keys[inputKeyName]);
 				}
-			}.bind(this));			
+			}.bind(this));	
+
+			document.addEventListener('mousedown', function(e) {
+				var inputMBName = this.inputMap.mbs[e.button];
+				if(inputMBName && (e.target === AdamEngine.canvas.ele)) {
+					this.inputState.mbs[inputMBName].isActive = true;
+					this.inputState.mbs[inputMBName].pos.x = e.clientX - AdamEngine.canvas.left;
+					this.inputState.mbs[inputMBName].pos.y = e.clientY - AdamEngine.canvas.top;
+					// console.log(inputMBName, this.inputState.mbs[inputMBName]);
+				}
+			}.bind(this));
+
+			document.addEventListener('mouseup', function(e) {
+				var inputMBName = this.inputMap.mbs[e.button];
+				if(inputMBName) {
+					this.inputState.mbs[inputMBName].isActive = false;
+					// console.log(inputMBName, this.inputState.mbs[inputMBName]);
+				}
+			}.bind(this));
+
+			// TODO: add listener for mousemove
 		},
 
-		addInput: function(keyCode, name) {
-			this.inputMap[keyCode] = name;
-			this.inputState[name] = false;
+		addKeyInput: function(keyCode, inputKeyName) {
+			this.inputMap.keys[keyCode] = inputKeyName;
+			this.inputState.keys[inputKeyName] = false;
 		},
 
-		removeInput: function(keyCode, name) {
-			delete this.inputMap[keyCode];
-		},
+		removeKeyInput: function(inputKeyName) {},
 
-		resetState: function() {
+		resetKeyState: function() {
 			for(var i in this.inputState) {
 				this.inputState[i] = false;
 			}
-		}
+		},
+
+		addMBInput: function(button, inputMBName) {
+			this.inputMap.mbs[button] = inputMBName;
+			this.inputState.mbs[inputMBName] = {
+				isActive: false,
+				pos: {
+					x: null,
+					y: null
+				}
+			};
+		},
+
+		removeMBInput: function(inputMBName) {},
 	},
 
 	/* Game Object Creators/Destroyers */
@@ -247,10 +286,11 @@ var AdamEngine = {
 	}
 }
 
-AdamEngine.InputManager.addInput(37, 'LEFT');
-AdamEngine.InputManager.addInput(38, 'UP');
-AdamEngine.InputManager.addInput(39, 'RIGHT');
-AdamEngine.InputManager.addInput(40, 'DOWN');
+AdamEngine.InputManager.addKeyInput(37, 'LEFT');
+AdamEngine.InputManager.addKeyInput(38, 'UP');
+AdamEngine.InputManager.addKeyInput(39, 'RIGHT');
+AdamEngine.InputManager.addKeyInput(40, 'DOWN');
+AdamEngine.InputManager.addMBInput(0, 'LEFTCLICK');
 AdamEngine.InputManager.setup();
 AdamEngine.setup(canvas);
 
@@ -277,19 +317,20 @@ player.setup = function() {
 };
 
 player.update = function() {
-	// this.state.pos.x += 1;
-	// this.state.pos.y += 1;
-
-	if(AdamEngine.InputManager.inputState.LEFT) {
+	if(AdamEngine.InputManager.inputState.keys.LEFT) {
 		this.state.pos.x -= 1;
-	} else if(AdamEngine.InputManager.inputState.RIGHT) {
+	} else if(AdamEngine.InputManager.inputState.keys.RIGHT) {
 		this.state.pos.x += 1;
 	}
 
-	if(AdamEngine.InputManager.inputState.UP) {
+	if(AdamEngine.InputManager.inputState.keys.UP) {
 		this.state.pos.y -= 1;
-	} else if(AdamEngine.InputManager.inputState.DOWN) {
+	} else if(AdamEngine.InputManager.inputState.keys.DOWN) {
 		this.state.pos.y += 1;
+	}
+
+	if(AdamEngine.InputManager.inputState.mbs.LEFTCLICK.isActive) {
+		console.log('teehee~', '(x: ' + AdamEngine.InputManager.inputState.mbs.LEFTCLICK.pos.x + ', y: ' + AdamEngine.InputManager.inputState.mbs.LEFTCLICK.pos.y + ')');
 	}
 };
 
