@@ -15,7 +15,9 @@ grid.createGrid = function() {
   var currY = 0;
   var tileSize = 70;
   var marginYOffset = 2;
+  var tileNames = ['BHQ2.png', 'FAM2.png', 'GOLD2.png', 'ORANGE2.png', 'QUASAR2.png', 'RED2.png'];
 
+  // create tiles within grid
   for(var i=0; i < 9; ++i) {
     var row = [];
     var currX = 0;
@@ -29,22 +31,22 @@ grid.createGrid = function() {
       tile.state.pos.x = currX + marginXOffset;
       tile.state.pos.y = currY + marginYOffset;
 
-      tile.state.size = {
-        w: tileSize,
-        h: tileSize
-      };
+      tile.state.size.w = tileSize;
+      tile.state.size.h = tileSize;
 
       var atlas = tile.state.atlas.data;
+      var randNum = Math.floor(Math.random() * (0, 6));
+      var randTileName = tileNames[randNum];
 
       tile.state.img = tile.state.atlas.img;
       tile.state.imgData = {
-        sx: atlas.frames['BHQ2.png'].frame.x,
-        sy: atlas.frames['BHQ2.png'].frame.y,
-        sw: atlas.frames['BHQ2.png'].sourceSize.w,
-        sh: atlas.frames['BHQ2.png'].sourceSize.h
+        sx: atlas.frames[randTileName].frame.x,
+        sy: atlas.frames[randTileName].frame.y,
+        sw: atlas.frames[randTileName].sourceSize.w,
+        sh: atlas.frames[randTileName].sourceSize.h
       };
 
-      tile.state.zIndex = 9000;
+      tile.state.zIndex = 1;
 
       tile.state.worldObjType = 'img';
       row.push(tile);
