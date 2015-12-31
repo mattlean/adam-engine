@@ -1,6 +1,3 @@
-var body = document.querySelector('body');
-var canvasId = 'adam-engine';
-
 // AdamEngine class
 var AdamEngine = function(canvasId) {
 	/*** GENERAL ***/
@@ -63,7 +60,6 @@ var AdamEngine = function(canvasId) {
 	/* GAME OBJECTS: PRIVATE PROPERTIES */
 	var worldObjs = {};
 	var storeObjs = {};
-	var renderPipe = []; // determines rendering order of world objs
 
 
 	/* GAME OBJECTS: PRIVATE METHODS */
@@ -243,16 +239,20 @@ var AdamEngine = function(canvasId) {
 		},
 
 		this.loadAssets = function(cb) {
-			// start downloading atlases
-			for(var atlasName in atlases) {
-				atlases[atlasName].img.onload = loadFinishCheck(cb);
-				atlases[atlasName].xhr.onload = function() {
-					atlases[atlasName].data = this.response;
-					loadFinishCheck(cb);
-				};
+			if(totalAssets > 0) {
+				// start downloading atlases
+				for(var atlasName in atlases) {
+					atlases[atlasName].img.onload = loadFinishCheck(cb);
+					atlases[atlasName].xhr.onload = function() {
+						atlases[atlasName].data = this.response;
+						loadFinishCheck(cb);
+					};
 
-				atlases[atlasName].img.src = atlases[atlasName].img.imgLoc;
-				atlases[atlasName].xhr.send();
+					atlases[atlasName].img.src = atlases[atlasName].img.imgLoc;
+					atlases[atlasName].xhr.send();
+				}
+			} else {
+				cb();
 			}
 		};
 	}
@@ -264,6 +264,10 @@ var AdamEngine = function(canvasId) {
 
 
 	/*** GAME LOOP ***/
+	/* GAME LOOP: PRIVATE PROPERTIES */
+	var renderPipe = []; // determines rendering order of world objs
+
+
 	/* GAME LOOP: PRIVATE METHODS */
 	function setupWorldObjs() {
 		renderPipe = []; // recreate renderPipe
@@ -324,5 +328,22 @@ var AdamEngine = function(canvasId) {
 	/* GAME LOOP: PRIVILEGED METHODS */
 	this.start = function() {
 		this.assetMan.loadAssets(setupWorldObjs); // dl assets & setup world objs when dl is complete
+	};
+
+	this.updateRenderPipe = function() {
+		renderPipe = []; // recreate renderPipe
+		for(var worldObjName in worldObjs) {
+			renderPipe.push(worldObjs[worldObjName]);
+		}
+
+		renderPipe.sort(function(a, b) {
+			if(a.state.zIndex > b.state.zIndex) {
+				return 1;
+			}
+			if(a.state.zIndex < b.state.zIndex) {
+				return -1;
+			}
+			return 0;
+		});
 	};
 };
