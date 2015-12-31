@@ -1,8 +1,7 @@
 (function(){
 	var AE = new AdamEngine(canvasId);
 
-	AE.assetMan.newAtlas('/img/atlas.png', '/img/atlas.json');
-	AE.assetMan.loadAssets();
+	AE.assetMan.newAtlas('tiles', '/img/atlas.png', '/img/atlas.json');
 
 	AE.inputMan.addKeyInput(37, 'LEFT');
 	AE.inputMan.addKeyInput(38, 'UP');
@@ -93,23 +92,6 @@
 		this.state.zIndex = 200;
 	};
 
-	var zone2 = AE.createWorldObj('zone2');
-	zone2.setup = function() {
-		this.state.pos = {
-			x: 100,
-			y: 50
-		};
-
-		this.state.size = {
-			w: 40,
-			h: 40
-		};
-
-		this.state.worldObjType = 'rect';
-		this.state.color = '#000';
-		this.state.zIndex = 100;
-	};
-
 	player.update = function() {
 		if(AE.inputMan.getKeyState('LEFT')) {
 			this.state.pos.x -= 1;
@@ -136,6 +118,57 @@
 			console.log('player collision with zone');
 		}
 	};
+
+	var zone2 = AE.createWorldObj('zone2');
+	zone2.setup = function() {
+		this.state.pos = {
+			x: 100,
+			y: 50
+		};
+
+		this.state.size = {
+			w: 40,
+			h: 40
+		};
+
+		this.state.worldObjType = 'rect';
+		this.state.color = '#000';
+		this.state.zIndex = 100;
+	};
+
+	var imgTest = AE.createWorldObj('spriteTest');
+	imgTest.setup = function() {
+		this.state.atlas = AE.assetMan.getAtlas('tiles');
+		this.state.pos = {
+			x: 50,
+			y: 50
+		}
+
+		this.state.size = {
+			w: 70,
+			h: 70
+		};
+
+		var atlas = this.state.atlas.data;
+
+		this.state.img = this.state.atlas.img;
+		this.state.imgData = {
+			sx: atlas.frames['BHQ2.png'].frame.x,
+			sy: atlas.frames['BHQ2.png'].frame.y,
+			sw: atlas.frames['BHQ2.png'].sourceSize.w,
+			sh: atlas.frames['BHQ2.png'].sourceSize.h
+		};
+
+		this.state.worldObjType = 'img';
+	};
+
+	imgTest.update = function() {
+		if(AE.inputMan.getKeyState('UP')) {
+			this.state.pos.y -= 10;
+		} else if(AE.inputMan.getKeyState('DOWN')) {
+			this.state.pos.y += 10;
+		}
+	}
 
 	AE.start();
 }());

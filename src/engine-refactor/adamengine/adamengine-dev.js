@@ -47,7 +47,9 @@ var AdamEngine = function(canvasId) {
 		this.state.worldObjType = null;
 		this.state.pos = {x: 0, y: 0};
 		this.state.size = {w: 0, h: 0};
-		this.state.image = null;
+		this.state.img = null;
+		this.state.imgData = null;
+		this.state.atlas = null;
 		this.state.color = null;
 		this.state.stroke = null;
 		this.state.zIndex = 0;
@@ -206,50 +208,51 @@ var AdamEngine = function(canvasId) {
 		// private properties
 		var loadedAssets = 0;
 		var totalAssets = 0;
-		var atlases = [];
+		var atlases = {};
 
 		// private methods
-		function loadFinishCheck() {
+		function loadFinishCheck(cb) {
+			++loadedAssets;
+			console.log('Loaded assets: ' + loadedAssets);
+
 			if(loadedAssets === totalAssets) {
 				loading = false;
 				console.log('Loading completed!');
+				cb();
 			}
 		}
-
 		// privileged methods
-		this.newAtlas = function(imageLoc, dataLoc) {
-			var image = new Image();
-			image.imageLoc = imageLoc;
-			image.onload = function() {
-				++loadedAssets;
-				console.log('Loaded assets: ' + loadedAssets);
+		this.newAtlas = function(atlasName, imgLoc, dataLoc) {
+			var img = new Image();
+			img.imgLoc = imgLoc;
 
-				loadFinishCheck();
-			};
-
-			var data = new XMLHttpRequest();
-			data.responseType = 'json';
-			data.open('GET', dataLoc, true);
-			data.responseType = 'json';
-			data.onload = function(response) {
-				++loadedAssets;
-				console.log('Loaded assets: ' + loadedAssets);
-
-				loadFinishCheck();
-			};
+			var xhr = new XMLHttpRequest();
+			xhr.responseType = 'json';
+			xhr.open('GET', dataLoc, true);
 
 			// TODO: onerror retry load
 
 			totalAssets = totalAssets + 2;
 
-			var atlas = {image: image, data: data};
-			atlases.push(atlas);
+			var atlas = {img: img, xhr: xhr};
+			atlases[atlasName] = atlas;
 		};
 
-		this.loadAssets = function() {
-			for(var i in atlases) {
-				atlases[i].image.src = atlases[i].image.imageLoc;
-				atlases[i].data.send();
+		this.getAtlas = function(atlasName) {
+			return atlases[atlasName];
+		},
+
+		this.loadAssets = function(cb) {
+			// start downloading atlases
+			for(var atlasName in atlases) {
+				atlases[atlasName].img.onload = loadFinishCheck(cb);
+				atlases[atlasName].xhr.onload = function() {
+					atlases[atlasName].data = this.response;
+					loadFinishCheck(cb);
+				};
+
+				atlases[atlasName].img.src = atlases[atlasName].img.imgLoc;
+				atlases[atlasName].xhr.send();
 			}
 		};
 	}
@@ -278,6 +281,8 @@ var AdamEngine = function(canvasId) {
 			}
 			return 0;
 		});
+
+		requestAnimationFrame(gameLoop); // start game loop
 	}
 
 	function update() {
@@ -301,6 +306,9 @@ var AdamEngine = function(canvasId) {
 						ctx.strokeStyle = worldObj.state.stroke.color;
 						ctx.strokeRect(worldObj.state.stroke.pos.x, worldObj.state.stroke.pos.y, worldObj.state.stroke.size.w, worldObj.state.stroke.size.h);
 					}
+				} else if(worldObj.state.worldObjType === 'img') {
+					// TODO: if imgData is null, don't use atlas data
+					ctx.drawImage(worldObj.state.img, worldObj.state.imgData.sx, worldObj.state.imgData.sy, worldObj.state.imgData.sw, worldObj.state.imgData.sh, worldObj.state.pos.x, worldObj.state.pos.y, worldObj.state.size.w, worldObj.state.size.h);
 				}
 			}
 		}
@@ -315,7 +323,6 @@ var AdamEngine = function(canvasId) {
 
 	/* GAME LOOP: PRIVILEGED METHODS */
 	this.start = function() {
-		setupWorldObjs(); // run setup for all world objs
-		requestAnimationFrame(gameLoop); // start game loop
+		this.assetMan.loadAssets(setupWorldObjs); // dl assets & setup world objs when dl is complete
 	};
 };
