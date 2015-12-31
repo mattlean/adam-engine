@@ -46,9 +46,9 @@ grid.createGrid = function() {
         sh: atlas.frames[randTileName].sourceSize.h
       };
 
-      tile.state.zIndex = 1;
-
+      tile.state.zIndex = 2;
       tile.state.worldObjType = 'img';
+
       row.push(tile);
 
       currX += tileSize;
@@ -61,7 +61,13 @@ grid.createGrid = function() {
   }
 
   AE.updateRenderPipe();
-  console.log(grid);
+};
+
+grid.deleteTile = function(x, y) {
+  var tile = this.state.grid[x][y];
+  AE.deleteWorldObj(tile.name);
+  this.state.grid[x][y] = null;
+  AE.updateRenderPipe();
 };
 
 grid.setup = function() {
@@ -69,10 +75,7 @@ grid.setup = function() {
   this.state.pos.y = 0;
   this.state.size.w = 650;
   this.state.size.h = 650;
-
-  this.state.worldObjType = 'rect';
-  this.state.color = '#0000FF';
-
+  this.state.worldObjType = 'invis';
   this.createGrid();
 };
 

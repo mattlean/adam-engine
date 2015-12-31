@@ -41,6 +41,7 @@ var AdamEngine = function(canvasId) {
 		GameObj.call(this, 'world-obj'); // inherit from GameObj
 
 		// set default state
+		this.state.name = null;
 		this.state.worldObjType = null;
 		this.state.pos = {x: 0, y: 0};
 		this.state.size = {w: 0, h: 0};
@@ -68,6 +69,7 @@ var AdamEngine = function(canvasId) {
 			console.error('A world object with the name "' + worldObjName + '" already exists!');
 		} else {
 			worldObjs[worldObjName] = new WorldObj();
+			worldObjs[worldObjName].name = worldObjName;
 			return worldObjs[worldObjName];
 		}
 	}
