@@ -163,7 +163,6 @@ var AdamEngine = function(canvasId) {
 			}.bind(this));
 
 			document.addEventListener('touchstart', function(e) {
-				console.log('touchstart triggered');
 				if(inputState.touch && (e.target === canvas)) {
 					inputState.touch.isActive = true;
 					inputState.touch.fullPress = false;
@@ -171,12 +170,9 @@ var AdamEngine = function(canvasId) {
 					inputState.touch.pos.startY = e.targetTouches[0].pageY - canvasData.top;
 					// console.log(inputState.touch.pos);
 				}
-				console.log(inputState.touch.isActive);
-				console.log(inputState.touch.fullPress);
 			});
 
 			document.addEventListener('touchend', function(e) {
-				console.log('touchend triggered');
 				if(inputState.touch && (e.target === canvas)) {
 					inputState.touch.isActive = false;
 					inputState.touch.fullPress = true;
@@ -184,8 +180,12 @@ var AdamEngine = function(canvasId) {
 					inputState.touch.pos.endY = e.changedTouches[0].pageY - canvasData.top;
 					// console.log(inputState.touch.pos);
 				}
-				console.log(inputState.touch.isActive);
-				console.log(inputState.touch.fullPress);
+			});
+
+			document.addEventListener('touchmove', function(e) {
+				if(e.target === canvas) {
+					e.preventDefault();
+				}
 			});
 
 			// TODO: add listener for mousemove

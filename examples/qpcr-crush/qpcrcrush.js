@@ -256,6 +256,45 @@ grid.tileClicked = function() {
   }
 };
 
+grid.tilePressed = function() {
+  var touch = {start: null, end: null};
+
+  var touchState = AE.inputMan.getTouchState();
+
+  // check if the touch path is valid
+  for(var y=0; y < this.state.grid.length; ++y) {
+    for(var x=0; x < this.state.grid.length; ++x) {
+      var tile = this.state.grid[y][x];
+        
+      if(
+        (touchState.pos.startX < (tile.state.pos.x + tile.state.size.w)) &&
+        (touchState.pos.startX > tile.state.pos.x) &&
+        (touchState.pos.startY < (tile.state.pos.y + tile.state.size.h)) &&
+        (touchState.pos.startY > tile.state.pos.y)
+      ) {
+        touch.start = tile;
+        this.state.prevClickedTile = touch.start;
+        touch.start.state.stroke = {
+          pos: touch.start.state.pos,
+          size: {w: touch.start.state.size.w, h: touch.start.state.size.h},
+          color: '#FF0000'
+        };
+      }
+
+      if(
+        (touchState.pos.endX < (tile.state.pos.x + tile.state.size.w)) &&
+        (touchState.pos.endX > tile.state.pos.x) &&
+        (touchState.pos.endY < (tile.state.pos.y + tile.state.size.h)) &&
+        (touchState.pos.endY > tile.state.pos.y)
+      ) {
+        touch.end = tile;
+      }
+    }
+  }
+
+  return touch;
+};
+
 grid.validSwap = function(clickedTile, prevClickedTile) {
   if(
     (clickedTile.state.gridLoc.y === (prevClickedTile.state.gridLoc.y - 1) &&
@@ -272,85 +311,88 @@ grid.validSwap = function(clickedTile, prevClickedTile) {
   return false;
 };
 
+grid.processInput = function(clickedTile, prevClickedTile) {
+  if(clickedTile) {
+    console.log(this.state.grid);
+    console.log('clicked a tile');
+    // check if clicked tile is within range of prev
+    if(prevClickedTile) {
+      console.log('prevClickedTile is set');
+      this.state.prevClickedTile.state.stroke = null;
+
+      if(this.validSwap(clickedTile, prevClickedTile)) {
+        console.log('swap is valid');
+        // if player clicked up, right, down, or left of prevClickedTile
+        var clickedTileGridLoc = clickedTile.state.gridLoc;
+        var prevClickedTileGridLoc = prevClickedTile.state.gridLoc;
+
+        var tempTile = this.state.gridCheck[clickedTileGridLoc.y][clickedTileGridLoc.x];
+        this.state.gridCheck[clickedTileGridLoc.y][clickedTileGridLoc.x] = this.state.gridCheck[prevClickedTileGridLoc.y][prevClickedTileGridLoc.x];
+        this.state.gridCheck[prevClickedTileGridLoc.y][prevClickedTileGridLoc.x] = tempTile;
+
+        console.log(this.state.gridCheck);
+        if(this.findMatches(this.state.gridCheck)) {
+          console.log('match found');
+          // if swap results to a match, updated grid
+          var grid = this.state.grid;
+          var gridCheck = this.state.gridCheck;
+
+          var newClickedTile = gridCheck[prevClickedTileGridLoc.y][prevClickedTileGridLoc.x];
+          var newPrevClickedTile = gridCheck[clickedTileGridLoc.y][clickedTileGridLoc.x];
+
+          // begin swap animation
+          var tile1 = grid[clickedTileGridLoc.y][clickedTileGridLoc.x];
+          var tile2 = grid[prevClickedTileGridLoc.y][prevClickedTileGridLoc.x];
+
+          this.state.swapping = {tile1: tile1, tile2: tile2};
+          tile1.state.moveTo = {x: tile2.state.pos.x, y: tile2.state.pos.y};
+          tile2.state.moveTo = {x: tile1.state.pos.x, y: tile1.state.pos.y};
+          this.finishSwap = function() {
+            console.log('swap done');
+                
+            // swap gridLoc
+            var tempGridLoc = {x: newClickedTile.state.gridLoc.x, y: newClickedTile.state.gridLoc.y};
+            newClickedTile.state.gridLoc.x = newPrevClickedTile.state.gridLoc.x;
+            newClickedTile.state.gridLoc.y = newPrevClickedTile.state.gridLoc.y;
+            newPrevClickedTile.state.gridLoc.x = tempGridLoc.x;
+            newPrevClickedTile.state.gridLoc.y = tempGridLoc.y;
+
+            this.state.grid = this.copyGrid(this.state.gridCheck); // update grid with valid gridCheck
+            this.state.gridCheck = this.copyGrid(this.state.grid); // sync grid check with grid
+          };
+        } else {
+          this.state.gridCheck = this.copyGrid(this.state.grid); // sync grid check with grid
+        }
+      }
+    }
+
+    if(this.state.prevClickedTile) {
+      this.state.prevClickedTile = null;
+    } else {
+      this.state.prevClickedTile = clickedTile;
+
+      clickedTile.state.stroke = {
+        pos: clickedTile.state.pos,
+        size: {w: clickedTile.state.size.w, h: clickedTile.state.size.h},
+        color: '#FF0000'
+      };
+    }
+  }
+};
+
 grid.update = function() {
   var touchState = AE.inputMan.getTouchState();
   if(touchState.fullPress) {
-    console.log('heyadfasdfasf');
+    var touch = this.tilePressed();
+
+    if(touch.start && touch.end && (this.state.swapping === null)) {
+      grid.processInput(touch.start, touch.end);
+    }
   } else if(AE.inputMan.getMBState('LEFTCLICK').fullClick && (this.state.swapping === null)) {
     var clickedTile = this.tileClicked();
     var prevClickedTile = this.state.prevClickedTile;
 
-    if(clickedTile) {
-      console.log(this.state.grid);
-      console.log('clicked a tile');
-      // check if clicked tile is within range of prev
-      if(prevClickedTile) {
-        console.log('prevClickedTile is set');
-        this.state.prevClickedTile.state.stroke = null;
-
-        if(this.validSwap(clickedTile, prevClickedTile)) {
-          console.log('swap is valid');
-          // if player clicked up, right, down, or left of prevClickedTile
-          var clickedTileGridLoc = clickedTile.state.gridLoc;
-          var prevClickedTileGridLoc = prevClickedTile.state.gridLoc;
-
-          var tempTile = this.state.gridCheck[clickedTileGridLoc.y][clickedTileGridLoc.x];
-          this.state.gridCheck[clickedTileGridLoc.y][clickedTileGridLoc.x] = this.state.gridCheck[prevClickedTileGridLoc.y][prevClickedTileGridLoc.x];
-          this.state.gridCheck[prevClickedTileGridLoc.y][prevClickedTileGridLoc.x] = tempTile;
-
-          console.log(this.state.gridCheck);
-          if(this.findMatches(this.state.gridCheck)) {
-            console.log('match found');
-            // if swap results to a match, updated grid
-            var grid = this.state.grid;
-            var gridCheck = this.state.gridCheck;
-
-            var newClickedTile = gridCheck[prevClickedTileGridLoc.y][prevClickedTileGridLoc.x];
-            var newPrevClickedTile = gridCheck[clickedTileGridLoc.y][clickedTileGridLoc.x];
-
-            // begin swap animation
-            var tile1 = grid[clickedTileGridLoc.y][clickedTileGridLoc.x];
-            var tile2 = grid[prevClickedTileGridLoc.y][prevClickedTileGridLoc.x];
-
-            this.state.swapping = {tile1: tile1, tile2: tile2};
-            tile1.state.moveTo = {x: tile2.state.pos.x, y: tile2.state.pos.y};
-            tile2.state.moveTo = {x: tile1.state.pos.x, y: tile1.state.pos.y};
-            this.finishSwap = function() {
-              console.log('swap done');
-              // var tempPos = {x: newClickedTile.state.pos.x, y: newClickedTile.state.pos.y};
-              // newClickedTile.state.pos.x = newPrevClickedTile.state.pos.x;
-              // newClickedTile.state.pos.y = newPrevClickedTile.state.pos.y;
-              // newPrevClickedTile.state.pos.x = tempPos.x;
-              // newPrevClickedTile.state.pos.y = tempPos.y;
-              
-              // swap gridLoc
-              var tempGridLoc = {x: newClickedTile.state.gridLoc.x, y: newClickedTile.state.gridLoc.y};
-              newClickedTile.state.gridLoc.x = newPrevClickedTile.state.gridLoc.x;
-              newClickedTile.state.gridLoc.y = newPrevClickedTile.state.gridLoc.y;
-              newPrevClickedTile.state.gridLoc.x = tempGridLoc.x;
-              newPrevClickedTile.state.gridLoc.y = tempGridLoc.y;
-
-              this.state.grid = this.copyGrid(this.state.gridCheck); // update grid with valid gridCheck
-              this.state.gridCheck = this.copyGrid(this.state.grid); // sync grid check with grid
-            };
-          } else {
-            this.state.gridCheck = this.copyGrid(this.state.grid); // sync grid check with grid
-          }
-        }
-      }
-
-      if(this.state.prevClickedTile) {
-        this.state.prevClickedTile = null;
-      } else {
-        this.state.prevClickedTile = clickedTile;
-
-        clickedTile.state.stroke = {
-          pos: clickedTile.state.pos,
-          size: {w: clickedTile.state.size.w, h: clickedTile.state.size.h},
-          color: '#FF0000'
-        };
-      }
-    }
+    grid.processInput(clickedTile, prevClickedTile);
   }
 
   if(this.state.swapping && (this.state.swapDone === 2)) {
