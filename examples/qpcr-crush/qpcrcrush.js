@@ -21,6 +21,7 @@ grid.setup = function() {
 grid.createGrid = function() {
   if (this.state.grid !== undefined) {
     this.clearGrid();
+    this.state.tilesToDel = [];
   }
 
   this.state.grid = []; // grid visible to players
@@ -29,6 +30,7 @@ grid.createGrid = function() {
   this.state.prevClickedTile = null;
   this.state.swapping = null;
   this.state.swapDone = 0;
+  this.state.tilesToDel = [];
 
   var currY = 0;
   var tileSize = 70;
@@ -75,7 +77,6 @@ grid.createGrid = function() {
       tile.state.moveTo = null;
       tile.update = function() {
         if(grid.state.swapping && (this.state.moveTo !== null)) {
-          console.log('yeeeee');
           // move tile to moveTo destination
           if(this.state.pos.x < this.state.moveTo.x) {
             this.state.pos.x = this.state.pos.x + 2;
@@ -95,13 +96,6 @@ grid.createGrid = function() {
           }
         }
       }
-      /*tile.moveTo = function(gridLocX, gridLocY) {
-        var destination = grid.state.grid[gridLocY][gridLocX];
-        tile.state.moveToLoc = destination.state.pos;
-        this.update = function() {
-          console.log(tile.state.moveToLoc);
-        };
-      };*/
 
       row.push(tile);
 
@@ -155,6 +149,7 @@ grid.findMatches = function(grid) {
             console.log('>3 match occurred');
             for(var i in prevSameXTiles) {
               console.log(prevSameXTiles[i].state.gridLoc.x, prevSameXTiles[i].state.gridLoc.y);
+              this.state.tilesToDel.push(prevSameXTiles[i]);
             }
             console.log('\n');
 
@@ -171,6 +166,7 @@ grid.findMatches = function(grid) {
       console.log('>3 match occurred');
       for(var i in prevSameXTiles) {
         console.log(prevSameXTiles[i].state.gridLoc.x, prevSameXTiles[i].state.gridLoc.y);
+        this.state.tilesToDel.push(prevSameXTiles[i]);
       }
       console.log('\n');
 
@@ -195,6 +191,7 @@ grid.findMatches = function(grid) {
             console.log('>3 match occurred');
             for(var i in prevSameYTiles) {
               console.log(prevSameYTiles[i].state.gridLoc.x, prevSameYTiles[i].state.gridLoc.y);
+              this.state.tilesToDel.push(prevSameYTiles[i]);
             }
             console.log('\n');
 
@@ -211,6 +208,7 @@ grid.findMatches = function(grid) {
       console.log('>3 match occurred');
       for(var i in prevSameYTiles) {
         console.log(prevSameYTiles[i].state.gridLoc.x, prevSameYTiles[i].state.gridLoc.y);
+        this.state.tilesToDel.push(prevSameYTiles[i]);
       }
       console.log('\n');
 
@@ -265,7 +263,7 @@ grid.tilePressed = function() {
   for(var y=0; y < this.state.grid.length; ++y) {
     for(var x=0; x < this.state.grid.length; ++x) {
       var tile = this.state.grid[y][x];
-        
+
       if(
         (touchState.pos.startX < (tile.state.pos.x + tile.state.size.w)) &&
         (touchState.pos.startX > tile.state.pos.x) &&
@@ -274,11 +272,11 @@ grid.tilePressed = function() {
       ) {
         touch.start = tile;
         this.state.prevClickedTile = touch.start;
-        touch.start.state.stroke = {
-          pos: touch.start.state.pos,
-          size: {w: touch.start.state.size.w, h: touch.start.state.size.h},
-          color: '#FF0000'
-        };
+        // touch.start.state.stroke = {
+        //   pos: touch.start.state.pos,
+        //   size: {w: touch.start.state.size.w, h: touch.start.state.size.h},
+        //   color: '#FF0000'
+        // };
       }
 
       if(
@@ -358,6 +356,12 @@ grid.processInput = function(clickedTile, prevClickedTile) {
             newPrevClickedTile.state.gridLoc.y = tempGridLoc.y;
 
             this.state.grid = this.copyGrid(this.state.gridCheck); // update grid with valid gridCheck
+
+            for(var i in this.state.tilesToDel) {
+              var currTile = this.state.tilesToDel[i];
+              this.deleteTile(currTile.state.gridLoc.y, currTile.state.gridLoc.x);
+            }
+
             this.state.gridCheck = this.copyGrid(this.state.grid); // sync grid check with grid
           };
         } else {
