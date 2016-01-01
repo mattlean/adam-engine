@@ -273,7 +273,10 @@ grid.validSwap = function(clickedTile, prevClickedTile) {
 };
 
 grid.update = function() {
-  if(AE.inputMan.getMBState('LEFTCLICK').fullClick && (this.state.swapping === null)) {
+  var touchState = AE.inputMan.getTouchState();
+  if(touchState.fullPress) {
+    console.log('heyadfasdfasf');
+  } else if(AE.inputMan.getMBState('LEFTCLICK').fullClick && (this.state.swapping === null)) {
     var clickedTile = this.tileClicked();
     var prevClickedTile = this.state.prevClickedTile;
 
