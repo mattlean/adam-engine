@@ -31,6 +31,7 @@ grid.createGrid = function() {
   this.state.swapping = null;
   this.state.swapDone = 0;
   this.state.fading = false;
+  this.state.fadeDone = 0;
   this.state.tilesToDel = [];
 
   var currY = 0;
@@ -91,9 +92,25 @@ grid.createGrid = function() {
             this.state.pos.y = this.state.pos.y - 2;
           }
 
+          // add to swapDone to notify grid when all tiles are done moving
           if((this.state.pos.x === this.state.moveTo.x) && (this.state.pos.y === this.state.moveTo.y)) {
             this.state.moveTo = null;
             ++grid.state.swapDone;
+          }
+        }
+
+        if(grid.state.fading && this.state.alpha) {
+          // fade out the tile
+          if(this.state.alpha > 0) {
+            this.state.alpha = this.state.alpha - 0.1;
+          } else {
+            this.state.alpha = 0;
+          }
+
+          // add to fadeDone to notify grid when all tiles are done fading
+          if(this.state.alpha === 0) {
+            this.state.alpha = null;
+            ++grid.state.fadeDone;
           }
         }
       }
@@ -348,6 +365,7 @@ grid.processInput = function(clickedTile, prevClickedTile) {
           this.state.swapping = {tile1: tile1, tile2: tile2};
           tile1.state.moveTo = {x: tile2.state.pos.x, y: tile2.state.pos.y};
           tile2.state.moveTo = {x: tile1.state.pos.x, y: tile1.state.pos.y};
+
           this.finishSwap = function() {
             console.log('swap done');
                 
@@ -360,12 +378,14 @@ grid.processInput = function(clickedTile, prevClickedTile) {
 
             this.state.grid = this.copyGrid(this.state.gridCheck); // update grid with valid gridCheck
 
+            // delete tiles
+            this.state.fading = true;
+
+            // assign each tile an alpha value
             for(var i in this.state.tilesToDel) {
               var currTile = this.state.tilesToDel[i];
-              this.deleteTile(currTile.state.gridLoc.y, currTile.state.gridLoc.x);
+              currTile.state.alpha = 1;
             }
-
-            this.state.gridCheck = this.copyGrid(this.state.grid); // sync grid check with grid
           };
         } else {
           this.state.gridCheck = this.copyGrid(this.state.grid); // sync grid check with grid
@@ -389,23 +409,40 @@ grid.processInput = function(clickedTile, prevClickedTile) {
 
 grid.update = function() {
   var touchState = AE.inputMan.getTouchState();
-  if(touchState.fullPress) {
-    var touch = this.tilePressed();
+  if((this.state.swapping == null) && (this.state.fading === false)) {
+    if(touchState.fullPress) {
+      var touch = this.tilePressed();
 
-    if(touch.start && touch.end && (this.state.swapping === null)) {
-      grid.processInput(touch.start, touch.end);
+      if(touch.start && touch.end) {
+        grid.processInput(touch.start, touch.end);
+      }
+    } else if(AE.inputMan.getMBState('LEFTCLICK').fullClick) {
+      var clickedTile = this.tileClicked();
+      var prevClickedTile = this.state.prevClickedTile;
+
+      grid.processInput(clickedTile, prevClickedTile);
     }
-  } else if(AE.inputMan.getMBState('LEFTCLICK').fullClick && (this.state.swapping === null)) {
-    var clickedTile = this.tileClicked();
-    var prevClickedTile = this.state.prevClickedTile;
-
-    grid.processInput(clickedTile, prevClickedTile);
   }
 
+  // if swapping is done
   if(this.state.swapping && (this.state.swapDone === 2)) {
     this.state.swapping = null;
     this.state.swapDone = 0;
     this.finishSwap();
+  }
+
+  // if fading is done
+  if(this.state.fading && (this.state.fadeDone === this.state.tilesToDel.length)) {
+    this.state.fading = false;
+    this.state.fadeDone = 0;
+    
+    // delete tiles from grid
+    for(var i in this.state.tilesToDel) {
+      var currTile = this.state.tilesToDel[i];
+      this.deleteTile(currTile.state.gridLoc.y, currTile.state.gridLoc.x);
+    }
+
+    this.state.gridCheck = this.copyGrid(this.state.grid); // sync grid check with grid
   }
 };
 
