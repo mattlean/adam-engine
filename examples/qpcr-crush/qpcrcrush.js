@@ -26,7 +26,8 @@ grid.createGrid = function() {
   this.state.gridCheck = []; // grid used to check if player moves are valid
   this.state.tilesCreated = 0;
   this.state.prevClickedTile = null;
-  this.state.swapping = false;
+  this.state.swapping = null;
+  this.state.swapDone = 0;
 
   var currY = 0;
   var tileSize = 70;
@@ -89,8 +90,7 @@ grid.createGrid = function() {
 
           if((this.state.pos.x === this.state.moveTo.x) && (this.state.pos.y === this.state.moveTo.y)) {
             this.state.moveTo = null;
-            grid.state.swapping = false;
-            grid.finishSwap();
+            ++grid.state.swapDone;
           }
         }
       }
@@ -294,7 +294,6 @@ grid.update = function() {
           this.state.gridCheck[clickedTileGridLoc.y][clickedTileGridLoc.x] = this.state.gridCheck[prevClickedTileGridLoc.y][prevClickedTileGridLoc.x];
           this.state.gridCheck[prevClickedTileGridLoc.y][prevClickedTileGridLoc.x] = tempTile;
 
-          console.log(this.findMatches(this.state.gridCheck));
           console.log(this.state.gridCheck);
           if(this.findMatches(this.state.gridCheck)) {
             console.log('match found');
@@ -304,12 +303,6 @@ grid.update = function() {
 
             var newClickedTile = gridCheck[prevClickedTileGridLoc.y][prevClickedTileGridLoc.x];
             var newPrevClickedTile = gridCheck[clickedTileGridLoc.y][clickedTileGridLoc.x];
-            
-            // swap pos
-            this.test = function() {
-              console.log('hiya');
-            };
-            
 
             // begin swap animation
             var tile1 = grid[clickedTileGridLoc.y][clickedTileGridLoc.x];
@@ -319,6 +312,7 @@ grid.update = function() {
             tile1.state.moveTo = {x: tile2.state.pos.x, y: tile2.state.pos.y};
             tile2.state.moveTo = {x: tile1.state.pos.x, y: tile1.state.pos.y};
             this.finishSwap = function() {
+              console.log('swap done');
               // var tempPos = {x: newClickedTile.state.pos.x, y: newClickedTile.state.pos.y};
               // newClickedTile.state.pos.x = newPrevClickedTile.state.pos.x;
               // newClickedTile.state.pos.y = newPrevClickedTile.state.pos.y;
@@ -333,6 +327,7 @@ grid.update = function() {
               newPrevClickedTile.state.gridLoc.y = tempGridLoc.y;
 
               this.state.grid = this.copyGrid(this.state.gridCheck); // update grid with valid gridCheck
+              this.state.gridCheck = this.copyGrid(this.state.grid); // sync grid check with grid
             };
           } else {
             this.state.gridCheck = this.copyGrid(this.state.grid); // sync grid check with grid
@@ -352,6 +347,12 @@ grid.update = function() {
         };
       }
     }
+  }
+
+  if(this.state.swapping && (this.state.swapDone === 2)) {
+    this.state.swapping = null;
+    this.state.swapDone = 0;
+    this.finishSwap();
   }
 };
 
