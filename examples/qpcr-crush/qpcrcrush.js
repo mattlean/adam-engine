@@ -30,6 +30,7 @@ grid.createGrid = function() {
   this.state.prevClickedTile = null;
   this.state.swapping = null;
   this.state.swapDone = 0;
+  this.state.fading = false;
   this.state.tilesToDel = [];
 
   var currY = 0;

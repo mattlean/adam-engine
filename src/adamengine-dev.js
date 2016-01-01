@@ -50,6 +50,7 @@ var AdamEngine = function(canvasId) {
 		this.state.atlas = null;
 		this.state.color = null;
 		this.state.stroke = null;
+		this.state.alpha = null;
 		this.state.zIndex = 0;
 	}
 
@@ -374,11 +375,20 @@ var AdamEngine = function(canvasId) {
 					}
 				} else if(worldObj.state.worldObjType === 'img') {
 					// TODO: if imgData is null, don't use atlas data
+					if(worldObj.state.alpha) {
+						ctx.save();
+						ctx.globalAlpha = worldObj.state.alpha;
+					}
+
 					ctx.drawImage(worldObj.state.img, worldObj.state.imgData.sx, worldObj.state.imgData.sy, worldObj.state.imgData.sw, worldObj.state.imgData.sh, worldObj.state.pos.x, worldObj.state.pos.y, worldObj.state.size.w, worldObj.state.size.h);
 					
 					if(worldObj.state.stroke !== null) {
 						ctx.strokeStyle = worldObj.state.stroke.color;
 						ctx.strokeRect(worldObj.state.stroke.pos.x, worldObj.state.stroke.pos.y, worldObj.state.stroke.size.w, worldObj.state.stroke.size.h);
+					}
+
+					if(worldObj.state.alpha) {
+						ctx.restore();
 					}
 				}
 			}
