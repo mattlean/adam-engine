@@ -221,7 +221,9 @@ grid.findMatches = function(grid) {
 
 grid.deleteTile = function(x, y) {
   var tile = this.state.grid[x][y];
-  AE.deleteWorldObj(tile.name);
+  if(tile) {
+    AE.deleteWorldObj(tile.name);
+  }
   this.state.grid[x][y] = null;
   AE.updateRenderPipe();
 };
