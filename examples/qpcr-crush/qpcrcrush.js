@@ -26,6 +26,7 @@ grid.createGrid = function() {
   this.state.gridCheck = []; // grid used to check if player moves are valid
   this.state.tilesCreated = 0;
   this.state.prevClickedTile = null;
+  this.state.swapping = false;
 
   var currY = 0;
   var tileSize = 70;
@@ -53,6 +54,7 @@ grid.createGrid = function() {
 
       // custom state vals
       tile.state.gridLoc = {x: j, y: i};
+      tile.state.moveTo = null;
 
       // atlas state
       var atlas = tile.state.atlas.data;
@@ -114,7 +116,7 @@ grid.findMatches = function(grid) {
   var matchesFound = 0;
 
   // breadth check tiles
-  // console.log('X check');
+  console.log('X check');
   for(var y=0; y < 9; ++y) {
     var prevSameXTiles = [];
     for(var x=0; x < 9; ++x) {
@@ -127,11 +129,11 @@ grid.findMatches = function(grid) {
         } else {
           // match is broken
           if(prevSameXTiles.length > 2) {
-            /*console.log('>3 match occurred');
+            console.log('>3 match occurred');
             for(var i in prevSameXTiles) {
               console.log(prevSameXTiles[i].state.gridLoc.x, prevSameXTiles[i].state.gridLoc.y);
             }
-            console.log('\n');*/
+            console.log('\n');
 
             ++matchesFound;
           }
@@ -143,18 +145,18 @@ grid.findMatches = function(grid) {
     }
 
     if(prevSameXTiles.length > 2) {
-      /*console.log('>3 match occurred');
+      console.log('>3 match occurred');
       for(var i in prevSameXTiles) {
         console.log(prevSameXTiles[i].state.gridLoc.x, prevSameXTiles[i].state.gridLoc.y);
       }
-      console.log('\n');*/
+      console.log('\n');
 
       ++matchesFound;
     }
   }
 
   // depth check tiles
-  // console.log('Y check');
+  console.log('Y check');
   for(var x=0; x < 9; ++x) {
     var prevSameYTiles = [];
     for(var y=0; y < 9; ++y) {
@@ -167,11 +169,11 @@ grid.findMatches = function(grid) {
         } else {
           // match is broken
           if(prevSameYTiles.length > 2) {
-            /*console.log('>3 match occurred');
+            console.log('>3 match occurred');
             for(var i in prevSameYTiles) {
               console.log(prevSameYTiles[i].state.gridLoc.x, prevSameYTiles[i].state.gridLoc.y);
             }
-            console.log('\n');*/
+            console.log('\n');
 
             ++matchesFound;
           }
@@ -183,11 +185,11 @@ grid.findMatches = function(grid) {
     }
 
     if(prevSameYTiles.length > 2) {
-      /*console.log('>3 match occurred');
+      console.log('>3 match occurred');
       for(var i in prevSameYTiles) {
         console.log(prevSameYTiles[i].state.gridLoc.x, prevSameYTiles[i].state.gridLoc.y);
       }
-      console.log('\n');*/
+      console.log('\n');
 
       ++matchesFound;
     }
@@ -278,24 +280,23 @@ grid.update = function() {
             var gridCheck = this.state.gridCheck;
 
             // swap pos
-            var clickedTile = gridCheck[prevClickedTileGridLoc.y][prevClickedTileGridLoc.x];
-            var prevClickedTile = gridCheck[clickedTileGridLoc.y][clickedTileGridLoc.x];
-            var tempPos = {x: clickedTile.state.pos.x, y: clickedTile.state.pos.y};
-            clickedTile.state.pos.x = prevClickedTile.state.pos.x;
-            clickedTile.state.pos.y = prevClickedTile.state.pos.y;
-            prevClickedTile.state.pos.x = tempPos.x;
-            prevClickedTile.state.pos.y = tempPos.y;
+            var newClickedTile = gridCheck[prevClickedTileGridLoc.y][prevClickedTileGridLoc.x];
+            var newPrevClickedTile = gridCheck[clickedTileGridLoc.y][clickedTileGridLoc.x];
+            var tempPos = {x: newClickedTile.state.pos.x, y: newClickedTile.state.pos.y};
+            newClickedTile.state.pos.x = newPrevClickedTile.state.pos.x;
+            newClickedTile.state.pos.y = newPrevClickedTile.state.pos.y;
+            newPrevClickedTile.state.pos.x = tempPos.x;
+            newPrevClickedTile.state.pos.y = tempPos.y;
             
             // swap gridLoc
-            var tempGridLoc = {x: clickedTile.state.gridLoc.x, y: clickedTile.state.gridLoc.y};
-            clickedTile.state.gridLoc.x = prevClickedTile.state.gridLoc.x;
-            clickedTile.state.gridLoc.y = prevClickedTile.state.gridLoc.y;
-            prevClickedTile.state.gridLoc.x = tempGridLoc.x;
-            prevClickedTile.state.gridLoc.y = tempGridLoc.y;
+            var tempGridLoc = {x: newClickedTile.state.gridLoc.x, y: newClickedTile.state.gridLoc.y};
+            newClickedTile.state.gridLoc.x = newPrevClickedTile.state.gridLoc.x;
+            newClickedTile.state.gridLoc.y = newPrevClickedTile.state.gridLoc.y;
+            newPrevClickedTile.state.gridLoc.x = tempGridLoc.x;
+            newPrevClickedTile.state.gridLoc.y = tempGridLoc.y;
 
             // begin swap animation
-
-            grid = this.copyGrid(this.state.gridCheck); // upgrade grid with valid gridCheck
+            this.state.grid = this.copyGrid(this.state.gridCheck); // upgrade grid with valid gridCheck
           }
 
           this.state.gridCheck = this.copyGrid(this.state.grid); // sync grid check with grid
