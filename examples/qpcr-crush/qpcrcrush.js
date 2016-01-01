@@ -129,10 +129,63 @@ grid.createGrid = function() {
 
 grid.spawnGrid = function() {
   // keep recreating grid until there isn't a match
-  grid.createGrid();
+  this.createGrid();
   while(this.findMatches(this.state.grid)) {
-    grid.createGrid();
+    this.createGrid();
   }
+
+  /* generate fixed tiles */
+  var fixedTileType = 'BHQ2.png';
+  var tile = this.state.grid[0][2];
+  var atlas = tile.state.atlas.data;
+
+  atlas = tile.state.atlas.data;
+  tile.state.tileType = fixedTileType;
+  tile.state.imgData = {
+    sx: atlas.frames[fixedTileType].frame.x,
+    sy: atlas.frames[fixedTileType].frame.y,
+    sw: atlas.frames[fixedTileType].sourceSize.w,
+    sh: atlas.frames[fixedTileType].sourceSize.h
+  };
+
+  tile = this.state.grid[2][2];
+  tile.state.tileType = fixedTileType;
+  tile.state.imgData = {
+    sx: atlas.frames[fixedTileType].frame.x,
+    sy: atlas.frames[fixedTileType].frame.y,
+    sw: atlas.frames[fixedTileType].sourceSize.w,
+    sh: atlas.frames[fixedTileType].sourceSize.h
+  };
+
+  tile = this.state.grid[3][2];
+  atlas = tile.state.atlas.data;
+  tile.state.tileType = fixedTileType;
+  tile.state.imgData = {
+    sx: atlas.frames[fixedTileType].frame.x,
+    sy: atlas.frames[fixedTileType].frame.y,
+    sw: atlas.frames[fixedTileType].sourceSize.w,
+    sh: atlas.frames[fixedTileType].sourceSize.h
+  };
+
+  tile = this.state.grid[1][3];
+  atlas = tile.state.atlas.data;
+  tile.state.tileType = fixedTileType;
+  tile.state.imgData = {
+    sx: atlas.frames[fixedTileType].frame.x,
+    sy: atlas.frames[fixedTileType].frame.y,
+    sw: atlas.frames[fixedTileType].sourceSize.w,
+    sh: atlas.frames[fixedTileType].sourceSize.h
+  };
+
+  tile = this.state.grid[1][4];
+  atlas = tile.state.atlas.data;
+  tile.state.tileType = fixedTileType;
+  tile.state.imgData = {
+    sx: atlas.frames[fixedTileType].frame.x,
+    sy: atlas.frames[fixedTileType].frame.y,
+    sw: atlas.frames[fixedTileType].sourceSize.w,
+    sh: atlas.frames[fixedTileType].sourceSize.h
+  };
 
   this.state.gridCheck = this.copyGrid(this.state.grid);
   AE.updateRenderPipe();
@@ -431,6 +484,7 @@ grid.update = function() {
     this.finishSwap();
   }
 
+  console.log('notice me')
   // if fading is done
   if(this.state.fading && (this.state.fadeDone === this.state.tilesToDel.length)) {
     this.state.fading = false;
