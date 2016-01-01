@@ -171,11 +171,30 @@ grid.deleteTile = function(x, y) {
   AE.updateRenderPipe();
 };
 
-grid.update = function() {
-  if(AE.inputMan.getMBState('LEFTCLICK').isActive) {
+grid.tileClicked = function() {
+  if(AE.inputMan.getMBState('LEFTCLICK').fullClick) {
     var mousePos = AE.inputMan.getMBState('LEFTCLICK').pos;
-    console.log(mousePos);
+
+    // check if a tile was clicked
+    for(var y=0; y < this.state.grid.length; ++y) {
+      for(var x=0; x < this.state.grid.length; ++x) {
+        var tile = this.state.grid[y][x];
+        
+        if(
+          (mousePos.x < (tile.state.pos.x + tile.state.size.w)) &&
+          (mousePos.x > tile.state.pos.x) &&
+          (mousePos.y < (tile.state.pos.y + tile.state.size.h)) &&
+          (mousePos.y > tile.state.pos.y)
+        ) {
+          return {x: tile.state.gridLoc.x, y: tile.state.gridLoc.y};
+        }
+      }
+    }
   }
+};
+
+grid.update = function() {
+  this.tileClicked();
 };
 
 AE.start();

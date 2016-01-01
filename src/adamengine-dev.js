@@ -145,6 +145,7 @@ var AdamEngine = function(canvasId) {
 				var mbName = inputMap.mbs[e.button];
 				if((mbName) && (e.target === canvas)) {
 					inputState.mbs[mbName].isActive = true;
+					inputState.mbs[mbName].fullClick = false;
 					inputState.mbs[mbName].pos.x = e.clientX - canvasData.left;
 					inputState.mbs[mbName].pos.y = e.clientY - canvasData.top;
 					// console.log(mbName, inputState.mbs[mbName]);
@@ -155,6 +156,7 @@ var AdamEngine = function(canvasId) {
 				var mbName = inputMap.mbs[e.button];
 				if(mbName && (e.target === canvas)) {
 					inputState.mbs[mbName].isActive = false;
+					inputState.mbs[mbName].fullClick = true;
 					// console.log(mbName, inputState.mbs[mbName]);
 				}
 			}.bind(this));
@@ -177,6 +179,7 @@ var AdamEngine = function(canvasId) {
 			inputMap.mbs[button] = mbName;
 			inputState.mbs[mbName] = {
 				isActive: false,
+				fullClick: false,
 				pos: {
 					x: null,
 					y: null
@@ -193,6 +196,10 @@ var AdamEngine = function(canvasId) {
 		this.getMBState = function(mbName) {
 			return getMBState(mbName);
 		};
+
+		this.getMBStates = function() {
+			return inputState.mbs;
+		}
 	}
 
 	/* INPUT MANAGER: PUBLIC PROPERTIES */
@@ -294,6 +301,11 @@ var AdamEngine = function(canvasId) {
 	function update() {
 		for(var worldObjName in worldObjs) {
 			worldObjs[worldObjName].update();
+		}
+
+		var mbStates = AE.inputMan.getMBStates();
+		for(var mbName in mbStates) {
+			mbStates[mbName].fullClick = false;
 		}
 	}
 
