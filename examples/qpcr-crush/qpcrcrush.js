@@ -20,6 +20,7 @@ grid.setup = function() {
 grid.createGrid = function() {
   this.state.grid = [];
   this.state.tilesCreated = 0;
+  this.state.prevClickedTile = null;
 
   var currY = 0;
   var tileSize = 70;
@@ -36,6 +37,7 @@ grid.createGrid = function() {
       ++this.state.tilesCreated;
       var tile = AE.createWorldObj('tile' + this.state.tilesCreated);
 
+      // default state vals
       tile.state.atlas = AE.assetMan.getAtlas('tiles');
       tile.state.pos.x = currX + marginXOffset;
       tile.state.pos.y = currY + marginYOffset;
@@ -43,11 +45,8 @@ grid.createGrid = function() {
       tile.state.size.h = tileSize;
       tile.state.zIndex = 2;
       tile.state.worldObjType = 'img';
-      tile.state.stroke = {
-        pos: tile.state.pos,
-        size: {w: tileSize, h: tileSize},
-        color: '#FF0000'
-      };
+
+      // custom state vals
       tile.state.gridLoc = {x: j, y: i};
 
       var atlas = tile.state.atlas.data;
@@ -172,29 +171,46 @@ grid.deleteTile = function(x, y) {
 };
 
 grid.tileClicked = function() {
-  if(AE.inputMan.getMBState('LEFTCLICK').fullClick) {
-    var mousePos = AE.inputMan.getMBState('LEFTCLICK').pos;
+  var mousePos = AE.inputMan.getMBState('LEFTCLICK').pos;
 
-    // check if a tile was clicked
-    for(var y=0; y < this.state.grid.length; ++y) {
-      for(var x=0; x < this.state.grid.length; ++x) {
-        var tile = this.state.grid[y][x];
+  // check if a tile was clicked
+  for(var y=0; y < this.state.grid.length; ++y) {
+    for(var x=0; x < this.state.grid.length; ++x) {
+      var tile = this.state.grid[y][x];
         
-        if(
-          (mousePos.x < (tile.state.pos.x + tile.state.size.w)) &&
-          (mousePos.x > tile.state.pos.x) &&
-          (mousePos.y < (tile.state.pos.y + tile.state.size.h)) &&
-          (mousePos.y > tile.state.pos.y)
-        ) {
-          return {x: tile.state.gridLoc.x, y: tile.state.gridLoc.y};
-        }
+      if(
+        (mousePos.x < (tile.state.pos.x + tile.state.size.w)) &&
+        (mousePos.x > tile.state.pos.x) &&
+        (mousePos.y < (tile.state.pos.y + tile.state.size.h)) &&
+        (mousePos.y > tile.state.pos.y)
+      ) {
+        return tile;
       }
     }
   }
 };
 
 grid.update = function() {
-  this.tileClicked();
+  if(AE.inputMan.getMBState('LEFTCLICK').fullClick) {
+    var clickedTile = this.tileClicked();
+    if(clickedTile) {
+      clickedTile.state.stroke = {
+        pos: clickedTile.state.pos,
+        size: {w: clickedTile.state.size.w, h: clickedTile.state.size.h},
+        color: '#FF0000'
+      };
+    }
+
+    if(this.state.prevClickedTile) {
+      this.state.prevClickedTile.state.stroke = null;
+    }
+
+    if(this.state.prevClickedTile === clickedTile) {
+      this.state.prevClickedTile = null;
+    } else {
+      this.state.prevClickedTile = clickedTile;
+    }
+  }
 };
 
 AE.start();
