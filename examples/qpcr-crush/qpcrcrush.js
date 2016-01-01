@@ -22,7 +22,8 @@ grid.createGrid = function() {
     this.clearGrid();
   }
 
-  this.state.grid = [];
+  this.state.grid = []; // grid visible to players
+  this.state.gridCheck = []; // grid used to check if player moves are valid
   this.state.tilesCreated = 0;
   this.state.prevClickedTile = null;
 
@@ -87,8 +88,6 @@ grid.createGrid = function() {
     currY += tileSize;
     marginYOffset += 2;
   }
-
-  console.log(this.findMatches(this.state.grid));
 };
 
 grid.spawnGrid = function() {
@@ -98,15 +97,24 @@ grid.spawnGrid = function() {
     grid.createGrid();
   }
 
+  this.state.gridCheck = this.copyGrid(this.state.grid);
   AE.updateRenderPipe();
 };
 
-grid.findMatches = function() {
-  var grid = this.state.grid;
+grid.copyGrid = function(grid) {
+  var newGrid = [];
+  for(var y=0; y < grid.length; ++y) {
+    newGrid[y] = grid[y].slice();
+  }
+
+  return newGrid;
+};
+
+grid.findMatches = function(grid) {
   var matchesFound = 0;
 
-  console.log('X check');
   // breadth check tiles
+  // console.log('X check');
   for(var y=0; y < 9; ++y) {
     var prevSameXTiles = [];
     for(var x=0; x < 9; ++x) {
@@ -119,11 +127,11 @@ grid.findMatches = function() {
         } else {
           // match is broken
           if(prevSameXTiles.length > 2) {
-            console.log('>3 match occurred');
+            /*console.log('>3 match occurred');
             for(var i in prevSameXTiles) {
               console.log(prevSameXTiles[i].state.gridLoc.x, prevSameXTiles[i].state.gridLoc.y);
             }
-            console.log('\n');
+            console.log('\n');*/
 
             ++matchesFound;
           }
@@ -135,18 +143,18 @@ grid.findMatches = function() {
     }
 
     if(prevSameXTiles.length > 2) {
-      console.log('>3 match occurred');
+      /*console.log('>3 match occurred');
       for(var i in prevSameXTiles) {
         console.log(prevSameXTiles[i].state.gridLoc.x, prevSameXTiles[i].state.gridLoc.y);
       }
-      console.log('\n');
+      console.log('\n');*/
 
       ++matchesFound;
     }
   }
 
-  console.log('Y check');
   // depth check tiles
+  // console.log('Y check');
   for(var x=0; x < 9; ++x) {
     var prevSameYTiles = [];
     for(var y=0; y < 9; ++y) {
@@ -159,11 +167,11 @@ grid.findMatches = function() {
         } else {
           // match is broken
           if(prevSameYTiles.length > 2) {
-            console.log('>3 match occurred');
+            /*console.log('>3 match occurred');
             for(var i in prevSameYTiles) {
               console.log(prevSameYTiles[i].state.gridLoc.x, prevSameYTiles[i].state.gridLoc.y);
             }
-            console.log('\n');
+            console.log('\n');*/
 
             ++matchesFound;
           }
@@ -175,11 +183,11 @@ grid.findMatches = function() {
     }
 
     if(prevSameYTiles.length > 2) {
-      console.log('>3 match occurred');
+      /*console.log('>3 match occurred');
       for(var i in prevSameYTiles) {
         console.log(prevSameYTiles[i].state.gridLoc.x, prevSameYTiles[i].state.gridLoc.y);
       }
-      console.log('\n');
+      console.log('\n');*/
 
       ++matchesFound;
     }
@@ -223,25 +231,74 @@ grid.tileClicked = function() {
   }
 };
 
+grid.validSwap = function(clickedTile, prevClickedTile) {
+  if(
+    (clickedTile.state.gridLoc.y === (prevClickedTile.state.gridLoc.y - 1) &&
+    clickedTile.state.gridLoc.x === (prevClickedTile.state.gridLoc.x)) ||
+    (clickedTile.state.gridLoc.x === (prevClickedTile.state.gridLoc.x + 1) &&
+    clickedTile.state.gridLoc.y === prevClickedTile.state.gridLoc.y) ||
+    (clickedTile.state.gridLoc.y === (prevClickedTile.state.gridLoc.y + 1) &&
+    clickedTile.state.gridLoc.x === (prevClickedTile.state.gridLoc.x)) ||
+    (clickedTile.state.gridLoc.x === (prevClickedTile.state.gridLoc.x - 1) &&
+    clickedTile.state.gridLoc.y === prevClickedTile.state.gridLoc.y)
+  ) {
+    return true;
+  }
+  return false;
+};
+
 grid.update = function() {
   if(AE.inputMan.getMBState('LEFTCLICK').fullClick) {
     var clickedTile = this.tileClicked();
-    if(clickedTile) {
-      clickedTile.state.stroke = {
-        pos: clickedTile.state.pos,
-        size: {w: clickedTile.state.size.w, h: clickedTile.state.size.h},
-        color: '#FF0000'
-      };
+    var prevClickedTile = this.state.prevClickedTile;
 
-      if(this.state.prevClickedTile) {
+    if(clickedTile) {
+      console.log('clicked a tile');
+      // check if clicked tile is within range of prev
+      if(prevClickedTile) {
+        console.log('prevClickedTile is set');
         this.state.prevClickedTile.state.stroke = null;
+
+        if(this.validSwap(clickedTile, prevClickedTile)) {
+          console.log('swap is valid');
+          // if player clicked up, right, down, or left of prevClickedTile
+          var clickedTileGridLoc = clickedTile.state.gridLoc;
+          var prevClickedTileGridLoc = prevClickedTile.state.gridLoc;
+
+          var tempTile = this.state.gridCheck[clickedTileGridLoc.y][clickedTileGridLoc.x];
+          this.state.gridCheck[clickedTileGridLoc.y][clickedTileGridLoc.x] = this.state.gridCheck[prevClickedTileGridLoc.y][prevClickedTileGridLoc.x];
+          this.state.gridCheck[prevClickedTileGridLoc.y][prevClickedTileGridLoc.x] = tempTile;
+
+          console.log(this.findMatches(this.state.gridCheck));
+          if(this.findMatches(this.state.gridCheck)) {
+            console.log('match found');
+            // if swap results to a match, updated grid
+            var grid = this.state.grid;
+
+            
+            var tempPos = {x: grid[prevClickedTileGridLoc.y][prevClickedTileGridLoc.x].state.pos.x, y: grid[prevClickedTileGridLoc.y][prevClickedTileGridLoc.x].state.pos.y};
+            
+            grid = this.copyGrid(this.state.gridCheck);
+            grid[clickedTileGridLoc.y][clickedTileGridLoc.x].state.pos.x = grid[prevClickedTileGridLoc.y][prevClickedTileGridLoc.x].state.pos.x;
+            grid[clickedTileGridLoc.y][clickedTileGridLoc.x].state.pos.y = grid[prevClickedTileGridLoc.y][prevClickedTileGridLoc.x].state.pos.y;
+            grid[prevClickedTileGridLoc.y][prevClickedTileGridLoc.x].state.pos.x = tempPos.x;
+            grid[prevClickedTileGridLoc.y][prevClickedTileGridLoc.x].state.pos.y = tempPos.y;
+          }
+
+          this.state.gridCheck = this.copyGrid(this.state.grid); // sync grid check with grid
+        }
       }
 
-      if(this.state.prevClickedTile === clickedTile) {
-        // if clickedTile & prevClickedTile are the same, set prev to null to avoid bug
+      if(this.state.prevClickedTile) {
         this.state.prevClickedTile = null;
       } else {
         this.state.prevClickedTile = clickedTile;
+
+        clickedTile.state.stroke = {
+          pos: clickedTile.state.pos,
+          size: {w: clickedTile.state.size.w, h: clickedTile.state.size.h},
+          color: '#FF0000'
+        };
       }
     }
   }
