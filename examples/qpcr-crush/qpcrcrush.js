@@ -2,6 +2,7 @@ var canvasId = 'qpcr-crush';
 var AE = new AdamEngine(canvasId);
 
 AE.inputMan.addMBInput(0, 'LEFTCLICK');
+AE.inputMan.addTouchInput();
 AE.inputMan.setup();
 
 AE.assetMan.newAtlas('tiles', '/gfx/atlas.png', '/gfx/atlas.json');
@@ -272,7 +273,7 @@ grid.validSwap = function(clickedTile, prevClickedTile) {
 };
 
 grid.update = function() {
-  if(AE.inputMan.getMBState('LEFTCLICK').fullClick) {
+  if(AE.inputMan.getMBState('LEFTCLICK').fullClick && (this.state.swapping === null)) {
     var clickedTile = this.tileClicked();
     var prevClickedTile = this.state.prevClickedTile;
 
