@@ -14,10 +14,14 @@ grid.setup = function() {
   this.state.size.w = 650;
   this.state.size.h = 650;
   this.state.worldObjType = 'invis';
-  this.createGrid();
+  this.spawnGrid();
 };
 
 grid.createGrid = function() {
+  if (this.state.grid !== undefined) {
+    this.clearGrid();
+  }
+
   this.state.grid = [];
   this.state.tilesCreated = 0;
   this.state.prevClickedTile = null;
@@ -49,6 +53,7 @@ grid.createGrid = function() {
       // custom state vals
       tile.state.gridLoc = {x: j, y: i};
 
+      // atlas state
       var atlas = tile.state.atlas.data;
       var randNum = Math.floor(Math.random() * (0, 6));
       var randTileName = tileNames[randNum];
@@ -62,6 +67,16 @@ grid.createGrid = function() {
         sh: atlas.frames[randTileName].sourceSize.h
       };
 
+      // move loc
+      tile.state.moveToLoc = {x: null, y: null};
+      tile.moveTo = function(gridLocX, gridLocY) {
+        var destination = grid.state.grid[gridLocY][gridLocX];
+        tile.state.moveToLoc = destination.state.pos;
+        this.update = function() {
+          console.log(tile.state.moveToLoc);
+        };
+      };
+
       row.push(tile);
 
       currX += tileSize;
@@ -71,6 +86,16 @@ grid.createGrid = function() {
     this.state.grid.push(row);
     currY += tileSize;
     marginYOffset += 2;
+  }
+
+  console.log(this.findMatches(this.state.grid));
+};
+
+grid.spawnGrid = function() {
+  // keep recreating grid until there isn't a match
+  grid.createGrid();
+  while(this.findMatches(this.state.grid)) {
+    grid.createGrid();
   }
 
   AE.updateRenderPipe();
@@ -170,6 +195,14 @@ grid.deleteTile = function(x, y) {
   AE.updateRenderPipe();
 };
 
+grid.clearGrid = function() {
+  for(var y=0; y < 9; ++y) {
+    for(var x=0; x < 9; ++x) {
+      this.deleteTile(x, y);
+    }
+  }
+};
+
 grid.tileClicked = function() {
   var mousePos = AE.inputMan.getMBState('LEFTCLICK').pos;
 
@@ -199,16 +232,17 @@ grid.update = function() {
         size: {w: clickedTile.state.size.w, h: clickedTile.state.size.h},
         color: '#FF0000'
       };
-    }
 
-    if(this.state.prevClickedTile) {
-      this.state.prevClickedTile.state.stroke = null;
-    }
+      if(this.state.prevClickedTile) {
+        this.state.prevClickedTile.state.stroke = null;
+      }
 
-    if(this.state.prevClickedTile === clickedTile) {
-      this.state.prevClickedTile = null;
-    } else {
-      this.state.prevClickedTile = clickedTile;
+      if(this.state.prevClickedTile === clickedTile) {
+        // if clickedTile & prevClickedTile are the same, set prev to null to avoid bug
+        this.state.prevClickedTile = null;
+      } else {
+        this.state.prevClickedTile = clickedTile;
+      }
     }
   }
 };
