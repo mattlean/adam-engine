@@ -253,6 +253,7 @@ grid.update = function() {
     var prevClickedTile = this.state.prevClickedTile;
 
     if(clickedTile) {
+      console.log(this.state.grid);
       console.log('clicked a tile');
       // check if clicked tile is within range of prev
       if(prevClickedTile) {
@@ -270,22 +271,35 @@ grid.update = function() {
           this.state.gridCheck[prevClickedTileGridLoc.y][prevClickedTileGridLoc.x] = tempTile;
 
           console.log(this.findMatches(this.state.gridCheck));
+          console.log(this.state.gridCheck);
           if(this.findMatches(this.state.gridCheck)) {
             console.log('match found');
             // if swap results to a match, updated grid
-            var grid = this.state.grid;
+            var gridCheck = this.state.gridCheck;
 
+            // swap pos
+            var clickedTile = gridCheck[prevClickedTileGridLoc.y][prevClickedTileGridLoc.x];
+            var prevClickedTile = gridCheck[clickedTileGridLoc.y][clickedTileGridLoc.x];
+            var tempPos = {x: clickedTile.state.pos.x, y: clickedTile.state.pos.y};
+            clickedTile.state.pos.x = prevClickedTile.state.pos.x;
+            clickedTile.state.pos.y = prevClickedTile.state.pos.y;
+            prevClickedTile.state.pos.x = tempPos.x;
+            prevClickedTile.state.pos.y = tempPos.y;
             
-            var tempPos = {x: grid[prevClickedTileGridLoc.y][prevClickedTileGridLoc.x].state.pos.x, y: grid[prevClickedTileGridLoc.y][prevClickedTileGridLoc.x].state.pos.y};
-            
-            grid = this.copyGrid(this.state.gridCheck);
-            grid[clickedTileGridLoc.y][clickedTileGridLoc.x].state.pos.x = grid[prevClickedTileGridLoc.y][prevClickedTileGridLoc.x].state.pos.x;
-            grid[clickedTileGridLoc.y][clickedTileGridLoc.x].state.pos.y = grid[prevClickedTileGridLoc.y][prevClickedTileGridLoc.x].state.pos.y;
-            grid[prevClickedTileGridLoc.y][prevClickedTileGridLoc.x].state.pos.x = tempPos.x;
-            grid[prevClickedTileGridLoc.y][prevClickedTileGridLoc.x].state.pos.y = tempPos.y;
+            // swap gridLoc
+            var tempGridLoc = {x: clickedTile.state.gridLoc.x, y: clickedTile.state.gridLoc.y};
+            clickedTile.state.gridLoc.x = prevClickedTile.state.gridLoc.x;
+            clickedTile.state.gridLoc.y = prevClickedTile.state.gridLoc.y;
+            prevClickedTile.state.gridLoc.x = tempGridLoc.x;
+            prevClickedTile.state.gridLoc.y = tempGridLoc.y;
+
+            // begin swap animation
+
+            grid = this.copyGrid(this.state.gridCheck); // upgrade grid with valid gridCheck
           }
 
           this.state.gridCheck = this.copyGrid(this.state.grid); // sync grid check with grid
+          console.log(this.state.gridCheck);
         }
       }
 
