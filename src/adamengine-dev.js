@@ -5,10 +5,11 @@ var AdamEngine = function(canvasId) {
 	var canvas = document.getElementById(canvasId);
 	var canvasData = canvas.getBoundingClientRect();
 	var ctx = canvas.getContext('2d');
+	window.AudioContext = window.AudioContext||window.webkitAudioContext;
 	var audioCtx = new AudioContext();
 	var focus = false; // true if canvas is in focus or not
 	var loading = true; // true if engine is still loading assets
-	
+
 
 
 	/*** GAME OBJECTS ***/
