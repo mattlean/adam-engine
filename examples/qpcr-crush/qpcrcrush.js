@@ -20,6 +20,7 @@ grid.setup = function() {
   this.state.size.w = 650;
   this.state.size.h = 650;
   this.state.score = 0;
+  this.state.timeUp = true;
   this.state.worldObjType = 'invis';
 
   this.spawnGrid();
@@ -614,7 +615,8 @@ grid.update = function() {
     (this.state.swapping === null) &&
     (this.state.fading === false) &&
     (this.state.falling === false) &&
-    (this.state.appearing === false)
+    (this.state.appearing === false) &&
+    (this.state.timeUp === false)
   ) {
     if(touchState.fullPress) {
       var touch = this.tilePressed();
@@ -716,7 +718,7 @@ var scoreTitle = AE.createWorldObj('scoreTitle');
 
 scoreTitle.setup = function() {
   this.state.pos.x = 750;
-  this.state.pos.y = 100;
+  this.state.pos.y = 110;
   this.state.color = '#FFF';
   this.state.font = '24px Arial';
   this.state.textAlign = 'center';
@@ -729,7 +731,7 @@ var score = AE.createWorldObj('score');
 
 score.setup = function() {
   this.state.pos.x = 750;
-  this.state.pos.y = 160;
+  this.state.pos.y = 170;
   this.state.color = '#FFF';
   this.state.font = '48px Arial';
   this.state.textAlign = 'center';
@@ -742,7 +744,7 @@ var timerTitle = AE.createWorldObj('timerTitle');
 
 timerTitle.setup = function() {
   this.state.pos.x = 750;
-  this.state.pos.y = 490;
+  this.state.pos.y = 480;
   this.state.color = '#FFF';
   this.state.font = '24px Arial';
   this.state.textAlign = 'center';
@@ -755,7 +757,7 @@ var timer = AE.createWorldObj('timer');
 
 timer.setup = function() {
   this.state.pos.x = 750;
-  this.state.pos.y = 550;
+  this.state.pos.y = 540;
   this.state.color = '#FFF';
   this.state.font = '48px Arial';
   this.state.textAlign = 'center';
@@ -766,16 +768,54 @@ timer.setup = function() {
 };
 
 timer.update = function() {
-  if(this.state.frameCount > 60) {
-    --this.state.text;
-    this.state.frameCount = 0;
-  }
+  if(grid.state.timeUp === false) {
+    if(this.state.frameCount > 60) {
+      --this.state.text;
+      this.state.frameCount = 0;
+    }
 
-  if(this.state.text === 0) {
-    this.state.frameCount = 0;
-  } else {
-    ++this.state.frameCount;
+    if(this.state.text === 0) {
+      this.state.frameCount = 0;
+      grid.state.timeUp = true;
+      $('#game-over-modal').modal('show');
+    } else {
+      ++this.state.frameCount;
+    }
   }
 };
 
+var website = AE.createWorldObj('website');
+
+website.setup = function() {
+  this.state.pos.x = 840;
+  this.state.pos.y = 640;
+  this.state.color = '#FFF';
+  this.state.font = '16px Arial';
+  this.state.textAlign = 'right';
+  this.state.text = 'biosearchtech.com';
+  this.state.zIndex = 2;
+  this.state.worldObjType = 'text';
+};
+
+$('#game-over-modal').modal({
+  backdrop: 'static',
+  keyboard: false,
+  show: false
+});
+$('#start-modal').modal({
+  backdrop: 'static',
+  keyboard: false,
+  show: true
+});
+$('#start-game').click(function() {
+  grid.state.timeUp = false;
+  timer.state.text = 60;
+});
+$('#replay').click(function() {
+  grid.spawnGrid();
+  grid.state.score = 0;
+  score.state.text = 0;
+  grid.state.timeUp = false;
+  timer.state.text = 60;
+});
 AE.start();
