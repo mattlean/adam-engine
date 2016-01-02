@@ -276,6 +276,7 @@ var AdamEngine = function(canvasId) {
 	this.soundMan = new SoundManager();
 
 
+
 	/*** ASSET MANAGER ***/
 	// AssetManager class
 	function AssetManager() {
@@ -370,7 +371,6 @@ var AdamEngine = function(canvasId) {
 				}
 
 				// start downloading sounds
-				console.log(sounds);
 				for(var soundName in sounds) {
 					sounds[soundName].send();
 				}

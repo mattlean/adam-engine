@@ -9,6 +9,8 @@ AE.assetMan.newImg('bg', '/gfx/bg.jpg');
 AE.assetMan.newAtlas('tiles', '/gfx/atlas.png', '/gfx/atlas.json');
 AE.assetMan.newSound('score', '/sfx/score.wav');
 AE.assetMan.newSound('swap', '/sfx/swap.wav');
+AE.assetMan.newSound('select', '/sfx/select.wav');
+AE.assetMan.newSound('illegal', '/sfx/illegalmove.wav');
 
 var grid = AE.createWorldObj('grid');
 
@@ -396,6 +398,8 @@ grid.processInput = function(clickedTile, prevClickedTile) {
           tile1.state.moveTo = {x: tile2.state.pos.x, y: tile2.state.pos.y};
           tile2.state.moveTo = {x: tile1.state.pos.x, y: tile1.state.pos.y};
 
+          AE.soundMan.playSound('swap');
+
           this.finishSwap = function() {
             // swap gridLoc
             var tempGridLoc = {x: newClickedTile.state.gridLoc.x, y: newClickedTile.state.gridLoc.y};
@@ -414,10 +418,17 @@ grid.processInput = function(clickedTile, prevClickedTile) {
               var currTile = this.state.tilesToDel[i];
               currTile.state.alpha = 1;
             }
+
+            AE.soundMan.playSound('score');
           };
         } else {
+          console.log('no match');
+          AE.soundMan.playSound('illegal');
           this.state.gridCheck = this.copyGrid(this.state.grid); // sync grid check with grid
         }
+      } else {
+        console.log('illegal swap');
+        AE.soundMan.playSound('illegal');
       }
     }
 
@@ -431,6 +442,8 @@ grid.processInput = function(clickedTile, prevClickedTile) {
         size: {w: clickedTile.state.size.w, h: clickedTile.state.size.h},
         color: '#FF0000'
       };
+
+      AE.soundMan.playSound('select');
     }
   }
 };
@@ -675,6 +688,8 @@ grid.update = function() {
         var currTile = this.state.tilesToDel[i];
         currTile.state.alpha = 1;
       }
+
+      AE.soundMan.playSound('score');
     }
   }
 };
