@@ -43,6 +43,11 @@ grid.createGrid = function() {
   this.state.fallNum = 0;
   this.state.fallDone = 0;
 
+  // appearing
+  this.state.appearing = false;
+  this.state.appearNum = 0;
+  this.state.appearDone = 0;
+
   var currY = 0;
   var tileSize = 70;
   var marginYOffset = 2;
@@ -116,7 +121,7 @@ grid.createGrid = function() {
         if(grid.state.fading && this.state.alpha) {
           // fade out the tile
           if(this.state.alpha > 0) {
-            this.state.alpha = this.state.alpha - 0.1;
+            this.state.alpha = this.state.alpha - 0.2;
           } else {
             this.state.alpha = 0;
           }
@@ -313,11 +318,11 @@ grid.findMatches = function(grid) {
 };
 
 grid.deleteTile = function(x, y) {
-  var tile = this.state.grid[x][y];
+  var tile = this.state.grid[y][x];
   if(tile) {
     AE.deleteWorldObj(tile.name);
   }
-  this.state.grid[x][y] = null;
+  this.state.grid[y][x] = null;
   AE.updateRenderPipe();
 };
 
@@ -520,11 +525,117 @@ grid.calcFall = function() {
   }
 };
 
+grid.spawnNewTiles = function() {
+  var gridSize = this.state.grid.length;
+  var tileNames = ['BHQ2.png', 'FAM2.png', 'GOLD2.png', 'ORANGE2.png', 'QUASAR2.png', 'RED2.png'];
+  var tileSize = 70;
+
+  for(var y=0; y < gridSize; ++y) {
+    for(var x=0; x < gridSize; ++x) {
+      if(this.state.grid[y][x] === null) {
+        ++this.state.tilesCreated;
+        var newTile = AE.createWorldObj('tile' + this.state.tilesCreated);
+
+        // default state vals
+        newTile.state.atlas = AE.assetMan.getAtlas('tiles');
+        newTile.state.pos.x = (x * 70) + (x * 2);
+        newTile.state.pos.y = (y * 70) + (y * 2);
+        newTile.state.size.w = tileSize;
+        newTile.state.size.h = tileSize;
+        newTile.state.zIndex = 2;
+        newTile.state.worldObjType = 'img';
+
+        // custom state vals
+        newTile.state.gridLoc = {x: x, y: y};
+
+        // atlas state
+        var atlas = newTile.state.atlas.data;
+        var randNum = Math.floor(Math.random() * (0, 6));
+        var randTileName = tileNames[randNum];
+
+        newTile.state.tileType = randTileName;
+        newTile.state.img = newTile.state.atlas.img;
+        newTile.state.imgData = {
+          sx: atlas.frames[randTileName].frame.x,
+          sy: atlas.frames[randTileName].frame.y,
+          sw: atlas.frames[randTileName].sourceSize.w,
+          sh: atlas.frames[randTileName].sourceSize.h
+        };
+
+        // move loc
+        newTile.state.moveTo = null;
+
+        // move tile to moveTo destination
+        newTile.move = function() {
+          if(this.state.pos.x < this.state.moveTo.x) {
+            this.state.pos.x = this.state.pos.x + 2;
+          } else if(this.state.pos.x > this.state.moveTo.x) {
+            this.state.pos.x = this.state.pos.x - 2;
+          }
+
+          if(this.state.pos.y < this.state.moveTo.y) {
+            this.state.pos.y = this.state.pos.y + 2;
+          } else if(this.state.pos.y > this.state.moveTo.y) {
+            this.state.pos.y = this.state.pos.y - 2;
+          }
+        };
+
+        newTile.update = function() {
+          if(grid.state.swapping && (this.state.moveTo !== null)) {
+            this.move();
+
+            // add to swapDone to notify grid when all tiles are done moving
+            if((this.state.pos.x === this.state.moveTo.x) && (this.state.pos.y === this.state.moveTo.y)) {
+              this.state.moveTo = null;
+              ++grid.state.swapDone;
+            }
+          }
+
+          if(grid.state.fading && this.state.alpha) {
+            // fade out the tile
+            if(this.state.alpha > 0) {
+              this.state.alpha = this.state.alpha - 0.2;
+            } else {
+              this.state.alpha = 0;
+            }
+
+            // add to fadeDone to notify grid when all tiles are done fading
+            if(this.state.alpha === 0) {
+              this.state.alpha = null;
+              ++grid.state.fadeDone;
+            }
+          }
+
+          if(grid.state.falling && (this.state.moveTo !== null)) {
+            this.move();
+
+            // add to fallDone to notify grid when all tiles are done falling
+            if((this.state.pos.x === this.state.moveTo.x) && (this.state.pos.y === this.state.moveTo.y)) {
+              this.state.moveTo = null;
+              ++grid.state.fallDone;
+            }
+          }
+        };
+
+        this.state.grid[y][x] = newTile;
+        ++this.state.appearNum;
+      }
+    }
+  }
+
+  AE.updateRenderPipe();
+};
+
 grid.update = function() {
   var touchState = AE.inputMan.getTouchState();
 
   // disable inputs when an animation is occurring
-  if((this.state.swapping === null) && (this.state.fading === false) && (this.state.falling === false)) {
+  if(
+    (this.state.swapping === null) &&
+    (this.state.fading === false) &&
+    (this.state.falling === false) &&
+    (this.state.appearing === false)
+  ) {
     if(touchState.fullPress) {
       var touch = this.tilePressed();
 
@@ -554,11 +665,12 @@ grid.update = function() {
     // delete tiles from grid
     for(var i in this.state.tilesToDel) {
       var currTile = this.state.tilesToDel[i];
-      this.deleteTile(currTile.state.gridLoc.y, currTile.state.gridLoc.x);
+      this.deleteTile(currTile.state.gridLoc.x, currTile.state.gridLoc.y);
     }
 
     this.state.gridCheck = this.copyGrid(this.state.grid); // sync grid check with grid
 
+    // start falling
     this.state.falling = true;
     this.calcFall();
   }
@@ -567,6 +679,12 @@ grid.update = function() {
   if(this.state.falling && (this.state.fallDone === this.state.fallNum)) {
     this.state.falling = false;
     this.state.fallDone = 0;
+
+    this.state.gridCheck = this.copyGrid(this.state.grid); // sync grid check with grid
+
+    // start appearing
+    this.state.appearing = true;
+    this.spawnNewTiles();
   }
 };
 
