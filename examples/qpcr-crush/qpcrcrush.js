@@ -200,6 +200,31 @@ grid.copyGrid = function(grid) {
   return newGrid;
 };
 
+grid.addTilesToDel = function(prevSameTiles) {
+  if(prevSameTiles.length > 2) {
+    console.log('>3 match occurred');
+    for(var i in prevSameTiles) {
+      var alreadyInTilesToDel = false;
+      console.log(prevSameTiles[i].state.gridLoc.x, prevSameTiles[i].state.gridLoc.y);
+
+      for(var j in this.state.tilesToDel) {
+        if(this.state.tilesToDel[j].name === prevSameTiles[i].name) {
+          alreadyInTilesToDel = true;
+          break;
+        }
+      }
+
+      if(alreadyInTilesToDel === false) {
+        this.state.tilesToDel.push(prevSameTiles[i]);
+      }
+    }
+    console.log('\n');
+
+    return true;
+  }
+  return false;
+};
+
 grid.findMatches = function(grid) {
   var matchesFound = 0;
 
@@ -216,14 +241,7 @@ grid.findMatches = function(grid) {
           prevSameXTiles.push(grid[y][x]);
         } else {
           // match is broken
-          if(prevSameXTiles.length > 2) {
-            console.log('>3 match occurred');
-            for(var i in prevSameXTiles) {
-              console.log(prevSameXTiles[i].state.gridLoc.x, prevSameXTiles[i].state.gridLoc.y);
-              this.state.tilesToDel.push(prevSameXTiles[i]);
-            }
-            console.log('\n');
-
+          if(this.addTilesToDel(prevSameXTiles)) {
             ++matchesFound;
           }
 
@@ -233,16 +251,10 @@ grid.findMatches = function(grid) {
       }
     }
 
-    if(prevSameXTiles.length > 2) {
-      console.log('>3 match occurred');
-      for(var i in prevSameXTiles) {
-        console.log(prevSameXTiles[i].state.gridLoc.x, prevSameXTiles[i].state.gridLoc.y);
-        this.state.tilesToDel.push(prevSameXTiles[i]);
-      }
-      console.log('\n');
-
+    if(this.addTilesToDel(prevSameXTiles)) {
       ++matchesFound;
     }
+
   }
 
   // depth check tiles
@@ -258,14 +270,7 @@ grid.findMatches = function(grid) {
           prevSameYTiles.push(grid[y][x]);
         } else {
           // match is broken
-          if(prevSameYTiles.length > 2) {
-            console.log('>3 match occurred');
-            for(var i in prevSameYTiles) {
-              console.log(prevSameYTiles[i].state.gridLoc.x, prevSameYTiles[i].state.gridLoc.y);
-              this.state.tilesToDel.push(prevSameYTiles[i]);
-            }
-            console.log('\n');
-
+          if(this.addTilesToDel(prevSameYTiles)) {
             ++matchesFound;
           }
 
@@ -275,14 +280,7 @@ grid.findMatches = function(grid) {
       }
     }
 
-    if(prevSameYTiles.length > 2) {
-      console.log('>3 match occurred');
-      for(var i in prevSameYTiles) {
-        console.log(prevSameYTiles[i].state.gridLoc.x, prevSameYTiles[i].state.gridLoc.y);
-        this.state.tilesToDel.push(prevSameYTiles[i]);
-      }
-      console.log('\n');
-
+    if(this.addTilesToDel(prevSameYTiles)) {
       ++matchesFound;
     }
   }
@@ -484,7 +482,6 @@ grid.update = function() {
     this.finishSwap();
   }
 
-  console.log('notice me')
   // if fading is done
   if(this.state.fading && (this.state.fadeDone === this.state.tilesToDel.length)) {
     this.state.fading = false;
