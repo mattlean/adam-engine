@@ -70,6 +70,7 @@ grid.createGrid = function() {
       tile.state.size.w = tileSize;
       tile.state.size.h = tileSize;
       tile.state.zIndex = 2;
+      tile.state.alpha = null;
       tile.state.worldObjType = 'img';
 
       // custom state vals
@@ -447,8 +448,6 @@ grid.processInput = function(clickedTile, prevClickedTile) {
           tile2.state.moveTo = {x: tile1.state.pos.x, y: tile1.state.pos.y};
 
           this.finishSwap = function() {
-            console.log('swap done');
-                
             // swap gridLoc
             var tempGridLoc = {x: newClickedTile.state.gridLoc.x, y: newClickedTile.state.gridLoc.y};
             newClickedTile.state.gridLoc.x = newPrevClickedTile.state.gridLoc.x;
@@ -543,6 +542,7 @@ grid.spawnNewTiles = function() {
         newTile.state.size.w = tileSize;
         newTile.state.size.h = tileSize;
         newTile.state.zIndex = 2;
+        newTile.state.alpha = 0;
         newTile.state.worldObjType = 'img';
 
         // custom state vals
@@ -615,6 +615,21 @@ grid.spawnNewTiles = function() {
               ++grid.state.fallDone;
             }
           }
+
+          if(grid.state.appearing && (this.state.alpha !== null)) {
+            // fade out the tile
+            if(this.state.alpha < 1) {
+              this.state.alpha = this.state.alpha + 0.1;
+            } else {
+              this.state.alpha = 1;
+            }
+
+            // add to fadeDone to notify grid when all tiles are done fading
+            if(this.state.alpha >= 1) {
+              this.state.alpha = null;
+              ++grid.state.appearDone;
+            }
+          }
         };
 
         this.state.grid[y][x] = newTile;
@@ -623,6 +638,7 @@ grid.spawnNewTiles = function() {
     }
   }
 
+  this.state.gridCheck = this.copyGrid(this.state.grid); // sync grid check with grid
   AE.updateRenderPipe();
 };
 
@@ -652,6 +668,7 @@ grid.update = function() {
 
   // if swapping is done
   if(this.state.swapping && (this.state.swapDone === 2)) {
+    console.log('swapping done');
     this.state.swapping = null;
     this.state.swapDone = 0;
     this.finishSwap();
@@ -659,6 +676,7 @@ grid.update = function() {
 
   // if fading is done
   if(this.state.fading && (this.state.fadeDone === this.state.tilesToDel.length)) {
+    console.log('fading done');
     this.state.fading = false;
     this.state.fadeDone = 0;
     
@@ -668,6 +686,7 @@ grid.update = function() {
       this.deleteTile(currTile.state.gridLoc.x, currTile.state.gridLoc.y);
     }
 
+    this.state.tilesToDel = [];
     this.state.gridCheck = this.copyGrid(this.state.grid); // sync grid check with grid
 
     // start falling
@@ -677,7 +696,9 @@ grid.update = function() {
 
   // if falling is done
   if(this.state.falling && (this.state.fallDone === this.state.fallNum)) {
+    console.log('falling done');
     this.state.falling = false;
+    this.state.fallNum = 0;
     this.state.fallDone = 0;
 
     this.state.gridCheck = this.copyGrid(this.state.grid); // sync grid check with grid
@@ -685,6 +706,16 @@ grid.update = function() {
     // start appearing
     this.state.appearing = true;
     this.spawnNewTiles();
+  }
+
+  // if appearing is done
+  if(this.state.appearing && (this.state.appearDone === this.state.appearNum)) {
+    console.log('appearing done');
+    this.state.appearing = false;
+    this.state.appearNum = 0;
+    this.state.appearDone = 0;
+
+    this.state.gridCheck = this.copyGrid(this.state.grid); // sync grid check with grid
   }
 };
 
