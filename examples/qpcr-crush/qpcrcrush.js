@@ -41,6 +41,7 @@ grid.createGrid = function() {
   // falling
   this.state.falling = false;
   this.state.fallNum = 0;
+  this.state.fallDone = 0;
 
   var currY = 0;
   var tileSize = 70;
@@ -85,20 +86,25 @@ grid.createGrid = function() {
 
       // move loc
       tile.state.moveTo = null;
+
+      // move tile to moveTo destination
+      tile.move = function() {
+        if(this.state.pos.x < this.state.moveTo.x) {
+          this.state.pos.x = this.state.pos.x + 2;
+        } else if(this.state.pos.x > this.state.moveTo.x) {
+          this.state.pos.x = this.state.pos.x - 2;
+        }
+
+        if(this.state.pos.y < this.state.moveTo.y) {
+          this.state.pos.y = this.state.pos.y + 2;
+        } else if(this.state.pos.y > this.state.moveTo.y) {
+          this.state.pos.y = this.state.pos.y - 2;
+        }
+      };
+
       tile.update = function() {
         if(grid.state.swapping && (this.state.moveTo !== null)) {
-          // move tile to moveTo destination
-          if(this.state.pos.x < this.state.moveTo.x) {
-            this.state.pos.x = this.state.pos.x + 2;
-          } else if(this.state.pos.x > this.state.moveTo.x) {
-            this.state.pos.x = this.state.pos.x - 2;
-          }
-
-          if(this.state.pos.y < this.state.moveTo.y) {
-            this.state.pos.y = this.state.pos.y + 2;
-          } else if(this.state.pos.y > this.state.moveTo.y) {
-            this.state.pos.y = this.state.pos.y - 2;
-          }
+          this.move();
 
           // add to swapDone to notify grid when all tiles are done moving
           if((this.state.pos.x === this.state.moveTo.x) && (this.state.pos.y === this.state.moveTo.y)) {
@@ -121,7 +127,17 @@ grid.createGrid = function() {
             ++grid.state.fadeDone;
           }
         }
-      }
+
+        if(grid.state.falling && (this.state.moveTo !== null)) {
+          this.move();
+
+          // add to fallDone to notify grid when all tiles are done falling
+          if((this.state.pos.x === this.state.moveTo.x) && (this.state.pos.y === this.state.moveTo.y)) {
+            this.state.moveTo = null;
+            ++grid.state.fallDone;
+          }
+        }
+      };
 
       row.push(tile);
 
@@ -477,7 +493,7 @@ grid.calcFall = function() {
           var tile = this.state.grid[y][x];
 
           // update tile state
-          tile.state.moveTo = {x: (x * 70) + (x * 2), y: (y * 70) + (y * 2)};
+          tile.state.moveTo = {x: tile.state.pos.x, y: ((y + 1) * 70) + (y * 2)};
           ++tile.state.gridLoc.y;
 
           // swap tile locs in grid
@@ -547,6 +563,11 @@ grid.update = function() {
     this.calcFall();
   }
 
+  // if falling is done
+  if(this.state.falling && (this.state.fallDone === this.state.fallNum)) {
+    this.state.falling = false;
+    this.state.fallDone = 0;
+  }
 };
 
 AE.start();
