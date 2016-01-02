@@ -257,6 +257,7 @@ var AdamEngine = function(canvasId) {
 		// private properties
 		var loadedAssets = 0;
 		var totalAssets = 0;
+		var imgs = {};
 		var atlases = {};
 
 		// private methods
@@ -271,6 +272,19 @@ var AdamEngine = function(canvasId) {
 			}
 		}
 		// privileged methods
+		this.newImg = function(imgName, imgLoc) {
+			var img = new Image();
+			img.imgLoc = imgLoc;
+
+			++totalAssets;
+
+			imgs[imgName] = img;
+		};
+
+		this.getImg = function(imgName) {
+			return imgs[imgName];
+		};
+
 		this.newAtlas = function(atlasName, imgLoc, dataLoc) {
 			var img = new Image();
 			img.imgLoc = imgLoc;
@@ -292,7 +306,15 @@ var AdamEngine = function(canvasId) {
 		},
 
 		this.loadAssets = function(cb) {
+			console.log(totalAssets, imgs, atlases);
 			if(totalAssets > 0) {
+				// start downloading imgs
+				for(var imgName in imgs) {
+					console.log(imgName);
+					imgs[imgName].onload = loadFinishCheck(cb);
+					imgs[imgName].src = imgs[imgName].imgLoc;
+				}
+
 				// start downloading atlases
 				for(var atlasName in atlases) {
 					atlases[atlasName].img.onload = loadFinishCheck(cb);
@@ -374,13 +396,18 @@ var AdamEngine = function(canvasId) {
 						ctx.strokeRect(worldObj.state.stroke.pos.x, worldObj.state.stroke.pos.y, worldObj.state.stroke.size.w, worldObj.state.stroke.size.h);
 					}
 				} else if(worldObj.state.worldObjType === 'img') {
-					// TODO: if imgData is null, don't use atlas data
 					if(worldObj.state.alpha) {
 						ctx.save();
 						ctx.globalAlpha = worldObj.state.alpha;
 					}
 
-					ctx.drawImage(worldObj.state.img, worldObj.state.imgData.sx, worldObj.state.imgData.sy, worldObj.state.imgData.sw, worldObj.state.imgData.sh, worldObj.state.pos.x, worldObj.state.pos.y, worldObj.state.size.w, worldObj.state.size.h);
+					if(worldObj.state.imgData === null) {
+						// draw regular img
+						ctx.drawImage(worldObj.state.img, worldObj.state.pos.x, worldObj.state.pos.y, worldObj.state.size.w, worldObj.state.size.h);
+					} else {
+						// draw from atlas
+						ctx.drawImage(worldObj.state.img, worldObj.state.imgData.sx, worldObj.state.imgData.sy, worldObj.state.imgData.sw, worldObj.state.imgData.sh, worldObj.state.pos.x, worldObj.state.pos.y, worldObj.state.size.w, worldObj.state.size.h);
+					}
 					
 					if(worldObj.state.stroke !== null) {
 						ctx.strokeStyle = worldObj.state.stroke.color;

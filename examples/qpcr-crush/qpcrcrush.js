@@ -5,6 +5,7 @@ AE.inputMan.addMBInput(0, 'LEFTCLICK');
 AE.inputMan.addTouchInput();
 AE.inputMan.setup();
 
+AE.assetMan.newImg('bg', '/gfx/bg.jpg');
 AE.assetMan.newAtlas('tiles', '/gfx/atlas.png', '/gfx/atlas.json');
 
 var grid = AE.createWorldObj('grid');
@@ -674,6 +675,19 @@ grid.update = function() {
       }
     }
   }
+};
+
+var bg = AE.createWorldObj('bg');
+
+bg.setup = function() {
+  this.state.img = AE.assetMan.getImg('bg');
+  this.state.pos.x = 0;
+  this.state.pos.y = 0;
+  this.state.size.w = 850;
+  this.state.size.h = 650;
+  this.state.zIndex = 1;
+  this.state.alpha = null;
+  this.state.worldObjType = 'img';
 };
 
 AE.start();
