@@ -720,7 +720,7 @@ scoreTitle.setup = function() {
   this.state.color = '#FFF';
   this.state.font = '24px Arial';
   this.state.textAlign = 'center';
-  this.state.text = 'Score';
+  this.state.text = 'SCORE';
   this.state.zIndex = 2;
   this.state.worldObjType = 'text';
 };
@@ -736,6 +736,46 @@ score.setup = function() {
   this.state.text = 0;
   this.state.zIndex = 2;
   this.state.worldObjType = 'text';
+};
+
+var timerTitle = AE.createWorldObj('timerTitle');
+
+timerTitle.setup = function() {
+  this.state.pos.x = 750;
+  this.state.pos.y = 490;
+  this.state.color = '#FFF';
+  this.state.font = '24px Arial';
+  this.state.textAlign = 'center';
+  this.state.text = 'TIME LEFT';
+  this.state.zIndex = 2;
+  this.state.worldObjType = 'text';
+};
+
+var timer = AE.createWorldObj('timer');
+
+timer.setup = function() {
+  this.state.pos.x = 750;
+  this.state.pos.y = 550;
+  this.state.color = '#FFF';
+  this.state.font = '48px Arial';
+  this.state.textAlign = 'center';
+  this.state.text = 60;
+  this.state.frameCount = 0;
+  this.state.zIndex = 2;
+  this.state.worldObjType = 'text';
+};
+
+timer.update = function() {
+  if(this.state.frameCount > 60) {
+    --this.state.text;
+    this.state.frameCount = 0;
+  }
+
+  if(this.state.text === 0) {
+    this.state.frameCount = 0;
+  } else {
+    ++this.state.frameCount;
+  }
 };
 
 AE.start();
