@@ -159,65 +159,11 @@ grid.createGrid = function() {
 
 grid.spawnGrid = function() {
   // keep recreating grid until there isn't a match
-  this.createGrid();
-  while(this.findMatches(this.state.grid)) {
+  do {
     this.createGrid();
-  }
+  } while(this.findMatches(this.state.grid));
 
-  /* generate fixed tiles */
-  var fixedTileType = 'BHQ2.png';
-  var tile = this.state.grid[0][2];
-  var atlas = tile.state.atlas.data;
-
-  atlas = tile.state.atlas.data;
-  tile.state.tileType = fixedTileType;
-  tile.state.imgData = {
-    sx: atlas.frames[fixedTileType].frame.x,
-    sy: atlas.frames[fixedTileType].frame.y,
-    sw: atlas.frames[fixedTileType].sourceSize.w,
-    sh: atlas.frames[fixedTileType].sourceSize.h
-  };
-
-  tile = this.state.grid[2][2];
-  tile.state.tileType = fixedTileType;
-  tile.state.imgData = {
-    sx: atlas.frames[fixedTileType].frame.x,
-    sy: atlas.frames[fixedTileType].frame.y,
-    sw: atlas.frames[fixedTileType].sourceSize.w,
-    sh: atlas.frames[fixedTileType].sourceSize.h
-  };
-
-  tile = this.state.grid[3][2];
-  atlas = tile.state.atlas.data;
-  tile.state.tileType = fixedTileType;
-  tile.state.imgData = {
-    sx: atlas.frames[fixedTileType].frame.x,
-    sy: atlas.frames[fixedTileType].frame.y,
-    sw: atlas.frames[fixedTileType].sourceSize.w,
-    sh: atlas.frames[fixedTileType].sourceSize.h
-  };
-
-  tile = this.state.grid[1][3];
-  atlas = tile.state.atlas.data;
-  tile.state.tileType = fixedTileType;
-  tile.state.imgData = {
-    sx: atlas.frames[fixedTileType].frame.x,
-    sy: atlas.frames[fixedTileType].frame.y,
-    sw: atlas.frames[fixedTileType].sourceSize.w,
-    sh: atlas.frames[fixedTileType].sourceSize.h
-  };
-
-  tile = this.state.grid[1][4];
-  atlas = tile.state.atlas.data;
-  tile.state.tileType = fixedTileType;
-  tile.state.imgData = {
-    sx: atlas.frames[fixedTileType].frame.x,
-    sy: atlas.frames[fixedTileType].frame.y,
-    sw: atlas.frames[fixedTileType].sourceSize.w,
-    sh: atlas.frames[fixedTileType].sourceSize.h
-  };
-
-  this.state.gridCheck = this.copyGrid(this.state.grid);
+  this.state.gridCheck = this.copyGrid(this.state.grid); // copy grid to gridCheck
   AE.updateRenderPipe();
 };
 
@@ -716,6 +662,17 @@ grid.update = function() {
     this.state.appearDone = 0;
 
     this.state.gridCheck = this.copyGrid(this.state.grid); // sync grid check with grid
+
+    if(this.findMatches(this.state.grid)) {
+      // delete tiles
+      this.state.fading = true;
+
+      // assign each tile an alpha value
+      for(var i in this.state.tilesToDel) {
+        var currTile = this.state.tilesToDel[i];
+        currTile.state.alpha = 1;
+      }
+    }
   }
 };
 
