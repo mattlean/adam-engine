@@ -7,6 +7,8 @@ AE.inputMan.setup();
 
 AE.assetMan.newImg('bg', '/gfx/bg.jpg');
 AE.assetMan.newAtlas('tiles', '/gfx/atlas.png', '/gfx/atlas.json');
+AE.assetMan.newSound('score', '/sfx/score.wav');
+AE.assetMan.newSound('swap', '/sfx/swap.wav');
 
 var grid = AE.createWorldObj('grid');
 
@@ -179,10 +181,10 @@ grid.copyGrid = function(grid) {
 
 grid.addTilesToDel = function(prevSameTiles) {
   if(prevSameTiles.length > 2) {
-    console.log('>3 match occurred');
+    // console.log('>3 match occurred');
     for(var i in prevSameTiles) {
       var alreadyInTilesToDel = false;
-      console.log(prevSameTiles[i].state.gridLoc.x, prevSameTiles[i].state.gridLoc.y);
+      // console.log(prevSameTiles[i].state.gridLoc.x, prevSameTiles[i].state.gridLoc.y);
 
       for(var j in this.state.tilesToDel) {
         if(this.state.tilesToDel[j].name === prevSameTiles[i].name) {
@@ -195,7 +197,7 @@ grid.addTilesToDel = function(prevSameTiles) {
         this.state.tilesToDel.push(prevSameTiles[i]);
       }
     }
-    console.log('\n');
+    // console.log('\n');
 
     return true;
   }
@@ -206,7 +208,7 @@ grid.findMatches = function(grid) {
   var matchesFound = 0;
 
   // breadth check tiles
-  console.log('X check');
+  // console.log('X check');
   for(var y=0; y < 9; ++y) {
     var prevSameXTiles = [];
     for(var x=0; x < 9; ++x) {
@@ -235,7 +237,7 @@ grid.findMatches = function(grid) {
   }
 
   // depth check tiles
-  console.log('Y check');
+  // console.log('Y check');
   for(var x=0; x < 9; ++x) {
     var prevSameYTiles = [];
     for(var y=0; y < 9; ++y) {

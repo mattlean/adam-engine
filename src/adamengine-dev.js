@@ -5,6 +5,7 @@ var AdamEngine = function(canvasId) {
 	var canvas = document.getElementById(canvasId);
 	var canvasData = canvas.getBoundingClientRect();
 	var ctx = canvas.getContext('2d');
+	var audioCtx = new AudioContext();
 	var focus = false; // true if canvas is in focus or not
 	var loading = true; // true if engine is still loading assets
 	
@@ -251,6 +252,30 @@ var AdamEngine = function(canvasId) {
 
 
 
+	/*** SOUND MANAGER ***/
+	// SoundManager class
+	function SoundManager() {
+		// private properties
+		var buffers = {};
+
+		// privileged methods
+		this.getBuffers = function() {
+			return buffers;
+		};
+
+		this.playSound = function(soundName) {
+			var src = audioCtx.createBufferSource();
+			src.buffer = buffers[soundName];
+			src.connect(audioCtx.destination)
+			src.start(0);
+		};
+	}
+
+
+	/* SOUND MANAGER: PUBLIC PROPERTIES */
+	this.soundMan = new SoundManager();
+
+
 	/*** ASSET MANAGER ***/
 	// AssetManager class
 	function AssetManager() {
@@ -259,6 +284,7 @@ var AdamEngine = function(canvasId) {
 		var totalAssets = 0;
 		var imgs = {};
 		var atlases = {};
+		var sounds = {};
 
 		// private methods
 		function loadFinishCheck(cb) {
@@ -271,6 +297,7 @@ var AdamEngine = function(canvasId) {
 				cb();
 			}
 		}
+
 		// privileged methods
 		this.newImg = function(imgName, imgLoc) {
 			var img = new Image();
@@ -305,12 +332,27 @@ var AdamEngine = function(canvasId) {
 			return atlases[atlasName];
 		},
 
+		this.newSound = function(soundName, soundLoc) {
+			var buffers = AE.soundMan.getBuffers();
+			var xhr = new XMLHttpRequest();
+			xhr.responseType = 'arraybuffer';
+			xhr.open('GET', soundLoc, true);
+			xhr.onload = function() {
+				audioCtx.decodeAudioData(this.response, function(buffer) {
+					buffers[soundName] = buffer;
+				});
+				loadFinishCheck(AE.setupWorldObjs);
+			};
+
+			++totalAssets;
+
+			sounds[soundName] = xhr;
+		},
+
 		this.loadAssets = function(cb) {
-			console.log(totalAssets, imgs, atlases);
 			if(totalAssets > 0) {
 				// start downloading imgs
 				for(var imgName in imgs) {
-					console.log(imgName);
 					imgs[imgName].onload = loadFinishCheck(cb);
 					imgs[imgName].src = imgs[imgName].imgLoc;
 				}
@@ -325,6 +367,12 @@ var AdamEngine = function(canvasId) {
 
 					atlases[atlasName].img.src = atlases[atlasName].img.imgLoc;
 					atlases[atlasName].xhr.send();
+				}
+
+				// start downloading sounds
+				console.log(sounds);
+				for(var soundName in sounds) {
+					sounds[soundName].send();
 				}
 			} else {
 				cb();
@@ -344,26 +392,6 @@ var AdamEngine = function(canvasId) {
 
 
 	/* GAME LOOP: PRIVATE METHODS */
-	function setupWorldObjs() {
-		renderPipe = []; // recreate renderPipe
-		for(var worldObjName in worldObjs) {
-			worldObjs[worldObjName].setup();
-			renderPipe.push(worldObjs[worldObjName]);
-		}
-
-		renderPipe.sort(function(a, b) {
-			if(a.state.zIndex > b.state.zIndex) {
-				return 1;
-			}
-			if(a.state.zIndex < b.state.zIndex) {
-				return -1;
-			}
-			return 0;
-		});
-
-		requestAnimationFrame(gameLoop); // start game loop
-	}
-
 	function update() {
 		for(var worldObjName in worldObjs) {
 			worldObjs[worldObjName].update();
@@ -431,7 +459,27 @@ var AdamEngine = function(canvasId) {
 
 	/* GAME LOOP: PRIVILEGED METHODS */
 	this.start = function() {
-		this.assetMan.loadAssets(setupWorldObjs); // dl assets & setup world objs when dl is complete
+		this.assetMan.loadAssets(this.setupWorldObjs); // dl assets & setup world objs when dl is complete
+	};
+
+	this.setupWorldObjs = function() {
+		renderPipe = []; // recreate renderPipe
+		for(var worldObjName in worldObjs) {
+			worldObjs[worldObjName].setup();
+			renderPipe.push(worldObjs[worldObjName]);
+		}
+
+		renderPipe.sort(function(a, b) {
+			if(a.state.zIndex > b.state.zIndex) {
+				return 1;
+			}
+			if(a.state.zIndex < b.state.zIndex) {
+				return -1;
+			}
+			return 0;
+		});
+
+		requestAnimationFrame(gameLoop); // start game loop
 	};
 
 	this.updateRenderPipe = function() {
