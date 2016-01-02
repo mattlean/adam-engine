@@ -647,6 +647,9 @@ grid.update = function() {
     // delete tiles from grid
     for(var i in this.state.tilesToDel) {
       var currTile = this.state.tilesToDel[i];
+      this.state.score = this.state.score + ((parseInt(i) + 1) * 10);
+      console.log(this.state.score);
+      score.state.text = this.state.score;
       this.deleteTile(currTile.state.gridLoc.x, currTile.state.gridLoc.y);
     }
 
@@ -682,7 +685,7 @@ grid.update = function() {
     this.state.gridCheck = this.copyGrid(this.state.grid); // sync grid check with grid
 
     if(this.findMatches(this.state.grid)) {
-      // delete tiles
+      // start fading
       this.state.fading = true;
 
       // assign each tile an alpha value
@@ -730,7 +733,7 @@ score.setup = function() {
   this.state.color = '#FFF';
   this.state.font = '48px Arial';
   this.state.textAlign = 'center';
-  this.state.text = grid.state.score;
+  this.state.text = 0;
   this.state.zIndex = 2;
   this.state.worldObjType = 'text';
 };
