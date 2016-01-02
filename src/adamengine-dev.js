@@ -53,6 +53,9 @@ var AdamEngine = function(canvasId) {
 		this.state.color = null;
 		this.state.stroke = null;
 		this.state.alpha = null;
+		this.state.font = null;
+		this.state.textAlign = null;
+		this.state.text = null;
 		this.state.zIndex = 0;
 	}
 
@@ -425,6 +428,7 @@ var AdamEngine = function(canvasId) {
 						ctx.strokeRect(worldObj.state.stroke.pos.x, worldObj.state.stroke.pos.y, worldObj.state.stroke.size.w, worldObj.state.stroke.size.h);
 					}
 				} else if(worldObj.state.worldObjType === 'img') {
+					// if alpha exists, render worldobj with alpha val
 					if(worldObj.state.alpha) {
 						ctx.save();
 						ctx.globalAlpha = worldObj.state.alpha;
@@ -446,6 +450,13 @@ var AdamEngine = function(canvasId) {
 					if(worldObj.state.alpha) {
 						ctx.restore();
 					}
+				} else if(worldObj.state.worldObjType === 'text') {
+					ctx.fillStyle = worldObj.state.color;
+					ctx.font = worldObj.state.font;
+					if(worldObj.state.textAlign) {
+						ctx.textAlign = worldObj.state.textAlign;
+					}
+					ctx.fillText(worldObj.state.text, worldObj.state.pos.x, worldObj.state.pos.y);
 				}
 			}
 		}

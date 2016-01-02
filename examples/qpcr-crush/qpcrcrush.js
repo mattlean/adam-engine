@@ -19,7 +19,9 @@ grid.setup = function() {
   this.state.pos.y = 0;
   this.state.size.w = 650;
   this.state.size.h = 650;
+  this.state.score = 0;
   this.state.worldObjType = 'invis';
+
   this.spawnGrid();
 };
 
@@ -705,6 +707,32 @@ bg.setup = function() {
   this.state.zIndex = 1;
   this.state.alpha = null;
   this.state.worldObjType = 'img';
+};
+
+var scoreTitle = AE.createWorldObj('scoreTitle');
+
+scoreTitle.setup = function() {
+  this.state.pos.x = 750;
+  this.state.pos.y = 100;
+  this.state.color = '#FFF';
+  this.state.font = '24px Arial';
+  this.state.textAlign = 'center';
+  this.state.text = 'Score';
+  this.state.zIndex = 2;
+  this.state.worldObjType = 'text';
+};
+
+var score = AE.createWorldObj('score');
+
+score.setup = function() {
+  this.state.pos.x = 750;
+  this.state.pos.y = 160;
+  this.state.color = '#FFF';
+  this.state.font = '48px Arial';
+  this.state.textAlign = 'center';
+  this.state.text = grid.state.score;
+  this.state.zIndex = 2;
+  this.state.worldObjType = 'text';
 };
 
 AE.start();
