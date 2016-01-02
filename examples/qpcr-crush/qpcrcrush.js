@@ -40,6 +40,7 @@ grid.createGrid = function() {
 
   // falling
   this.state.falling = false;
+  this.state.fallNum = 0;
 
   var currY = 0;
   var tileSize = 70;
@@ -465,11 +466,49 @@ grid.processInput = function(clickedTile, prevClickedTile) {
   }
 };
 
+grid.calcFall = function() {
+  var gridSize = this.state.grid.length;
+
+  for(var x=0; x < gridSize; ++x) {
+    for(var y=0; y < gridSize; ++y) {
+      // move tile to the cell below it if it is an empty space
+      if(y < 8) {
+        if((this.state.grid[y][x] !== null) && (this.state.grid[y + 1][x] === null)) {
+          var tile = this.state.grid[y][x];
+
+          // update tile state
+          tile.state.moveTo = {x: (x * 70) + (x * 2), y: (y * 70) + (y * 2)};
+          ++tile.state.gridLoc.y;
+
+          // swap tile locs in grid
+          this.state.grid[y + 1][x] = this.state.grid[y][x];
+          this.state.grid[y][x] = null;
+
+          // reset grid traversal
+          x = 0;
+          y = 0;
+        }
+      }
+    }
+  }
+
+  // count how many tiles need to move
+  for(var y=0; y < gridSize; ++y) {
+    for(var x=0; x < gridSize; ++x) {
+      if(this.state.grid[y][x]) {
+        if(this.state.grid[y][x].state.moveTo !== null) {
+          ++this.state.fallNum;
+        }
+      }
+    }
+  }
+};
+
 grid.update = function() {
   var touchState = AE.inputMan.getTouchState();
 
   // disable inputs when an animation is occurring
-  if((this.state.swapping == null) && (this.state.fading === false) && (this.state.falling === false)) {
+  if((this.state.swapping === null) && (this.state.fading === false) && (this.state.falling === false)) {
     if(touchState.fullPress) {
       var touch = this.tilePressed();
 
@@ -505,6 +544,7 @@ grid.update = function() {
     this.state.gridCheck = this.copyGrid(this.state.grid); // sync grid check with grid
 
     this.state.falling = true;
+    this.calcFall();
   }
 
 };
