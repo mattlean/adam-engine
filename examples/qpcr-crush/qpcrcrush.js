@@ -28,11 +28,18 @@ grid.createGrid = function() {
   this.state.gridCheck = []; // grid used to check if player moves are valid
   this.state.tilesCreated = 0;
   this.state.prevClickedTile = null;
+
+  // swapping
   this.state.swapping = null;
   this.state.swapDone = 0;
+
+  // fading
   this.state.fading = false;
   this.state.fadeDone = 0;
   this.state.tilesToDel = [];
+
+  // falling
+  this.state.falling = false;
 
   var currY = 0;
   var tileSize = 70;
@@ -460,7 +467,9 @@ grid.processInput = function(clickedTile, prevClickedTile) {
 
 grid.update = function() {
   var touchState = AE.inputMan.getTouchState();
-  if((this.state.swapping == null) && (this.state.fading === false)) {
+
+  // disable inputs when an animation is occurring
+  if((this.state.swapping == null) && (this.state.fading === false) && (this.state.falling === false)) {
     if(touchState.fullPress) {
       var touch = this.tilePressed();
 
@@ -494,7 +503,10 @@ grid.update = function() {
     }
 
     this.state.gridCheck = this.copyGrid(this.state.grid); // sync grid check with grid
+
+    this.state.falling = true;
   }
+
 };
 
 AE.start();
