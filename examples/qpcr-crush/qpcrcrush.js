@@ -83,6 +83,8 @@ grid.createGrid = function() {
 
       // custom state vals
       tile.state.gridLoc = {x: j, y: i};
+      tile.state.direction = {x: null, y: null};
+      tile.state.doneMoving = {x: false, y: false};
 
       // atlas state
       var atlas = tile.state.atlas.data;
@@ -104,15 +106,61 @@ grid.createGrid = function() {
       // move tile to moveTo destination
       tile.move = function() {
         if(this.state.pos.x < this.state.moveTo.x) {
-          this.state.pos.x = this.state.pos.x + 2;
+          if(this.state.direction.x === null) {
+            this.state.direction.x = 'RIGHT';
+          }
+          this.state.pos.x = this.state.pos.x + 6;
         } else if(this.state.pos.x > this.state.moveTo.x) {
-          this.state.pos.x = this.state.pos.x - 2;
+          if(this.state.direction.x === null) {
+            this.state.direction.x = 'LEFT';
+          }
+          this.state.pos.x = this.state.pos.x - 6;
+        } else if(this.state.pos.y < this.state.moveTo.y) {
+          if(this.state.direction.y === null) {
+            this.state.direction.y = 'DOWN';
+          }
+          this.state.pos.y = this.state.pos.y + 6;
+        } else if(this.state.pos.y > this.state.moveTo.y) {
+          if(this.state.direction.y === null) {
+            this.state.direction.y = 'UP';
+          }
+          this.state.pos.y = this.state.pos.y - 6;
         }
 
-        if(this.state.pos.y < this.state.moveTo.y) {
-          this.state.pos.y = this.state.pos.y + 2;
-        } else if(this.state.pos.y > this.state.moveTo.y) {
-          this.state.pos.y = this.state.pos.y - 2;
+        if(this.state.direction.x !== null) {
+          if(this.state.direction.x === 'RIGHT') {
+            if(this.state.pos.x >= this.state.moveTo.x) {
+              this.state.pos.x = this.state.moveTo.x;
+              this.state.doneMoving.x = true;
+              this.state.direction.x = null;
+            }
+          } else if(this.state.direction.x === 'LEFT') {
+            if(this.state.pos.x <= this.state.moveTo.x) {
+              this.state.pos.x = this.state.moveTo.x;
+              this.state.doneMoving.x = true;
+              this.state.direction.x = null;
+            }
+          }
+        } else if(this.state.direction.y !== null) {
+          if(this.state.direction.y === 'DOWN') {
+            if(this.state.pos.y >= this.state.moveTo.y) {
+              this.state.pos.y = this.state.moveTo.y;
+              this.state.doneMoving.y = true;
+              this.state.direction.y = null;
+            }
+          } else if(this.state.direction.y === 'UP') {
+            if(this.state.pos.y <= this.state.moveTo.y) {
+              this.state.pos.y = this.state.moveTo.y;
+              this.state.doneMoving.y = true;
+              this.state.direction.y = null;
+            }
+          }
+        }
+
+        if(this.state.doneMoving.x || this.state.doneMoving.y) {
+          this.state.moveTo = null;
+          this.state.doneMoving.x = false;
+          this.state.doneMoving.y = false;
         }
       };
 
@@ -120,9 +168,10 @@ grid.createGrid = function() {
         if(grid.state.swapping && (this.state.moveTo !== null)) {
           this.move();
 
+          console.log(this.state.doneMoving);
+
           // add to swapDone to notify grid when all tiles are done moving
-          if((this.state.pos.x === this.state.moveTo.x) && (this.state.pos.y === this.state.moveTo.y)) {
-            this.state.moveTo = null;
+          if(this.state.moveTo === null) {
             ++grid.state.swapDone;
           }
         }
@@ -146,9 +195,23 @@ grid.createGrid = function() {
           this.move();
 
           // add to fallDone to notify grid when all tiles are done falling
-          if((this.state.pos.x === this.state.moveTo.x) && (this.state.pos.y === this.state.moveTo.y)) {
-            this.state.moveTo = null;
+          if(this.state.moveTo == null) {
             ++grid.state.fallDone;
+          }
+        }
+
+        if(grid.state.appearing && (this.state.alpha !== null)) {
+          // fade out the tile
+          if(this.state.alpha < 1) {
+            this.state.alpha = this.state.alpha + 0.1;
+          } else {
+            this.state.alpha = 1;
+          }
+
+          // add to fadeDone to notify grid when all tiles are done fading
+          if(this.state.alpha >= 1) {
+            this.state.alpha = null;
+            ++grid.state.appearDone;
           }
         }
       };
@@ -512,6 +575,8 @@ grid.spawnNewTiles = function() {
 
         // custom state vals
         newTile.state.gridLoc = {x: x, y: y};
+        newTile.state.direction = {x: null, y: null};
+        newTile.state.doneMoving = {x: false, y: false};
 
         // atlas state
         var atlas = newTile.state.atlas.data;
@@ -533,15 +598,61 @@ grid.spawnNewTiles = function() {
         // move tile to moveTo destination
         newTile.move = function() {
           if(this.state.pos.x < this.state.moveTo.x) {
-            this.state.pos.x = this.state.pos.x + 2;
+            if(this.state.direction.x === null) {
+              this.state.direction.x = 'RIGHT';
+            }
+            this.state.pos.x = this.state.pos.x + 10;
           } else if(this.state.pos.x > this.state.moveTo.x) {
-            this.state.pos.x = this.state.pos.x - 2;
+            if(this.state.direction.x === null) {
+              this.state.direction.x = 'LEFT';
+            }
+            this.state.pos.x = this.state.pos.x - 10;
+          } else if(this.state.pos.y < this.state.moveTo.y) {
+            if(this.state.direction.y === null) {
+              this.state.direction.y = 'DOWN';
+            }
+            this.state.pos.y = this.state.pos.y + 10;
+          } else if(this.state.pos.y > this.state.moveTo.y) {
+            if(this.state.direction.y === null) {
+              this.state.direction.y = 'UP';
+            }
+            this.state.pos.y = this.state.pos.y - 10;
           }
 
-          if(this.state.pos.y < this.state.moveTo.y) {
-            this.state.pos.y = this.state.pos.y + 2;
-          } else if(this.state.pos.y > this.state.moveTo.y) {
-            this.state.pos.y = this.state.pos.y - 2;
+          if(this.state.direction.x !== null) {
+            if(this.state.direction.x === 'RIGHT') {
+              if(this.state.pos.x >= this.state.moveTo.x) {
+                this.state.pos.x = this.state.moveTo.x;
+                this.state.doneMoving.x = true;
+                this.state.direction.x = null;
+              }
+            } else if(this.state.direction.x === 'LEFT') {
+              if(this.state.pos.x <= this.state.moveTo.x) {
+                this.state.pos.x = this.state.moveTo.x;
+                this.state.doneMoving.x = true;
+                this.state.direction.x = null;
+              }
+            }
+          } else if(this.state.direction.y !== null) {
+            if(this.state.direction.y === 'DOWN') {
+              if(this.state.pos.y >= this.state.moveTo.y) {
+                this.state.pos.y = this.state.moveTo.y;
+                this.state.doneMoving.y = true;
+                this.state.direction.y = null;
+              }
+            } else if(this.state.direction.y === 'UP') {
+              if(this.state.pos.y <= this.state.moveTo.y) {
+                this.state.pos.y = this.state.moveTo.y;
+                this.state.doneMoving.y = true;
+                this.state.direction.y = null;
+              }
+            }
+          }
+
+          if(this.state.doneMoving.x || this.state.doneMoving.y) {
+            this.state.moveTo = null;
+            this.state.doneMoving.x = false;
+            this.state.doneMoving.y = false;
           }
         };
 
@@ -549,9 +660,10 @@ grid.spawnNewTiles = function() {
           if(grid.state.swapping && (this.state.moveTo !== null)) {
             this.move();
 
+            console.log(this.state.doneMoving);
+
             // add to swapDone to notify grid when all tiles are done moving
-            if((this.state.pos.x === this.state.moveTo.x) && (this.state.pos.y === this.state.moveTo.y)) {
-              this.state.moveTo = null;
+            if(this.state.moveTo === null) {
               ++grid.state.swapDone;
             }
           }
@@ -575,8 +687,7 @@ grid.spawnNewTiles = function() {
             this.move();
 
             // add to fallDone to notify grid when all tiles are done falling
-            if((this.state.pos.x === this.state.moveTo.x) && (this.state.pos.y === this.state.moveTo.y)) {
-              this.state.moveTo = null;
+            if(this.state.moveTo == null) {
               ++grid.state.fallDone;
             }
           }
