@@ -170,7 +170,7 @@ grid.createGrid = function() {
         if(grid.state.swapping && (this.state.moveTo !== null)) {
           this.move();
 
-          console.log(this.state.doneMoving);
+          //console.log(this.state.doneMoving);
 
           // add to swapDone to notify grid when all tiles are done moving
           if(this.state.moveTo === null) {
@@ -221,6 +221,7 @@ grid.spawnGrid = function() {
     this.createGrid();
   } while(this.findMatches(this.state.grid));
 
+  this.state.tilesToDel = [];
   this.state.gridCheck = this.copyGrid(this.state.grid); // copy grid to gridCheck
   AE.updateRenderPipe();
 };
@@ -259,7 +260,7 @@ grid.addTilesToDel = function(prevSameTiles) {
   return false;
 };
 
-grid.findMatches = function(grid) {
+grid.findMatches = function(inputGrid) {
   var matchesFound = 0;
 
   // breadth check tiles
@@ -268,19 +269,20 @@ grid.findMatches = function(grid) {
     var prevSameXTiles = [];
     for(var x=0; x < 9; ++x) {
       if(prevSameXTiles.length === 0) {
-        prevSameXTiles.push(grid[y][x]);
+        prevSameXTiles.push(inputGrid[y][x]);
       } else {
         // there is a match!
-        if(prevSameXTiles[0].state.tileType === grid[y][x].state.tileType) {
-          prevSameXTiles.push(grid[y][x]);
+        if(prevSameXTiles[0].state.tileType === inputGrid[y][x].state.tileType) {
+          prevSameXTiles.push(inputGrid[y][x]);
         } else {
           // match is broken
+          // debugger;
           if(this.addTilesToDel(prevSameXTiles)) {
             ++matchesFound;
           }
 
           prevSameXTiles = [];
-          prevSameXTiles.push(grid[y][x]);
+          prevSameXTiles.push(inputGrid[y][x]);
         }
       }
     }
@@ -297,11 +299,11 @@ grid.findMatches = function(grid) {
     var prevSameYTiles = [];
     for(var y=0; y < 9; ++y) {
       if(prevSameYTiles.length === 0) {
-        prevSameYTiles.push(grid[y][x]);
+        prevSameYTiles.push(inputGrid[y][x]);
       } else {
         // there is a match!
-        if(prevSameYTiles[0].state.tileType === grid[y][x].state.tileType) {
-          prevSameYTiles.push(grid[y][x]);
+        if(prevSameYTiles[0].state.tileType === inputGrid[y][x].state.tileType) {
+          prevSameYTiles.push(inputGrid[y][x]);
         } else {
           // match is broken
           if(this.addTilesToDel(prevSameYTiles)) {
@@ -309,7 +311,7 @@ grid.findMatches = function(grid) {
           }
 
           prevSameYTiles = [];
-          prevSameYTiles.push(grid[y][x]);
+          prevSameYTiles.push(inputGrid[y][x]);
         }
       }
     }
@@ -353,6 +355,10 @@ grid.tileClicked = function() {
         (mousePos.y < (tile.state.pos.y + tile.state.size.h)) &&
         (mousePos.y > tile.state.pos.y)
       ) {
+        console.log('tileClicked');
+        console.log(tile);
+        console.log(this.state.grid[y][x]);
+        console.log(this.state.gridCheck[y][x]);
         return tile;
       }
     }
@@ -416,7 +422,7 @@ grid.validSwap = function(clickedTile, prevClickedTile) {
 
 grid.processInput = function(clickedTile, prevClickedTile) {
   if(clickedTile) {
-    console.log(this.state.grid);
+    //console.log(this.state.grid);
     console.log('clicked a tile');
     // check if clicked tile is within range of prev
     if(prevClickedTile) {
@@ -429,23 +435,29 @@ grid.processInput = function(clickedTile, prevClickedTile) {
         var clickedTileGridLoc = clickedTile.state.gridLoc;
         var prevClickedTileGridLoc = prevClickedTile.state.gridLoc;
 
+        console.log('old', this.state.gridCheck[prevClickedTileGridLoc.y][prevClickedTileGridLoc.x]);
+        console.log('new', this.state.gridCheck[clickedTileGridLoc.y][clickedTileGridLoc.x]);
+
         var tempTile = this.state.gridCheck[clickedTileGridLoc.y][clickedTileGridLoc.x];
         this.state.gridCheck[clickedTileGridLoc.y][clickedTileGridLoc.x] = this.state.gridCheck[prevClickedTileGridLoc.y][prevClickedTileGridLoc.x];
         this.state.gridCheck[prevClickedTileGridLoc.y][prevClickedTileGridLoc.x] = tempTile;
+
+        console.log('old', this.state.gridCheck[prevClickedTileGridLoc.y][prevClickedTileGridLoc.x]);
+        console.log('new', this.state.gridCheck[clickedTileGridLoc.y][clickedTileGridLoc.x]);
+        debugger;
 
         console.log(this.state.gridCheck);
         if(this.findMatches(this.state.gridCheck)) {
           console.log('match found');
           // if swap results to a match, updated grid
-          var grid = this.state.grid;
           var gridCheck = this.state.gridCheck;
 
           var newClickedTile = gridCheck[prevClickedTileGridLoc.y][prevClickedTileGridLoc.x];
           var newPrevClickedTile = gridCheck[clickedTileGridLoc.y][clickedTileGridLoc.x];
 
           // begin swap animation
-          var tile1 = grid[clickedTileGridLoc.y][clickedTileGridLoc.x];
-          var tile2 = grid[prevClickedTileGridLoc.y][prevClickedTileGridLoc.x];
+          var tile1 = this.state.grid[clickedTileGridLoc.y][clickedTileGridLoc.x];
+          var tile2 = this.state.grid[prevClickedTileGridLoc.y][prevClickedTileGridLoc.x];
 
           this.state.swapping = {tile1: tile1, tile2: tile2};
           tile1.state.moveTo = {x: tile2.state.pos.x, y: tile2.state.pos.y};
@@ -473,6 +485,8 @@ grid.processInput = function(clickedTile, prevClickedTile) {
             }
 
             AE.soundMan.playSound('score');
+
+            grid.state.prevClickedTile = null;
           };
         } else {
           console.log('no match');
@@ -746,10 +760,12 @@ grid.update = function() {
     this.state.fadeDone = 0;
     
     // delete tiles from grid
+    console.log(this.state.tilesToDel);
+    // debugger;
     for(var i in this.state.tilesToDel) {
       var currTile = this.state.tilesToDel[i];
       this.state.score = this.state.score + ((parseInt(i) + 1) * 10);
-      console.log(this.state.score);
+      //console.log(this.state.score);
       score.state.text = this.state.score;
       this.deleteTile(currTile.state.gridLoc.x, currTile.state.gridLoc.y);
     }
@@ -785,7 +801,7 @@ grid.update = function() {
 
     this.state.gridCheck = this.copyGrid(this.state.grid); // sync grid check with grid
 
-    if(this.findMatches(this.state.grid)) {
+    if(this.findMatches(this.state.gridCheck)) {
       // start fading
       this.state.fading = true;
 
@@ -908,7 +924,7 @@ $('#start-modal').modal({
 });
 $('#start-game').click(function() {
   grid.state.timeUp = false;
-  timer.state.text = 60;
+  timer.state.text = 9999999;
 });
 $('#replay').click(function() {
   grid.spawnGrid();
