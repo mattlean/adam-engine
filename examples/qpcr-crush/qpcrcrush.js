@@ -23,6 +23,8 @@ grid.setup = function() {
   this.state.timeUp = true;
   this.state.worldObjType = 'invis';
 
+  console.log('load done');
+
   this.spawnGrid();
 };
 
@@ -179,7 +181,7 @@ grid.createGrid = function() {
         if(grid.state.fading && this.state.alpha) {
           // fade out the tile
           if(this.state.alpha > 0) {
-            this.state.alpha = this.state.alpha - 0.2;
+            this.state.alpha -= 0.2;
           } else {
             this.state.alpha = 0;
           }
@@ -197,21 +199,6 @@ grid.createGrid = function() {
           // add to fallDone to notify grid when all tiles are done falling
           if(this.state.moveTo == null) {
             ++grid.state.fallDone;
-          }
-        }
-
-        if(grid.state.appearing && (this.state.alpha !== null)) {
-          // fade out the tile
-          if(this.state.alpha < 1) {
-            this.state.alpha = this.state.alpha + 0.1;
-          } else {
-            this.state.alpha = 1;
-          }
-
-          // add to fadeDone to notify grid when all tiles are done fading
-          if(this.state.alpha >= 1) {
-            this.state.alpha = null;
-            ++grid.state.appearDone;
           }
         }
       };
@@ -561,31 +548,32 @@ grid.spawnNewTiles = function() {
     for(var x=0; x < gridSize; ++x) {
       if(this.state.grid[y][x] === null) {
         ++this.state.tilesCreated;
-        var newTile = AE.createWorldObj('tile' + this.state.tilesCreated);
+        var tile = AE.createWorldObj('tile' + this.state.tilesCreated);
+        var tileSize = 70;
 
         // default state vals
-        newTile.state.atlas = AE.assetMan.getAtlas('tiles');
-        newTile.state.pos.x = (x * 70) + (x * 2);
-        newTile.state.pos.y = (y * 70) + (y * 2);
-        newTile.state.size.w = tileSize;
-        newTile.state.size.h = tileSize;
-        newTile.state.zIndex = 2;
-        newTile.state.alpha = 0;
-        newTile.state.worldObjType = 'img';
+        tile.state.atlas = AE.assetMan.getAtlas('tiles');
+        tile.state.pos.x = (x * 70) + (x * 2);
+        tile.state.pos.y = (y * 70) + (y * 2);
+        tile.state.size.w = tileSize;
+        tile.state.size.h = tileSize;
+        tile.state.zIndex = 2;
+        tile.state.alpha = 0;
+        tile.state.worldObjType = 'img';
 
         // custom state vals
-        newTile.state.gridLoc = {x: x, y: y};
-        newTile.state.direction = {x: null, y: null};
-        newTile.state.doneMoving = {x: false, y: false};
+        tile.state.gridLoc = {x: x, y: y};
+        tile.state.direction = {x: null, y: null};
+        tile.state.doneMoving = {x: false, y: false};
 
         // atlas state
-        var atlas = newTile.state.atlas.data;
+        var atlas = tile.state.atlas.data;
         var randNum = Math.floor(Math.random() * (0, 6));
         var randTileName = tileNames[randNum];
 
-        newTile.state.tileType = randTileName;
-        newTile.state.img = newTile.state.atlas.img;
-        newTile.state.imgData = {
+        tile.state.tileType = randTileName;
+        tile.state.img = tile.state.atlas.img;
+        tile.state.imgData = {
           sx: atlas.frames[randTileName].frame.x,
           sy: atlas.frames[randTileName].frame.y,
           sw: atlas.frames[randTileName].sourceSize.w,
@@ -593,30 +581,30 @@ grid.spawnNewTiles = function() {
         };
 
         // move loc
-        newTile.state.moveTo = null;
+        tile.state.moveTo = null;
 
         // move tile to moveTo destination
-        newTile.move = function() {
+        tile.move = function() {
           if(this.state.pos.x < this.state.moveTo.x) {
             if(this.state.direction.x === null) {
               this.state.direction.x = 'RIGHT';
             }
-            this.state.pos.x = this.state.pos.x + 10;
+            this.state.pos.x = this.state.pos.x + 6;
           } else if(this.state.pos.x > this.state.moveTo.x) {
             if(this.state.direction.x === null) {
               this.state.direction.x = 'LEFT';
             }
-            this.state.pos.x = this.state.pos.x - 10;
+            this.state.pos.x = this.state.pos.x - 6;
           } else if(this.state.pos.y < this.state.moveTo.y) {
             if(this.state.direction.y === null) {
               this.state.direction.y = 'DOWN';
             }
-            this.state.pos.y = this.state.pos.y + 10;
+            this.state.pos.y = this.state.pos.y + 6;
           } else if(this.state.pos.y > this.state.moveTo.y) {
             if(this.state.direction.y === null) {
               this.state.direction.y = 'UP';
             }
-            this.state.pos.y = this.state.pos.y - 10;
+            this.state.pos.y = this.state.pos.y - 6;
           }
 
           if(this.state.direction.x !== null) {
@@ -656,7 +644,7 @@ grid.spawnNewTiles = function() {
           }
         };
 
-        newTile.update = function() {
+        tile.update = function() {
           if(grid.state.swapping && (this.state.moveTo !== null)) {
             this.move();
 
@@ -671,7 +659,7 @@ grid.spawnNewTiles = function() {
           if(grid.state.fading && this.state.alpha) {
             // fade out the tile
             if(this.state.alpha > 0) {
-              this.state.alpha = this.state.alpha - 0.2;
+              this.state.alpha -= 0.2;
             } else {
               this.state.alpha = 0;
             }
@@ -693,9 +681,9 @@ grid.spawnNewTiles = function() {
           }
 
           if(grid.state.appearing && (this.state.alpha !== null)) {
-            // fade out the tile
+            // fade in the tile
             if(this.state.alpha < 1) {
-              this.state.alpha = this.state.alpha + 0.1;
+              this.state.alpha += 0.1;
             } else {
               this.state.alpha = 1;
             }
@@ -708,7 +696,7 @@ grid.spawnNewTiles = function() {
           }
         };
 
-        this.state.grid[y][x] = newTile;
+        this.state.grid[y][x] = tile;
         ++this.state.appearNum;
       }
     }
