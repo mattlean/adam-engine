@@ -43,7 +43,6 @@ var AdamEngine = function(canvasId) {
 		GameObj.call(this, 'world-obj'); // inherit from GameObj
 
 		// set default state
-		this.state.name = null;
 		this.state.worldObjType = null;
 		this.state.pos = {x: 0, y: 0};
 		this.state.size = {w: 0, h: 0};
@@ -186,6 +185,8 @@ var AdamEngine = function(canvasId) {
 					inputState.touch.pos.endY = e.changedTouches[0].pageY - canvasData.top;
 					// console.log(inputState.touch.pos);
 				}
+
+				AE.soundMan.playSound('select'); // temp iOS audio fix
 			});
 
 			document.addEventListener('touchmove', function(e) {
@@ -270,7 +271,13 @@ var AdamEngine = function(canvasId) {
 		this.playSound = function(soundName) {
 			var src = audioCtx.createBufferSource();
 			src.buffer = buffers[soundName];
-			src.connect(audioCtx.destination)
+
+			var gainNode = audioCtx.createGain();
+			gainNode.gain.value = 0.05;
+
+			src.connect(gainNode);
+			gainNode.connect(audioCtx.destination);
+
 			src.start(0);
 		};
 	}
