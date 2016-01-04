@@ -103,16 +103,40 @@ grid.createGrid = function() {
 
       // move tile to moveTo destination
       tile.move = function() {
-        if(this.state.pos.x < this.state.moveTo.x) {
-          this.state.pos.x = this.state.pos.x + 2;
-        } else if(this.state.pos.x > this.state.moveTo.x) {
-          this.state.pos.x = this.state.pos.x - 2;
+        var unoffsetPosX = Math.floor(this.state.pos.x / 10) * 10;
+        var unoffsetPosY = Math.floor(this.state.pos.y / 10) * 10;
+        var offsetPosX = this.state.pos.x - unoffsetPosX;
+        var offsetPosY = this.state.pos.y - unoffsetPosY;
+        console.log('pos');
+        console.log(unoffsetPosX, offsetPosX, this.state.pos.x);
+        console.log(unoffsetPosY, offsetPosY, this.state.pos.y);
+
+        var unoffsetMoveToX = Math.floor(this.state.moveTo.x/ 10) * 10;
+        var unoffsetMoveToY = Math.floor(this.state.moveTo.y/ 10) * 10;
+        var offsetMoveToX = this.state.moveTo.x - unoffsetMoveToX;
+        var offsetMoveToY = this.state.moveTo.y - unoffsetMoveToY;
+        console.log('moveTo');
+        console.log(unoffsetMoveToX, offsetMoveToX, this.state.moveTo.x);
+        console.log(unoffsetMoveToY, offsetMoveToY, this.state.moveTo.y);
+
+        if(unoffsetPosX === unoffsetMoveToX) {
+          this.state.pos.x = this.state.moveTo.x;
+        } else if(unoffsetPosX < unoffsetMoveToX) {
+          unoffsetPosX += 10;
+          this.state.pos.x = unoffsetPosX;
+        } else if(unoffsetPosX > unoffsetMoveToX) {
+          unoffsetPosX -= 10;
+          this.state.pos.x = unoffsetPosX;
         }
 
-        if(this.state.pos.y < this.state.moveTo.y) {
-          this.state.pos.y = this.state.pos.y + 2;
-        } else if(this.state.pos.y > this.state.moveTo.y) {
-          this.state.pos.y = this.state.pos.y - 2;
+        if(unoffsetPosY === unoffsetMoveToY) {
+          this.state.pos.y = this.state.moveTo.y;
+        } else if(unoffsetPosY < unoffsetMoveToY) {
+          unoffsetPosY += 10;
+          this.state.pos.y = unoffsetPosY;
+        } else if(unoffsetPosY > unoffsetMoveToY) {
+          unoffsetPosY -= 10;
+          this.state.pos.y = unoffsetPosY;
         }
       };
 
@@ -532,16 +556,40 @@ grid.spawnNewTiles = function() {
 
         // move tile to moveTo destination
         newTile.move = function() {
-          if(this.state.pos.x < this.state.moveTo.x) {
-            this.state.pos.x = this.state.pos.x + 2;
-          } else if(this.state.pos.x > this.state.moveTo.x) {
-            this.state.pos.x = this.state.pos.x - 2;
+          var unoffsetPosX = Math.floor(this.state.pos.x / 10) * 10;
+          var unoffsetPosY = Math.floor(this.state.pos.y / 10) * 10;
+          var offsetPosX = this.state.pos.x - unoffsetPosX;
+          var offsetPosY = this.state.pos.y - unoffsetPosY;
+          console.log('pos');
+          console.log(unoffsetPosX, offsetPosX, this.state.pos.x);
+          console.log(unoffsetPosY, offsetPosY, this.state.pos.y);
+
+          var unoffsetMoveToX = Math.floor(this.state.moveTo.x/ 10) * 10;
+          var unoffsetMoveToY = Math.floor(this.state.moveTo.y/ 10) * 10;
+          var offsetMoveToX = this.state.moveTo.x - unoffsetMoveToX;
+          var offsetMoveToY = this.state.moveTo.y - unoffsetMoveToY;
+          console.log('moveTo');
+          console.log(unoffsetMoveToX, offsetMoveToX, this.state.moveTo.x);
+          console.log(unoffsetMoveToY, offsetMoveToY, this.state.moveTo.y);
+
+          if(unoffsetPosX === unoffsetMoveToX) {
+            this.state.pos.x = this.state.moveTo.x;
+          } else if(unoffsetPosX < unoffsetMoveToX) {
+            unoffsetPosX += 10;
+            this.state.pos.x = unoffsetPosX;
+          } else if(unoffsetPosX > unoffsetMoveToX) {
+            unoffsetPosX -= 10;
+            this.state.pos.x = unoffsetPosX;
           }
 
-          if(this.state.pos.y < this.state.moveTo.y) {
-            this.state.pos.y = this.state.pos.y + 2;
-          } else if(this.state.pos.y > this.state.moveTo.y) {
-            this.state.pos.y = this.state.pos.y - 2;
+          if(unoffsetPosY === unoffsetMoveToY) {
+            this.state.pos.y = this.state.moveTo.y;
+          } else if(unoffsetPosY < unoffsetMoveToY) {
+            unoffsetPosY += 10;
+            this.state.pos.y = unoffsetPosY;
+          } else if(unoffsetPosY > unoffsetMoveToY) {
+            unoffsetPosY -= 10;
+            this.state.pos.y = unoffsetPosY;
           }
         };
 
