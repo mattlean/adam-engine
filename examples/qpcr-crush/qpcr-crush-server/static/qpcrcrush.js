@@ -827,6 +827,7 @@ timer.update = function() {
       grid.state.timeUp = true;
       console.log($('[name="score"]').val(score.state.text));
       $('[name="score"]').val(score.state.text);
+      $('[data-score]').text(score.state.text);
       $('#game-over-modal').modal('show');
     } else {
       ++this.state.frameCount;
@@ -847,17 +848,16 @@ $('#start-modal').modal({
 });
 
 $('#start-game').click(function() {
-  grid.state.timeUp = false;
-  timer.state.text = 3;
-});
-
-$('#replay').click(function() {
   $('[name="score"]').val(0);
-  grid.spawnGrid();
   grid.state.score = 0;
   score.state.text = 0;
   grid.state.timeUp = false;
-  timer.state.text = 60;
+  timer.state.text = 5;
+});
+
+$('#replay').click(function() {
+  grid.spawnGrid();
+  $('#start-modal').modal('show');
 });
 
 $('#score-submit-form').submit(function(e) {
