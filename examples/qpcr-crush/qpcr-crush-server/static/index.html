@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title>qPCR Crush</title>
+    <link href="/static/bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+    <style>
+      body {
+        background-color: #111;
+      }
+
+      canvas {
+        width: 850px;
+        height: 650px;
+        margin: 0 auto;
+        display: block;
+        background-color: #fff;
+      }
+
+      .modal-body p {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="qpcr-crush" width="850" height="650"></canvas>
+    <div id="start-modal" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">qPCR Crush</h4>
+          </div>
+          <div class="modal-body">
+            <p>See how many amplicons you can rack up in a minute by matching 3 or more tiles vertically or horizontally. <b>High scorers are entered into a prize raffle where winners are drawn hourly!</b></p>
+            <p>Check back to see if you have won!</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="start-game" class="btn btn-success" data-dismiss="modal">Start Game</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="game-over-modal" class="modal" tabindex="-1" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Submit Score</h4>
+          </div>
+          <form id="score-submit-form">
+            <div class="modal-body">
+              <p><b>Submit your score for a chance to win a raffle prize!</b>b></p>
+                <div class="form-group">
+                  <label for="alias">Alias</label>
+                  <input type="text" name="alias" class="form-control" id="alias" placeholder="Joe Smoe" required>
+                </div>
+                <div class="form-group">
+                  <label for="badge-id">Badge ID</label>
+                  <input type="text" name="badgeId" class="form-control" id="badge-id" placeholder="Badge ID" required>
+                </div>
+                <div class="form-group">
+                  <label for="score">Amplicons (Score)</label>
+                  <input type="number" name="score" class="form-control" id="score" required disabled>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" id="replay" class="btn btn-default" data-dismiss="modal">No Thanks</button>
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script src="/static/bower_components/jquery/dist/jquery.js"></script>
+    <script src="/static/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="/static/adamengine-dev.js"></script>
+    <script src="/static/qpcrcrush.js"></script>
+  </body>
+</html>

@@ -5,12 +5,12 @@ AE.inputMan.addMBInput(0, 'LEFTCLICK');
 AE.inputMan.addTouchInput();
 AE.inputMan.setup();
 
-AE.assetMan.newImg('bg', '/gfx/bg.jpg');
-AE.assetMan.newAtlas('tiles', '/gfx/atlas.png', '/gfx/atlas.json');
-AE.assetMan.newSound('score', '/sfx/score.wav');
-AE.assetMan.newSound('swap', '/sfx/swap.wav');
-AE.assetMan.newSound('select', '/sfx/select.wav');
-AE.assetMan.newSound('illegal', '/sfx/illegalmove.wav');
+AE.assetMan.newImg('bg', '/static/gfx/bg.jpg');
+AE.assetMan.newAtlas('tiles', '/static/gfx/atlas.png', '/static/gfx/atlas.json');
+AE.assetMan.newSound('score', '/static/sfx/score.wav');
+AE.assetMan.newSound('swap', '/static/sfx/swap.wav');
+AE.assetMan.newSound('select', '/static/sfx/select.wav');
+AE.assetMan.newSound('illegal', '/static/sfx/illegalmove.wav');
 
 var grid = AE.createWorldObj('grid');
 
@@ -770,7 +770,7 @@ scoreTitle.setup = function() {
   this.state.color = '#FFF';
   this.state.font = '24px Arial';
   this.state.textAlign = 'center';
-  this.state.text = 'SCORE';
+  this.state.text = 'AMPLICONS';
   this.state.zIndex = 2;
   this.state.worldObjType = 'text';
 };
@@ -825,6 +825,8 @@ timer.update = function() {
     if(this.state.text === 0) {
       this.state.frameCount = 0;
       grid.state.timeUp = true;
+      console.log($('[name="score"]').val(score.state.text));
+      $('[name="score"]').val(score.state.text);
       $('#game-over-modal').modal('show');
     } else {
       ++this.state.frameCount;
@@ -832,38 +834,52 @@ timer.update = function() {
   }
 };
 
-var website = AE.createWorldObj('website');
-
-website.setup = function() {
-  this.state.pos.x = 840;
-  this.state.pos.y = 640;
-  this.state.color = '#FFF';
-  this.state.font = '16px Arial';
-  this.state.textAlign = 'right';
-  this.state.text = 'biosearchtech.com';
-  this.state.zIndex = 2;
-  this.state.worldObjType = 'text';
-};
-
 $('#game-over-modal').modal({
   backdrop: 'static',
   keyboard: false,
   show: false
 });
+
 $('#start-modal').modal({
   backdrop: 'static',
   keyboard: false,
   show: true
 });
+
 $('#start-game').click(function() {
   grid.state.timeUp = false;
-  timer.state.text = 60;
+  timer.state.text = 3;
 });
+
 $('#replay').click(function() {
+  $('[name="score"]').val(0);
   grid.spawnGrid();
   grid.state.score = 0;
   score.state.text = 0;
   grid.state.timeUp = false;
   timer.state.text = 60;
 });
+
+$('#score-submit-form').submit(function(e) {
+  e.preventDefault();
+
+  var formData = JSON.stringify({
+    json: {
+      alias: $('[name="alias"]').val(),
+      badgeId: $('[name="badgeId"]').val(),
+      score: $('[name="score"]').val()
+    }
+  });
+
+  $.ajax({
+    url: 'http://localhost:8080/ep',
+    type: 'POST',
+    dataType: 'json',
+    data: formData,
+    error: function() {
+      console.error('Score submission failed.');
+    }
+  });
+});
+
 AE.start();

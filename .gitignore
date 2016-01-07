@@ -1,4 +1,4 @@
 node_modules
 npm-debug.log
 examples/*/adamengine-dev.js
-examples/*/bower_components
+examples/qpcr-crush/qpcr-crush-server/static/bower_components
