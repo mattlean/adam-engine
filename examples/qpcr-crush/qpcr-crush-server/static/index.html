@@ -50,7 +50,7 @@
           </div>
           <form id="score-submit-form">
             <div class="modal-body">
-              <p><b>Submit your score for a chance to win a raffle prize!</b>b></p>
+              <p><b>Submit your score for a chance to win a raffle prize!</b></p>
                 <div class="form-group">
                   <label for="alias">Alias</label>
                   <input type="text" name="alias" class="form-control" id="alias" placeholder="Joe Smoe" required>
@@ -59,10 +59,7 @@
                   <label for="badge-id">Badge ID</label>
                   <input type="text" name="badgeId" class="form-control" id="badge-id" placeholder="Badge ID" required>
                 </div>
-                <div class="form-group">
-                  <label for="score">Amplicons (Score)</label>
-                  <input type="number" name="score" class="form-control" id="score" required disabled>
-                </div>
+                <input type="hidden" name="score" class="form-control" id="score">
             </div>
             <div class="modal-footer">
               <button type="button" id="replay" class="btn btn-default" data-dismiss="modal">No Thanks</button>

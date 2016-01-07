@@ -863,13 +863,7 @@ $('#replay').click(function() {
 $('#score-submit-form').submit(function(e) {
   e.preventDefault();
 
-  var formData = JSON.stringify({
-    json: {
-      alias: $('[name="alias"]').val(),
-      badgeId: $('[name="badgeId"]').val(),
-      score: $('[name="score"]').val()
-    }
-  });
+  var formData = $('#score-submit-form').serialize();
 
   $.ajax({
     url: 'http://localhost:8080/ep',

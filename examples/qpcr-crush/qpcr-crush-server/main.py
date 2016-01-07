@@ -21,17 +21,14 @@ class MainHandler(webapp2.RequestHandler):
 
 class EndPoint(webapp2.RequestHandler):
 	def post(self):
-		formData = self.request.get('formData')
-		json.loads(formData)
-		logging.info(formData)
+		alias = self.request.get('alias')
+		badgeId = self.request.get('badgeId')
+		score = int(self.request.get('score'))
 
-		# self.response.write(int(score))
-		# self.response.write(type(int(score)))
-
-		# newLBEntry = LBEntry(alias=alias, badgeId=badgeId, score=score)
-		# newLBEntry.put()
-		# newParticipant = Participant(badgeId=badgeId)
-		# newParticipant.put()
+		newLBEntry = LBEntry(alias=alias, badgeId=badgeId, score=score)
+		newLBEntry.put()
+		newParticipant = Participant(badgeId=badgeId)
+		newParticipant.put()
 
 app = webapp2.WSGIApplication([
 	('/', MainHandler),
