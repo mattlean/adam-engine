@@ -1,9 +1,15 @@
 #!/usr/bin/env python
 
+import jinja2
 import json
 import logging
 import webapp2
 from google.appengine.ext import db
+
+JINJA_ENVIRONMENT = jinja2.Environment(
+	loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
+	extensions=['jinja2.ext.autoescape'],
+	autoescape=True)
 
 class LBEntry(db.Model):
 	alias = db.StringProperty(required = True)

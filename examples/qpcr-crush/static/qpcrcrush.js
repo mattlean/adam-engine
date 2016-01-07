@@ -853,6 +853,8 @@ $('#start-game').click(function() {
   score.state.text = 0;
   grid.state.timeUp = false;
   timer.state.text = 5;
+  $('[name="alias"]').val('');
+  $('[name="badgeId"]').val('');
 });
 
 $('#replay').click(function() {
@@ -866,7 +868,7 @@ $('#score-submit-form').submit(function(e) {
   var formData = $('#score-submit-form').serialize();
 
   $.ajax({
-    url: 'http://localhost:8080/ep',
+    url: '/ep',
     type: 'POST',
     dataType: 'json',
     data: formData,

@@ -1,4 +1,4 @@
-application: qpcr-crush-server
+application: qpcrcrush
 version: 1
 runtime: python27
 api_version: 1
@@ -18,3 +18,6 @@ handlers:
 libraries:
 - name: webapp2
   version: "2.5.2"
+
+- name: jinja2
+  version: "2.6"
