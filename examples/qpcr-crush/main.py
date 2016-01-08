@@ -31,7 +31,7 @@ class MainHandler(webapp2.RequestHandler):
 class Leaderboards(webapp2.RequestHandler):
 	def get(self):
 		templateVals = {
-			'lbEntries': db.GqlQuery('SELECT * FROM LBEntry ORDER BY score desc LIMIT 10')
+			'lbEntries': db.GqlQuery('SELECT * FROM LBEntry ORDER BY score desc LIMIT 20')
 		}
 
 		template = JINJA_ENV.get_template('leaderboards.html')

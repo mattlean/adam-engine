@@ -1,7 +1,8 @@
 var canvasId = 'qpcr-crush';
 var AE = new AdamEngine(canvasId);
+var startTime = 5;
 
-AE.inputMan.addMBInput(0, 'LEFTCLICK');
+//AE.inputMan.addMBInput(0, 'LEFTCLICK');
 AE.inputMan.addTouchInput();
 AE.inputMan.setup();
 
@@ -672,12 +673,12 @@ grid.update = function() {
       if(touch.start && touch.end) {
         grid.processInput(touch.start, touch.end);
       }
-    } else if(AE.inputMan.getMBState('LEFTCLICK').fullClick) {
+    }/* else if(AE.inputMan.getMBState('LEFTCLICK').fullClick) {
       var clickedTile = this.tileClicked();
       var prevClickedTile = this.state.prevClickedTile;
 
       grid.processInput(clickedTile, prevClickedTile);
-    }
+    }*/
   }
 
   // if swapping is done
@@ -697,7 +698,9 @@ grid.update = function() {
     // delete tiles from grid
     for(var i in this.state.tilesToDel) {
       var currTile = this.state.tilesToDel[i];
-      this.state.score = this.state.score + ((parseInt(i) + 1) * 10);
+      if(this.state.timeUp === false) {
+        this.state.score = this.state.score + ((parseInt(i) + 1) * 10);
+      }
       console.log(this.state.score);
       score.state.text = this.state.score;
       this.deleteTile(currTile.state.gridLoc.x, currTile.state.gridLoc.y);
@@ -852,27 +855,33 @@ $('#start-game').click(function() {
   grid.state.score = 0;
   score.state.text = 0;
   grid.state.timeUp = false;
-  timer.state.text = 5;
+  timer.state.text = startTime;
   $('[name="alias"]').val('');
   $('[name="badgeId"]').val('');
 });
 
-$('#replay').click(function() {
+$('[data-replay]').click(function() {
   grid.spawnGrid();
   $('#start-modal').modal('show');
+  $('#error').hide();
 });
 
 $('#score-submit-form').submit(function(e) {
   e.preventDefault();
 
+  $('#error').fadeOut();
   var formData = $('#score-submit-form').serialize();
 
   $.ajax({
     url: '/ep',
     type: 'POST',
-    dataType: 'json',
     data: formData,
+    success: function() {
+      $('#game-over-modal').modal('hide');
+      $('#submit-success-modal').modal('show');
+    },
     error: function() {
+      $('#error').slideDown();
       console.error('Score submission failed.');
     }
   });

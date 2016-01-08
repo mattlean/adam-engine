@@ -22,6 +22,11 @@
       .modal-body p {
         text-align: center;
       }
+
+      #error {
+        font-weight: bold;
+        color: red;
+      }
     </style>
   </head>
   <body>
@@ -35,7 +40,6 @@
           <div class="modal-body">
             <p>See how many amplicons you can rack up in a minute by matching 3 or more tiles vertically or horizontally.
             <p><b>High scorers are entered into a prize raffle where winners are drawn hourly!</b></p>
-            <p>Check back to see if you have won!</p>
           </div>
           <div class="modal-footer">
             <button type="button" id="start-game" class="btn btn-success" data-dismiss="modal">Start Game</button>
@@ -55,9 +59,10 @@
               <h1 class="text-center" style="margin-top: 10px" data-score>0</h1>
               <p class="lead text-uppercase">Amplicons</p><br>
               <p><b>Submit your score for a chance to win a raffle prize!</b></p>
+              <p id="error" style="display: none">Something went wrong. Please try resubmitting your score.</p>
                 <div class="form-group">
                   <label for="alias">Alias</label>
-                  <input type="text" name="alias" class="form-control" id="alias" placeholder="Joe Smoe" required>
+                  <input type="text" name="alias" class="form-control" id="alias" placeholder="John Cena" required>
                 </div>
                 <div class="form-group">
                   <label for="badge-id">Badge ID</label>
@@ -66,10 +71,27 @@
                 <input type="hidden" name="score" class="form-control" id="score">
             </div>
             <div class="modal-footer">
-              <button type="button" id="replay" class="btn btn-default" data-dismiss="modal">No Thanks</button>
+              <button type="button" class="btn btn-default" data-replay data-dismiss="modal">No Thanks</button>
               <button type="submit" class="btn btn-primary">Submit</button>
             </div>
           </form>
+        </div>
+      </div>
+    </div>
+    <div id="submit-success-modal" class="modal" tabindex="-1" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Score Submission Success</h4>
+          </div>
+          <div class="modal-body">
+            <p class="lead">Your score has been successfully submitted!</p>
+            <p>Check the leaderboard to see if you've placed a high score.</p>
+            <p><b>High scorers are entered into a prize raffle where winners are drawn hourly!</b></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-replay data-dismiss="modal">Replay</button>
+          </div>
         </div>
       </div>
     </div>
