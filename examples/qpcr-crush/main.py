@@ -21,7 +21,7 @@ class LBEntry(db.Model):
 	modified = db.DateTimeProperty(auto_now = True)
 
 class Participant(db.Model):
-	badgeId = db.StringProperty(required = True)
+	submitted = db.IntegerProperty(required = True)
 
 ### PAGE HANDLERS ###
 class MainHandler(webapp2.RequestHandler):
@@ -37,6 +37,15 @@ class Leaderboards(webapp2.RequestHandler):
 		template = JINJA_ENV.get_template('leaderboards.html')
 		self.response.write(template.render(templateVals))
 
+class HighScorers(webapp2.RequestHandler):
+	def get(self):
+		templateVals = {
+			'lbEntries': db.GqlQuery('SELECT * FROM LBEntry ORDER BY score desc LIMIT 20')
+		}
+
+		template = JINJA_ENV.get_template('highscorers.html')
+		self.response.write(template.render(templateVals))
+
 class EndPoint(webapp2.RequestHandler):
 	def post(self):
 		alias = self.request.get('alias')
@@ -46,12 +55,22 @@ class EndPoint(webapp2.RequestHandler):
 		logging.info('New Score Submissions\nAlias: %s\nBadge ID: %s\nScore: %i', alias, badgeId, score)
 
 		newLBEntry = LBEntry(alias=alias, badgeId=badgeId, score=score)
+
+		participant = Participant.get_by_key_name(badgeId)
+
+		if(participant == None):
+			# participant doesn't exist, create new
+			participant = Participant(key_name=badgeId, submitted=0)
+		else:
+			# participant exists, add to submission counter
+			participant.submitted = participant.submitted + 1
+
+		participant.put()
 		newLBEntry.put()
-		newParticipant = Participant(badgeId=badgeId)
-		newParticipant.put()
 
 app = webapp2.WSGIApplication([
 	('/', MainHandler),
 	('/leaderboards', Leaderboards),
+	('/manage/highscorers', HighScorers),
 	('/ep', EndPoint)
 ], debug=True)
