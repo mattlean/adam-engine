@@ -828,7 +828,6 @@ timer.update = function() {
     if(this.state.text === 0) {
       this.state.frameCount = 0;
       grid.state.timeUp = true;
-      console.log($('[name="score"]').val(score.state.text));
       $('[name="score"]').val(score.state.text);
       $('[data-score]').text(score.state.text);
       $('#game-over-modal').modal('show');
@@ -861,9 +860,10 @@ $('#start-game').click(function() {
 });
 
 $('[data-replay]').click(function() {
-  grid.spawnGrid();
+  /*grid.spawnGrid();
   $('#start-modal').modal('show');
-  $('#error').hide();
+  $('#error').hide();*/
+  document.location.reload(true);
 });
 
 $('#score-submit-form').submit(function(e) {
