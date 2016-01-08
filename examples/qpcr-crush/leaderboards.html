@@ -40,7 +40,7 @@
   <script>
     $('.datetime').each(function() {
       var rawDatetime = $(this).text();
-      var formDatetime = moment(rawDatetime).format('M/D: h:mm A');
+      var formDatetime = moment(rawDatetime + ' Z').format('M/D: h:mm A');
       $(this).text(formDatetime);
     });
   </script>
