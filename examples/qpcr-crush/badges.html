@@ -20,10 +20,9 @@
         <tr>
           <th>Badge ID</th>
           <th>Score Submits</th>
-          <th>Prize Won</th>
           <th>Created</th>
           <th>Latest Submission</th>
-          <th>Toggle Prize Won</th>
+          <th>Prize Won</th>
         </tr>
       </thead>
       <tbody>
@@ -31,10 +30,15 @@
        <tr>
           <td>{{participant.key().name()}}</td>
           <td>{{participant.submitted}}</td>
-          <td>{{participant.prizeWon}}</td>
           <td class="datetime">{{participant.created}}</td>
           <td class="datetime">{{participant.modified}}</td>
-          <td><input type="checkbox" data-badgeId={{participant.key().name}}></td>
+          <td>
+          {% if participant.prizeWon %}
+            <input type="checkbox" data-badgeId={{participant.key().name()}} data-prizeWon checked="checked">
+          {% else %}
+            <input type="checkbox" data-badgeId={{participant.key().name()}} data-prizeWon>
+          {% endif %}
+          </td>
        </tr>
        {% endfor %}
      </tbody>
@@ -44,10 +48,30 @@
   <script src="/static/bower_components/bootstrap/dist/js/bootstrap.js"></script>
   <script src="/static/bower_components/moment/moment.js"></script>
   <script>
-    $('.datetime').each(function() {
-      var rawDatetime = $(this).text();
-      var formDatetime = moment(rawDatetime + ' Z').format('M/D: h:mm A');
-      $(this).text(formDatetime);
+    $(function() {
+      function checkPrizeWon() {
+        $('[data-prizeWon]').each(function() {
+          var checkbox = $(this);
+          if(checkbox.is(':checked')) {
+            $(this).parent().parent().addClass('success');
+          } else {
+            $(this).parent().parent().removeClass('success');
+          }
+        });
+      }
+
+      $('.datetime').each(function() {
+        var rawDatetime = $(this).text();
+        var formDatetime = moment(rawDatetime + ' Z').format('M/D: h:mm A');
+        $(this).text(formDatetime);
+      });
+
+      checkPrizeWon();
+
+      $('[data-prizeWon]').click(function() {
+        alert('You have successfully toggled ' + $(this).attr('data-badgeId') +'\'s prize won state.')
+        checkPrizeWon();
+      });
     });
   </script>
 </body>
