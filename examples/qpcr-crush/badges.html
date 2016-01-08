@@ -19,9 +19,11 @@
       <thead>
         <tr>
           <th>Badge ID</th>
-          <th>Score Submissions</th>
+          <th>Score Submits</th>
+          <th>Prize Won</th>
           <th>Created</th>
           <th>Latest Submission</th>
+          <th>Toggle Prize Won</th>
         </tr>
       </thead>
       <tbody>
@@ -29,8 +31,10 @@
        <tr>
           <td>{{participant.key().name()}}</td>
           <td>{{participant.submitted}}</td>
+          <td>{{participant.prizeWon}}</td>
           <td class="datetime">{{participant.created}}</td>
           <td class="datetime">{{participant.modified}}</td>
+          <td><input type="checkbox" data-badgeId={{participant.key().name}}></td>
        </tr>
        {% endfor %}
      </tbody>

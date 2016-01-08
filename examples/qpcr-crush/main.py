@@ -22,6 +22,7 @@ class LBEntry(db.Model):
 
 class Participant(db.Model):
 	submitted = db.IntegerProperty(required = True)
+	prizeWon = db.BooleanProperty(required = True)
 	created = db.DateTimeProperty(auto_now_add = True)
 	modified = db.DateTimeProperty(auto_now = True)
 
@@ -71,7 +72,7 @@ class EndPoint(webapp2.RequestHandler):
 
 		if(participant == None):
 			# participant doesn't exist, create new
-			participant = Participant(key_name=badgeId, submitted=0)
+			participant = Participant(key_name=badgeId, submitted=0, prizeWon=False)
 		else:
 			# participant exists, add to submission counter
 			participant.submitted = participant.submitted + 1
