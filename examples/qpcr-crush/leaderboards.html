@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>qPCR Crush Leaderboards</title>
+  <link href="/static/bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+  <style>
+   h1 {
+    margin: 30px 0;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>qPCR Crush Leaderboards</h1>
+    <table class="table table-striped table-bordered">
+      <thead>
+        <tr>
+          <th>Alias</th>
+          <th>Score</th>
+          <th>Date / Time</th>
+        </tr>
+      </thead>
+      <tbody>
+       {% for lbEntry in lbEntries %}
+       <tr>
+         <td>{{lbEntry.alias}}</td>
+         <td>{{lbEntry.score}}</td>
+         <td class="datetime">{{lbEntry.created}}</td>
+       </tr>
+       {% endfor %}
+     </tbody>
+   </table>
+  </div>
+  <script src="/static/bower_components/jquery/dist/jquery.js"></script>
+  <script src="/static/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+  <script src="/static/bower_components/moment/moment.js"></script>
+  <script>
+    $('.datetime').each(function() {
+      var rawDatetime = $(this).text();
+      var formDatetime = moment(rawDatetime).format('M/D: h:mm A');
+      $(this).text(formDatetime);
+    });
+  </script>
+</body>
+</html>
