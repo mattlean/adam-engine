@@ -8,6 +8,7 @@
     <link href="/static/bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
     <style>
       body {
+        font-size: 16px;
         background-color: #111;
       }
 
@@ -27,6 +28,21 @@
         font-weight: bold;
         color: red;
       }
+
+      #start-modal .modal-title {
+        float: left;
+      }
+
+      #logo {
+        width: 15%;
+        height: 15%;
+        float: right;
+      }
+
+      #tiles {
+        margin: 20px auto;
+        display: block;
+      }
     </style>
   </head>
   <body>
@@ -36,8 +52,10 @@
         <div class="modal-content">
           <div class="modal-header">
             <h4 class="modal-title">qPCR Crush</h4>
+            <img id="logo" src="/static/logo.jpg">
           </div>
           <div class="modal-body">
+            <img id="tiles" src="/static/gfx/atlas.png">
             <p>See how many amplicons you can rack up in a minute by matching 3 or more tiles vertically or horizontally.
             <p><b>High scorers are entered into a prize raffle where winners are drawn hourly!</b></p>
           </div>
