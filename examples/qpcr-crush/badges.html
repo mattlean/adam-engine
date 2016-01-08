@@ -10,6 +10,10 @@
    h1 {
     margin: 30px 0;
   }
+
+  td {
+    transition: background-color 1s ease-out;
+  }
 </style>
 </head>
 <body>
@@ -68,9 +72,30 @@
 
       checkPrizeWon();
 
-      $('[data-prizeWon]').click(function() {
-        alert('You have successfully toggled ' + $(this).attr('data-badgeId') +'\'s prize won state.')
-        checkPrizeWon();
+      $('[data-prizeWon]').click(function(e) {
+        e.preventDefault();
+        var checkbox = $(this);
+        var badgeId = $(this).attr('data-badgeId');
+
+        $.ajax({
+          url: '/tp',
+          type: 'POST',
+          data: {badgeId: badgeId},
+          success: function(response) {
+            if(response === 'True') {
+              checkbox.prop('checked', true);
+            } else {
+              checkbox.prop('checked', false);
+            }
+
+            alert('SUCCESS\n\nYou have successfully toggled ' + checkbox.attr('data-badgeId') +'\'s prize win state to ' + response +'.');
+
+            checkPrizeWon();
+          },
+          error: function() {
+            alert('ERROR\n\nSomething went wrong with the toggle. Is there something wrong with the internet?\n\nPlease try again.')
+          }
+        });
       });
     });
   </script>

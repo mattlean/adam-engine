@@ -80,10 +80,24 @@ class EndPoint(webapp2.RequestHandler):
 		participant.put()
 		newLBEntry.put()
 
+class TogglePrize(webapp2.RequestHandler):
+	def post(self):
+		badgeId = self.request.get('badgeId');
+		participant = Participant.get_by_key_name(badgeId)
+
+		if(participant.prizeWon):
+			participant.prizeWon = False;
+		else:
+			participant.prizeWon = True;
+
+		participant.put()
+		self.response.write(participant.prizeWon)
+
 app = webapp2.WSGIApplication([
 	('/', MainHandler),
 	('/leaderboards', Leaderboards),
 	('/manage/highscorers', HighScorers),
 	('/manage/badges', Badges),
-	('/ep', EndPoint)
+	('/ep', EndPoint),
+	('/tp', TogglePrize)
 ], debug=True)
