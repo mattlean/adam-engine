@@ -22,6 +22,8 @@ class LBEntry(db.Model):
 
 class Participant(db.Model):
 	submitted = db.IntegerProperty(required = True)
+	created = db.DateTimeProperty(auto_now_add = True)
+	modified = db.DateTimeProperty(auto_now = True)
 
 ### PAGE HANDLERS ###
 class MainHandler(webapp2.RequestHandler):
@@ -44,6 +46,15 @@ class HighScorers(webapp2.RequestHandler):
 		}
 
 		template = JINJA_ENV.get_template('highscorers.html')
+		self.response.write(template.render(templateVals))
+
+class Badges(webapp2.RequestHandler):
+	def get(self):
+		templateVals = {
+			'participants': db.GqlQuery('SELECT * FROM Participant ORDER BY created desc')
+		}
+
+		template = JINJA_ENV.get_template('badges.html')
 		self.response.write(template.render(templateVals))
 
 class EndPoint(webapp2.RequestHandler):
@@ -72,5 +83,6 @@ app = webapp2.WSGIApplication([
 	('/', MainHandler),
 	('/leaderboards', Leaderboards),
 	('/manage/highscorers', HighScorers),
+	('/manage/badges', Badges),
 	('/ep', EndPoint)
 ], debug=True)
