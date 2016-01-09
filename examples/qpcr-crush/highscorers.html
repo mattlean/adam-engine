@@ -36,7 +36,7 @@
           <td>{{lbEntry.alias}}</td>
           <td>{{lbEntry.score}}</td>
           <td class="datetime">{{lbEntry.created}}</td>
-          <td><button data-addWinner data-badgeId={{lbEntry.badgeId}} data-alias={{lbEntry.alias}} class="btn btn-primary">Toggle Winner</button></td>
+          <td><button data-addWinner data-badgeId={{lbEntry.badgeId}} data-alias="{{lbEntry.alias}}" class="btn btn-primary">Toggle Winner</button></td>
        </tr>
        {% endfor %}
      </tbody>
