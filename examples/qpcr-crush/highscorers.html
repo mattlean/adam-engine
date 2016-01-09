@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>qPCR Crush High Scorers</title>
+  <link href="/static/bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+  <style>
+    h1 {
+      margin: 30px 0;
+    }
+
+    .btn {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>High Scorers</h1>
+    <h2>Leaderboard</h2>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Badge ID</th>
+          <th>Alias</th>
+          <th>Score</th>
+          <th>Date/Time</th>
+          <th>Add to Winners</th>
+        </tr>
+      </thead>
+      <tbody>
+       {% for lbEntry in lbEntries %}
+       <tr>
+          <td>{{lbEntry.badgeId}}
+          <td>{{lbEntry.alias}}</td>
+          <td>{{lbEntry.score}}</td>
+          <td class="datetime">{{lbEntry.created}}</td>
+          <td><button data-addWinner data-badgeId={{lbEntry.badgeId}} data-alias="{{lbEntry.alias}}" class="btn btn-success">Add Winner</button></td>
+       </tr>
+       {% endfor %}
+     </tbody>
+   </table>
+   <button id="delete-leaderboard" class="btn btn-danger">DELETE LEADERBOARD</button>
+   <h2>Winner Table</h2>
+   <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Winner Badge ID</th>
+          <th>Winner Alias</th>
+          <th>Added onto Winner Table</th>
+          <th>Remove from Winners</th>
+        </tr>
+      </thead>
+      <tbody>
+       {% for winner in winners %}
+       <tr>
+          <td>{{winner.key().name()}}</td>
+          <td>{{winner.alias}}</td>
+          <td class="datetime">{{winner.created}}</td>
+          <td><button data-removeWinner data-badgeId={{winner.key().name()}} data-alias="{{winner.alias}}" class="btn btn-danger">Remove Winner</button></td>
+       </tr>
+       {% endfor %}
+     </tbody>
+   </table>
+   <button id="delete-winners-table" class="btn btn-danger">DELETE WINNERS TABLE</button>
+  </div>
+  <script src="/static/bower_components/jquery/dist/jquery.js"></script>
+  <script src="/static/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+  <script src="/static/bower_components/moment/moment.js"></script>
+  <script>
+    $(function() {
+      $('.datetime').each(function() {
+        var rawDatetime = $(this).text();
+        var formDatetime = moment(rawDatetime + ' Z').format('M/D: h:mm A');
+        $(this).text(formDatetime);
+      });
+
+      $('[data-addWinner]').click(function() {
+        $.ajax({
+          url: '/sw',
+          type: 'POST',
+          data: {
+            sw: 'hisnameisjohncena',
+            badgeId: $(this).attr('data-badgeId'),
+            alias: $(this).attr('data-alias')
+          },
+          success: function(response) {
+            if(response === 'Winner already exists') {
+              alert('ERROR\n\nWinner already exists in the winner table! Did you refresh?');
+            } else {
+              alert('SUCCESS\n\nNew winner of the hour added. Please refresh the page.');
+            }
+          },
+          error: function() {
+            alert('ERROR\n\nSomething went wrong with toggling a winner for this hour. Is there something wrong with the internet?\n\nPlease try again.');
+          }
+        });
+      });
+
+      $('[data-removeWinner]').click(function() {
+        $.ajax({
+          url: '/rw',
+          type: 'POST',
+          data: {
+            rw: 'hisnameisjohncena',
+            badgeId: $(this).attr('data-badgeId'),
+            alias: $(this).attr('data-alias')
+          },
+          success: function(response) {
+            alert('SUCCESS\n\nWinner of the hour removed. Please refresh the page.');
+          },
+          error: function() {
+            alert('ERROR\n\nSomething went wrong with toggling a winner for this hour. Is there something wrong with the internet?\n\nPlease try again.');
+          }
+        });
+      });
+
+      $('#delete-leaderboard').click(function() {
+        if(window.confirm('Are you sure you want to delete the leaderboard?\n\nThis cannot be reverted!')) {
+          $.ajax({
+            url: '/dl',
+            type: 'POST',
+            data: {dl: 'hisnameisjohncena'},
+            success: function(response) {
+              alert('SUCCESS\n\nLeaderboard deleted. Please refresh the page.');
+            },
+            error: function() {
+              alert('ERROR\n\nSomething went wrong with the leaderboard deletion. Is there something wrong with the internet?\n\nPlease try again.');
+            }
+          });
+        }
+      });
+
+      $('#delete-winners-table').click(function(e) {
+        if(window.confirm('Are you sure you want to delete the winners table?\n\nThis cannot be reverted!')) {
+          $.ajax({
+            url: '/dw',
+            type: 'POST',
+            data: {dw: 'hisnameisjohncena'},
+            success: function(response) {
+              alert('SUCCESS\n\nWinners table deleted. Please refresh the page.');
+            },
+            error: function() {
+              alert('ERROR\n\nSomething went wrong with the winners table deletion. Is there something wrong with the internet?\n\nPlease try again.');
+            }
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>

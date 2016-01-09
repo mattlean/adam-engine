@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>qPCR Crush Badges</title>
+  <link href="/static/bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+  <style>
+   h1 {
+    margin: 30px 0;
+  }
+
+  td {
+    transition: background-color 1s ease-out;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>Badges</h1>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Badge ID</th>
+          <th>Score Submits</th>
+          <th>Created</th>
+          <th>Latest Submission</th>
+          <th>Prize Collected</th>
+        </tr>
+      </thead>
+      <tbody>
+       {% for participant in participants %}
+       <tr>
+          <td>{{participant.key().name()}}</td>
+          <td>{{participant.submitted}}</td>
+          <td class="datetime">{{participant.created}}</td>
+          <td class="datetime">{{participant.modified}}</td>
+          <td>
+          {% if participant.prizeWon %}
+            <input type="checkbox" data-badgeId={{participant.key().name()}} data-prizeWon checked="checked">
+          {% else %}
+            <input type="checkbox" data-badgeId={{participant.key().name()}} data-prizeWon>
+          {% endif %}
+          </td>
+       </tr>
+       {% endfor %}
+     </tbody>
+   </table>
+  </div>
+  <script src="/static/bower_components/jquery/dist/jquery.js"></script>
+  <script src="/static/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+  <script src="/static/bower_components/moment/moment.js"></script>
+  <script>
+    $(function() {
+      function checkPrizeWon() {
+        $('[data-prizeWon]').each(function() {
+          var checkbox = $(this);
+          if(checkbox.is(':checked')) {
+            $(this).parent().parent().addClass('success');
+          } else {
+            $(this).parent().parent().removeClass('success');
+          }
+        });
+      }
+
+      $('.datetime').each(function() {
+        var rawDatetime = $(this).text();
+        var formDatetime = moment(rawDatetime + ' Z').format('M/D: h:mm A');
+        $(this).text(formDatetime);
+      });
+
+      checkPrizeWon();
+
+      $('[data-prizeWon]').click(function(e) {
+        e.preventDefault();
+        var checkbox = $(this);
+        var badgeId = $(this).attr('data-badgeId');
+
+        $.ajax({
+          url: '/tp',
+          type: 'POST',
+          data: {badgeId: badgeId},
+          success: function(response) {
+            if(response === 'True') {
+              checkbox.prop('checked', true);
+            } else {
+              checkbox.prop('checked', false);
+            }
+
+            alert('SUCCESS\n\nYou have successfully toggled ' + checkbox.attr('data-badgeId') +'\'s prize win state to ' + response +'.');
+
+            checkPrizeWon();
+          },
+          error: function() {
+            alert('ERROR\n\nSomething went wrong with the toggle. Is there something wrong with the internet?\n\nPlease try again.')
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
