@@ -93,11 +93,17 @@ class TogglePrize(webapp2.RequestHandler):
 		participant.put()
 		self.response.write(participant.prizeWon)
 
+class DeleteLeaderboard(webapp2.RequestHandler):
+	def post(self):
+		lbEntries = db.GqlQuery('SELECT * FROM  LBEntry')
+		db.delete(lbEntries)
+
 app = webapp2.WSGIApplication([
 	('/', MainHandler),
 	('/leaderboards', Leaderboards),
 	('/manage/highscorers', HighScorers),
 	('/manage/badges', Badges),
 	('/ep', EndPoint),
-	('/tp', TogglePrize)
+	('/tp', TogglePrize),
+	('/dl', DeleteLeaderboard)
 ], debug=True)

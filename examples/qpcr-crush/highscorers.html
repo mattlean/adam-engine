@@ -35,15 +35,34 @@
        {% endfor %}
      </tbody>
    </table>
+   <button class="btn btn-danger">DELETE LEADERBOARD</button>
   </div>
   <script src="/static/bower_components/jquery/dist/jquery.js"></script>
   <script src="/static/bower_components/bootstrap/dist/js/bootstrap.js"></script>
   <script src="/static/bower_components/moment/moment.js"></script>
   <script>
-    $('.datetime').each(function() {
-      var rawDatetime = $(this).text();
-      var formDatetime = moment(rawDatetime + ' Z').format('M/D: h:mm A');
-      $(this).text(formDatetime);
+    $(function() {
+      $('.datetime').each(function() {
+        var rawDatetime = $(this).text();
+        var formDatetime = moment(rawDatetime + ' Z').format('M/D: h:mm A');
+        $(this).text(formDatetime);
+      });
+
+      $('button').click(function() {
+        if(window.confirm('Are you sure you want to delete the leaderboard?\n\nThis cannot be reverted!')) {
+          $.ajax({
+            url: '/dl',
+            type: 'POST',
+            data: {dl: 'hisnameisjohncena'},
+            success: function(response) {
+              alert('SUCCESS\n\nLeaderboard deleted. Please refresh the page.');
+            },
+            error: function() {
+              alert('ERROR\n\nSomething went wrong with the leaderboard deletion. Is there something wrong with the internet?\n\nPlease try again.');
+            }
+          });
+        }
+      });
     });
   </script>
 </body>
