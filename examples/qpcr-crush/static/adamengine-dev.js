@@ -4,11 +4,14 @@ var AdamEngine = function(canvasId) {
 	/* GENERAL: PRIVATE PROPERTIES */
 	var canvas = document.getElementById(canvasId);
 	var canvasData = canvas.getBoundingClientRect();
-	var ctx = canvas.getContext('2d');
 	window.AudioContext = window.AudioContext||window.webkitAudioContext;
 	var audioCtx = new AudioContext();
 	var focus = false; // true if canvas is in focus or not
 	var loading = true; // true if engine is still loading assets
+
+
+	/* GENERAL: PUBLIC PROPERTIES */
+	this.ctx = canvas.getContext('2d');
 
 
 
@@ -420,50 +423,52 @@ var AdamEngine = function(canvasId) {
 	}
 
 	function render() {
-		ctx.clearRect(0, 0, canvasData.width, canvasData.height);
+		AE.ctx.clearRect(0, 0, canvasData.width, canvasData.height);
 
 		// render all pos x & y of all world objs
 		for(var i in renderPipe) {
 			var worldObj = renderPipe[i];
 			if(worldObj.getType() === 'world-obj') {
 				if(worldObj.state.worldObjType === 'rect') {
-					ctx.fillStyle = worldObj.state.color;
-					ctx.fillRect(worldObj.state.pos.x, worldObj.state.pos.y, worldObj.state.size.w, worldObj.state.size.h);
+					AE.ctx.fillStyle = worldObj.state.color;
+					AE.ctx.fillRect(worldObj.state.pos.x, worldObj.state.pos.y, worldObj.state.size.w, worldObj.state.size.h);
 
 					if(worldObj.state.stroke !== null) {
-						ctx.strokeStyle = worldObj.state.stroke.color;
-						ctx.strokeRect(worldObj.state.stroke.pos.x, worldObj.state.stroke.pos.y, worldObj.state.stroke.size.w, worldObj.state.stroke.size.h);
+						AE.ctx.strokeStyle = worldObj.state.stroke.color;
+						AE.ctx.strokeRect(worldObj.state.stroke.pos.x, worldObj.state.stroke.pos.y, worldObj.state.stroke.size.w, worldObj.state.stroke.size.h);
 					}
 				} else if(worldObj.state.worldObjType === 'img') {
 					// if alpha exists, render worldobj with alpha val
 					if(worldObj.state.alpha) {
-						ctx.save();
-						ctx.globalAlpha = worldObj.state.alpha;
+						AE.ctx.save();
+						AE.ctx.globalAlpha = worldObj.state.alpha;
 					}
 
 					if(worldObj.state.imgData === null) {
 						// draw regular img
-						ctx.drawImage(worldObj.state.img, worldObj.state.pos.x, worldObj.state.pos.y, worldObj.state.size.w, worldObj.state.size.h);
+						AE.ctx.drawImage(worldObj.state.img, worldObj.state.pos.x, worldObj.state.pos.y, worldObj.state.size.w, worldObj.state.size.h);
 					} else {
 						// draw from atlas
-						ctx.drawImage(worldObj.state.img, worldObj.state.imgData.sx, worldObj.state.imgData.sy, worldObj.state.imgData.sw, worldObj.state.imgData.sh, worldObj.state.pos.x, worldObj.state.pos.y, worldObj.state.size.w, worldObj.state.size.h);
+						AE.ctx.drawImage(worldObj.state.img, worldObj.state.imgData.sx, worldObj.state.imgData.sy, worldObj.state.imgData.sw, worldObj.state.imgData.sh, worldObj.state.pos.x, worldObj.state.pos.y, worldObj.state.size.w, worldObj.state.size.h);
 					}
 					
 					if(worldObj.state.stroke !== null) {
-						ctx.strokeStyle = worldObj.state.stroke.color;
-						ctx.strokeRect(worldObj.state.stroke.pos.x, worldObj.state.stroke.pos.y, worldObj.state.stroke.size.w, worldObj.state.stroke.size.h);
+						AE.ctx.strokeStyle = worldObj.state.stroke.color;
+						AE.ctx.strokeRect(worldObj.state.stroke.pos.x, worldObj.state.stroke.pos.y, worldObj.state.stroke.size.w, worldObj.state.stroke.size.h);
 					}
 
 					if(worldObj.state.alpha) {
-						ctx.restore();
+						AE.ctx.restore();
 					}
 				} else if(worldObj.state.worldObjType === 'text') {
-					ctx.fillStyle = worldObj.state.color;
-					ctx.font = worldObj.state.font;
+					AE.ctx.fillStyle = worldObj.state.color;
+					AE.ctx.font = worldObj.state.font;
 					if(worldObj.state.textAlign) {
-						ctx.textAlign = worldObj.state.textAlign;
+						AE.ctx.textAlign = worldObj.state.textAlign;
 					}
-					ctx.fillText(worldObj.state.text, worldObj.state.pos.x, worldObj.state.pos.y);
+					AE.ctx.fillText(worldObj.state.text, worldObj.state.pos.x, worldObj.state.pos.y);
+				} else if(worldObj.state.worldObjType === 'custom') {
+					worldObj.render();
 				}
 			}
 		}

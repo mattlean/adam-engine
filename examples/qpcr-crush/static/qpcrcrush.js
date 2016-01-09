@@ -1,6 +1,6 @@
 var canvasId = 'qpcr-crush';
 var AE = new AdamEngine(canvasId);
-var startTime = 5;
+var startTime = 60;
 
 //AE.inputMan.addMBInput(0, 'LEFTCLICK');
 AE.inputMan.addTouchInput();
@@ -768,8 +768,8 @@ bg.setup = function() {
 var scoreTitle = AE.createWorldObj('scoreTitle');
 
 scoreTitle.setup = function() {
-  this.state.pos.x = 750;
-  this.state.pos.y = 110;
+  this.state.pos.x = 850;
+  this.state.pos.y = 350;
   this.state.color = '#FFF';
   this.state.font = '24px Arial';
   this.state.textAlign = 'center';
@@ -781,8 +781,8 @@ scoreTitle.setup = function() {
 var score = AE.createWorldObj('score');
 
 score.setup = function() {
-  this.state.pos.x = 750;
-  this.state.pos.y = 170;
+  this.state.pos.x = 850;
+  this.state.pos.y = 410;
   this.state.color = '#FFF';
   this.state.font = '48px Arial';
   this.state.textAlign = 'center';
@@ -794,8 +794,8 @@ score.setup = function() {
 var timerTitle = AE.createWorldObj('timerTitle');
 
 timerTitle.setup = function() {
-  this.state.pos.x = 750;
-  this.state.pos.y = 480;
+  this.state.pos.x = 850;
+  this.state.pos.y = 550;
   this.state.color = '#FFF';
   this.state.font = '24px Arial';
   this.state.textAlign = 'center';
@@ -807,8 +807,8 @@ timerTitle.setup = function() {
 var timer = AE.createWorldObj('timer');
 
 timer.setup = function() {
-  this.state.pos.x = 750;
-  this.state.pos.y = 540;
+  this.state.pos.x = 850;
+  this.state.pos.y = 610;
   this.state.color = '#FFF';
   this.state.font = '48px Arial';
   this.state.textAlign = 'center';
@@ -835,6 +835,75 @@ timer.update = function() {
       ++this.state.frameCount;
     }
   }
+};
+
+var scoreGraph = AE.createWorldObj('scoreGraph');
+
+scoreGraph.setup = function() {
+  this.state.pos.x = 750;
+  this.state.pos.y = 540;
+  this.state.zIndex = 2;
+  this.state.worldObjType = 'custom';
+};
+
+scoreGraph.update = function() {
+
+};
+
+scoreGraph.render = function() {
+  var offsetX = 680;
+  var offsetY = 60;
+
+  AE.ctx.beginPath();
+  AE.ctx.moveTo(700, 20);
+  AE.ctx.lineTo(700, 300);
+  AE.ctx.lineWidth = 2;
+  AE.ctx.strokeStyle = '#FFF';
+  AE.ctx.stroke();
+
+  AE.ctx.beginPath();
+  AE.ctx.moveTo(700, 300);
+  AE.ctx.lineTo(1000, 300);
+  AE.ctx.lineWidth = 2;
+  AE.ctx.strokeStyle = '#FFF';
+  AE.ctx.stroke();
+
+  AE.ctx.save();
+  AE.ctx.scale(0.9, 0.9);
+  AE.ctx.beginPath();
+  AE.ctx.moveTo(129.5, 205.5);
+  AE.ctx.bezierCurveTo(127.2 + offsetX, 205.5 + offsetY, 125.8 + offsetX, 205.5 + offsetY, 125.5 + offsetX, 205.5 + offsetY);
+  AE.ctx.bezierCurveTo(124.1 + offsetX, 205.4 + offsetY, 123.0 + offsetX, 204.3 + offsetY, 123.0 + offsetX, 202.9 + offsetY);
+  AE.ctx.bezierCurveTo(123.0 + offsetX, 201.6 + offsetY, 124.1 + offsetX, 200.5 + offsetY, 125.5 + offsetX, 200.5 + offsetY);
+  AE.ctx.bezierCurveTo(125.5 + offsetX, 200.5 + offsetY, 125.5 + offsetX, 200.5 + offsetY, 125.5 + offsetX, 200.5 + offsetY);
+  AE.ctx.bezierCurveTo(126.2 + offsetX, 200.5 + offsetY, 196.0 + offsetX, 201.1 + offsetY, 211.9 + offsetX, 191.9 + offsetY);
+  AE.ctx.bezierCurveTo(225.8 + offsetX, 183.9 + offsetY, 231.6 + offsetX, 156.9 + offsetY, 237.2 + offsetX, 130.8 + offsetY);
+  AE.ctx.bezierCurveTo(243.0 + offsetX, 104.0 + offsetY, 248.4 + offsetX, 78.7 + offsetY, 262.3 + offsetX, 68.6 + offsetY);
+  AE.ctx.bezierCurveTo(269.7 + offsetX, 63.2 + offsetY, 281.6 + offsetX, 59.2 + offsetY, 294.9 + offsetX, 57.6 + offsetY);
+  AE.ctx.bezierCurveTo(340.0 + offsetX, 52.2 + offsetY, 409.9 + offsetX, 52.9 + offsetY, 410.6 + offsetX, 52.9 + offsetY);
+  AE.ctx.bezierCurveTo(412.0 + offsetX, 52.9 + offsetY, 413.1 + offsetX, 54.0 + offsetY, 413.1 + offsetX, 55.4 + offsetY);
+  AE.ctx.bezierCurveTo(413.0 + offsetX, 56.8 + offsetY, 411.9 + offsetX, 57.9 + offsetY, 410.6 + offsetX, 57.9 + offsetY);
+  AE.ctx.bezierCurveTo(410.5 + offsetX, 57.9 + offsetY, 410.5 + offsetX, 57.9 + offsetY, 410.5 + offsetX, 57.9 + offsetY);
+  AE.ctx.bezierCurveTo(409.8 + offsetX, 57.9 + offsetY, 340.3 + offsetX, 57.2 + offsetY, 295.5 + offsetX, 62.6 + offsetY);
+  AE.ctx.bezierCurveTo(283.2 + offsetX, 64.0 + offsetY, 271.9 + offsetX, 67.8 + offsetY, 265.2 + offsetX, 72.7 + offsetY);
+  AE.ctx.bezierCurveTo(252.9 + offsetX, 81.7 + offsetY, 247.4 + offsetX, 107.2 + offsetY, 242.1 + offsetX, 131.9 + offsetY);
+  AE.ctx.bezierCurveTo(236.3 + offsetX, 159.0 + offsetY, 230.2 + offsetX, 187.1 + offsetY, 214.4 + offsetX, 196.2 + offsetY);
+  AE.ctx.bezierCurveTo(199.5 + offsetX, 204.8 + offsetY, 144.9 + offsetX, 205.5 + offsetY, 129.5 + offsetX, 205.5 + offsetY);
+  AE.ctx.closePath();
+  AE.ctx.fillStyle = '#333';
+  AE.ctx.fill();
+  AE.ctx.clip();
+  // var scorepercent = score / highscore;
+  // if (scorepercent <= 1) {
+  //   graphval = scorepercent * MAXGRAPHFILL;
+  //   AE.ctx.fillStyle = '#ee3e33';
+  // } else {
+  //   graphval = MAXGRAPHFILL;
+  //   AE.ctx.fillStyle = '#00ff00';
+  // }
+
+  //AE.ctx.fillRect(120 + offsetX, 20 + offsetY, graphval, 200); //max is 290
+  AE.ctx.restore();
 };
 
 $('#game-over-modal').modal({
