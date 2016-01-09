@@ -26,12 +26,21 @@
     height: 20%;
     float: right;
   }
+
+  #description {
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-align: center;
+  }
 </style>
 </head>
 <body>
   <div class="col-xs-12">
     <h1>qPCR Crush Leaderboards</h1>
      <img src="/static/logo.jpg">
+  </div>
+  <div class="col-xs-12">
+    <p id="description">High scorers are entered into a prize raffle where winners are drawn hourly!</p>
   </div>
   <div class="col-xs-6">
     <table class="table table-striped table-bordered">
@@ -57,7 +66,11 @@
         <th>This Hour's Winners</th>
       </thead>
       <tbody>
-        <td>test</td>
+        {% for winner in winners %}
+        <tr>
+          <td>{{winner.alias}}</td>
+        </tr>
+        {% endfor %}
       </tbody>
     </table>
   </div>
@@ -65,10 +78,12 @@
   <script src="/static/bower_components/bootstrap/dist/js/bootstrap.js"></script>
   <script src="/static/bower_components/moment/moment.js"></script>
   <script>
-    $('.datetime').each(function() {
-      var rawDatetime = $(this).text();
-      var formDatetime = moment(rawDatetime + ' Z').format('M/D: h:mm A');
-      $(this).text(formDatetime);
+    $(function() {
+      $('.datetime').each(function() {
+        var rawDatetime = $(this).text();
+        var formDatetime = moment(rawDatetime + ' Z').format('M/D: h:mm A');
+        $(this).text(formDatetime);
+      });
     });
   </script>
 </body>

@@ -26,6 +26,11 @@ class Participant(db.Model):
 	created = db.DateTimeProperty(auto_now_add = True)
 	modified = db.DateTimeProperty(auto_now = True)
 
+class Winner(db.Model):
+	alias = db.StringProperty(required = True)
+	created = db.DateTimeProperty(auto_now_add = True)
+	modified = db.DateTimeProperty(auto_now = True)
+
 ### PAGE HANDLERS ###
 class MainHandler(webapp2.RequestHandler):
 	def get(self):
@@ -34,7 +39,8 @@ class MainHandler(webapp2.RequestHandler):
 class Leaderboards(webapp2.RequestHandler):
 	def get(self):
 		templateVals = {
-			'lbEntries': db.GqlQuery('SELECT * FROM LBEntry ORDER BY score desc LIMIT 20')
+			'lbEntries': db.GqlQuery('SELECT * FROM LBEntry ORDER BY score desc LIMIT 20'),
+			'winners': db.GqlQuery('SELECT * FROM Winner ORDER BY created desc')
 		}
 
 		template = JINJA_ENV.get_template('leaderboards.html')
@@ -43,7 +49,8 @@ class Leaderboards(webapp2.RequestHandler):
 class HighScorers(webapp2.RequestHandler):
 	def get(self):
 		templateVals = {
-			'lbEntries': db.GqlQuery('SELECT * FROM LBEntry ORDER BY score desc LIMIT 20')
+			'lbEntries': db.GqlQuery('SELECT * FROM LBEntry ORDER BY score desc LIMIT 20'),
+			'winners': db.GqlQuery('SELECT * FROM Winner ORDER BY created desc')
 		}
 
 		template = JINJA_ENV.get_template('highscorers.html')
@@ -74,7 +81,6 @@ class EndPoint(webapp2.RequestHandler):
 			# participant doesn't exist, create new
 			participant = Participant(key_name=badgeId, submitted=0, prizeWon=False)
 		else:
-			# participant exists, add to submission counter
 			participant.submitted = participant.submitted + 1
 
 		participant.put()
@@ -82,21 +88,54 @@ class EndPoint(webapp2.RequestHandler):
 
 class TogglePrize(webapp2.RequestHandler):
 	def post(self):
-		badgeId = self.request.get('badgeId');
+		badgeId = self.request.get('badgeId')
 		participant = Participant.get_by_key_name(badgeId)
 
 		if(participant.prizeWon):
-			participant.prizeWon = False;
+			participant.prizeWon = False
 		else:
-			participant.prizeWon = True;
+			participant.prizeWon = True
 
 		participant.put()
 		self.response.write(participant.prizeWon)
 
+class ShowWinner(webapp2.RequestHandler):
+	def post(self):
+		pw = self.request.get('sw')
+
+		if(pw == 'hisnameisjohncena'):
+			badgeId = self.request.get('badgeId')
+			alias = self.request.get('alias')
+
+			winner = Winner.get_by_key_name(badgeId)
+
+			if(winner):
+				# winner exists on the table, remove it
+				winner.delete()
+				self.response.write('Remove')
+			else:
+				# winner doesn't exist on the table, add it
+				winner = Winner(key_name=badgeId, alias=alias)
+				winner.put()
+				self.response.write('Add')
+
 class DeleteLeaderboard(webapp2.RequestHandler):
 	def post(self):
-		lbEntries = db.GqlQuery('SELECT * FROM  LBEntry')
-		db.delete(lbEntries)
+		pw = self.request.get('dl')
+
+		if(pw == 'hisnameisjohncena'):
+			lbEntries = db.GqlQuery('SELECT * FROM  LBEntry')
+			db.delete(lbEntries)
+			self.response.write('Success')
+
+class DeleteWinnerTable(webapp2.RequestHandler):
+	def post(self):
+		pw = self.request.get('dw')
+
+		if(pw == 'hisnameisjohncena'):
+			winners = db.GqlQuery('SELECT * FROM  Winner')
+			db.delete(winners)
+			self.response.write('Success')
 
 app = webapp2.WSGIApplication([
 	('/', MainHandler),
@@ -105,5 +144,7 @@ app = webapp2.WSGIApplication([
 	('/manage/badges', Badges),
 	('/ep', EndPoint),
 	('/tp', TogglePrize),
-	('/dl', DeleteLeaderboard)
+	('/sw', ShowWinner),
+	('/dl', DeleteLeaderboard),
+	('/dw', DeleteWinnerTable)
 ], debug=True)
