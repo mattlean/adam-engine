@@ -844,13 +844,12 @@ scoreGraph.setup = function() {
   this.state.pos.y = 540;
   this.state.zIndex = 2;
   this.state.worldObjType = 'custom';
-};
-
-scoreGraph.update = function() {
-
+  this.state.graphVal = 0;
 };
 
 scoreGraph.render = function() {
+  var highScore = 1000;
+  var MAXGRAPHFILL = 290;
   var offsetX = 680;
   var offsetY = 60;
 
@@ -890,19 +889,21 @@ scoreGraph.render = function() {
   AE.ctx.bezierCurveTo(236.3 + offsetX, 159.0 + offsetY, 230.2 + offsetX, 187.1 + offsetY, 214.4 + offsetX, 196.2 + offsetY);
   AE.ctx.bezierCurveTo(199.5 + offsetX, 204.8 + offsetY, 144.9 + offsetX, 205.5 + offsetY, 129.5 + offsetX, 205.5 + offsetY);
   AE.ctx.closePath();
-  AE.ctx.fillStyle = '#333';
-  AE.ctx.fill();
-  AE.ctx.clip();
-  // var scorepercent = score / highscore;
-  // if (scorepercent <= 1) {
-  //   graphval = scorepercent * MAXGRAPHFILL;
-  //   AE.ctx.fillStyle = '#ee3e33';
-  // } else {
-  //   graphval = MAXGRAPHFILL;
-  //   AE.ctx.fillStyle = '#00ff00';
-  // }
+  // AE.ctx.fillStyle = '#333';
+  // AE.ctx.fill();
 
-  //AE.ctx.fillRect(120 + offsetX, 20 + offsetY, graphval, 200); //max is 290
+  AE.ctx.clip();
+  var scorepercent = score.state.text / highScore;
+  console.log(scorepercent);
+  if (scorepercent <= 1) {
+    this.state.graphVal = scorepercent * MAXGRAPHFILL;
+    AE.ctx.fillStyle = '#ee3e33';
+  } else {
+    this.state.graphVal = MAXGRAPHFILL;
+    AE.ctx.fillStyle = '#00ff00';
+  }
+
+  AE.ctx.fillRect(120 + offsetX, 20 + offsetY, this.state.graphVal, 200); //max is 290
   AE.ctx.restore();
 };
 
