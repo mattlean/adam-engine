@@ -1,5 +1,5 @@
-node_modules
-npm-debug.log
-examples/*/adamengine-dev.js
-examples/qpcr-crush/static/bower_components
 examples/qpcr-crush/*.pyc
+examples/qpcr-crush/node_modules
+examples/qpcr-crush/static/game.min.html
+examples/qpcr-crush/static/qpcrcrush.min.js
+examples/qpcr-crush/static/bower_components
