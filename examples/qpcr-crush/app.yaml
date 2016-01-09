@@ -21,3 +21,6 @@ libraries:
 
 - name: jinja2
   version: "2.6"
+
+skip_files:
+- node_modules
