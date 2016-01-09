@@ -110,14 +110,30 @@ class ShowWinner(webapp2.RequestHandler):
 			winner = Winner.get_by_key_name(badgeId)
 
 			if(winner):
-				# winner exists on the table, remove it
-				winner.delete()
-				self.response.write('Remove')
+				self.response.write('Winner already exists')
 			else:
 				# winner doesn't exist on the table, add it
 				winner = Winner(key_name=badgeId, alias=alias)
 				winner.put()
-				self.response.write('Add')
+				self.response.write('Winner added')
+
+class RemoveWinner(webapp2.RequestHandler):
+	def post(self):
+		pw = self.request.get('rw')
+
+		if(pw == 'hisnameisjohncena'):
+			badgeId = self.request.get('badgeId')
+			alias = self.request.get('alias')
+
+			winner = Winner.get_by_key_name(badgeId)
+
+			if(winner):
+				# winner exists on the table, remove it
+				winner.delete()
+				self.response.write('Winner removed')
+			else:
+				# winner doesn't exist on the table
+				self.response.write('No winner to remove')
 
 class DeleteLeaderboard(webapp2.RequestHandler):
 	def post(self):
@@ -145,6 +161,7 @@ app = webapp2.WSGIApplication([
 	('/ep', EndPoint),
 	('/tp', TogglePrize),
 	('/sw', ShowWinner),
+	('/rw', RemoveWinner),
 	('/dl', DeleteLeaderboard),
 	('/dw', DeleteWinnerTable)
 ], debug=True)
