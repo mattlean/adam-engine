@@ -108,17 +108,17 @@ grid.createGrid = function() {
         var unoffsetPosY = Math.floor(this.state.pos.y / 10) * 10;
         var offsetPosX = this.state.pos.x - unoffsetPosX;
         var offsetPosY = this.state.pos.y - unoffsetPosY;
-        console.log('pos');
-        console.log(unoffsetPosX, offsetPosX, this.state.pos.x);
-        console.log(unoffsetPosY, offsetPosY, this.state.pos.y);
+        // console.log('pos');
+        // console.log(unoffsetPosX, offsetPosX, this.state.pos.x);
+        // console.log(unoffsetPosY, offsetPosY, this.state.pos.y);
 
         var unoffsetMoveToX = Math.floor(this.state.moveTo.x/ 10) * 10;
         var unoffsetMoveToY = Math.floor(this.state.moveTo.y/ 10) * 10;
         var offsetMoveToX = this.state.moveTo.x - unoffsetMoveToX;
         var offsetMoveToY = this.state.moveTo.y - unoffsetMoveToY;
-        console.log('moveTo');
-        console.log(unoffsetMoveToX, offsetMoveToX, this.state.moveTo.x);
-        console.log(unoffsetMoveToY, offsetMoveToY, this.state.moveTo.y);
+        // console.log('moveTo');
+        // console.log(unoffsetMoveToX, offsetMoveToX, this.state.moveTo.x);
+        // console.log(unoffsetMoveToY, offsetMoveToY, this.state.moveTo.y);
 
         if(unoffsetPosX === unoffsetMoveToX) {
           this.state.pos.x = this.state.moveTo.x;
@@ -374,32 +374,57 @@ grid.tilePressed = function() {
 };
 
 grid.validSwap = function(clickedTile, prevClickedTile) {
+  // swap up
   if(
-    (clickedTile.state.gridLoc.y === (prevClickedTile.state.gridLoc.y - 1) &&
-    clickedTile.state.gridLoc.x === (prevClickedTile.state.gridLoc.x)) ||
-    (clickedTile.state.gridLoc.x === (prevClickedTile.state.gridLoc.x + 1) &&
-    clickedTile.state.gridLoc.y === prevClickedTile.state.gridLoc.y) ||
-    (clickedTile.state.gridLoc.y === (prevClickedTile.state.gridLoc.y + 1) &&
-    clickedTile.state.gridLoc.x === (prevClickedTile.state.gridLoc.x)) ||
-    (clickedTile.state.gridLoc.x === (prevClickedTile.state.gridLoc.x - 1) &&
+    (clickedTile.state.gridLoc.y > prevClickedTile.state.gridLoc.y &&
+    clickedTile.state.gridLoc.x === prevClickedTile.state.gridLoc.x)
+  ) {
+    prevClickedTile = this.state.gridCheck[clickedTile.state.gridLoc.y - 1][clickedTile.state.gridLoc.x];
+    return prevClickedTile;
+  }
+
+  // swap right
+  if(
+    (clickedTile.state.gridLoc.x > prevClickedTile.state.gridLoc.x &&
     clickedTile.state.gridLoc.y === prevClickedTile.state.gridLoc.y)
   ) {
-    return true;
+    prevClickedTile = this.state.gridCheck[clickedTile.state.gridLoc.y][clickedTile.state.gridLoc.x - 1];
+    return prevClickedTile;
   }
-  return false;
+
+  // swap down
+  if(
+    (clickedTile.state.gridLoc.y < prevClickedTile.state.gridLoc.y &&
+    clickedTile.state.gridLoc.x === prevClickedTile.state.gridLoc.x)
+  ) {
+    prevClickedTile = this.state.gridCheck[clickedTile.state.gridLoc.y + 1][clickedTile.state.gridLoc.x];
+    return prevClickedTile;
+  }
+
+  // swap left
+  if(
+    (clickedTile.state.gridLoc.x < prevClickedTile.state.gridLoc.x &&
+    clickedTile.state.gridLoc.y === prevClickedTile.state.gridLoc.y)
+  ) {
+    prevClickedTile = this.state.gridCheck[clickedTile.state.gridLoc.y][clickedTile.state.gridLoc.x + 1];
+    return prevClickedTile;
+  }
+  return null;
 };
 
 grid.processInput = function(clickedTile, prevClickedTile) {
   if(clickedTile) {
-    console.log(this.state.grid);
-    console.log('clicked a tile');
+    // console.log(this.state.grid);
+    // console.log('clicked a tile');
     // check if clicked tile is within range of prev
     if(prevClickedTile) {
-      console.log('prevClickedTile is set');
+      // console.log('prevClickedTile is set');
       this.state.prevClickedTile.state.stroke = null;
 
-      if(this.validSwap(clickedTile, prevClickedTile)) {
-        console.log('swap is valid');
+      var swapCheck = this.validSwap(clickedTile, prevClickedTile);
+      if(swapCheck) {
+        // console.log('swap is valid');
+        prevClickedTile = swapCheck;
         // if player clicked up, right, down, or left of prevClickedTile
         var clickedTileGridLoc = clickedTile.state.gridLoc;
         var prevClickedTileGridLoc = prevClickedTile.state.gridLoc;
@@ -408,9 +433,9 @@ grid.processInput = function(clickedTile, prevClickedTile) {
         this.state.gridCheck[clickedTileGridLoc.y][clickedTileGridLoc.x] = this.state.gridCheck[prevClickedTileGridLoc.y][prevClickedTileGridLoc.x];
         this.state.gridCheck[prevClickedTileGridLoc.y][prevClickedTileGridLoc.x] = tempTile;
 
-        console.log(this.state.gridCheck);
+        // console.log(this.state.gridCheck);
         if(this.findMatches(this.state.gridCheck)) {
-          console.log('match found');
+          // console.log('match found');
           // if swap results to a match, updated grid
           var grid = this.state.grid;
           var gridCheck = this.state.gridCheck;
@@ -450,12 +475,12 @@ grid.processInput = function(clickedTile, prevClickedTile) {
             AE.soundMan.playSound('score');
           };
         } else {
-          console.log('no match');
+          // console.log('no match');
           AE.soundMan.playSound('illegal');
           this.state.gridCheck = this.copyGrid(this.state.grid); // sync grid check with grid
         }
       } else {
-        console.log('illegal swap');
+        // console.log('illegal swap');
         AE.soundMan.playSound('illegal');
       }
     }
@@ -561,17 +586,17 @@ grid.spawnNewTiles = function() {
           var unoffsetPosY = Math.floor(this.state.pos.y / 10) * 10;
           var offsetPosX = this.state.pos.x - unoffsetPosX;
           var offsetPosY = this.state.pos.y - unoffsetPosY;
-          console.log('pos');
-          console.log(unoffsetPosX, offsetPosX, this.state.pos.x);
-          console.log(unoffsetPosY, offsetPosY, this.state.pos.y);
+          // console.log('pos');
+          // console.log(unoffsetPosX, offsetPosX, this.state.pos.x);
+          // console.log(unoffsetPosY, offsetPosY, this.state.pos.y);
 
           var unoffsetMoveToX = Math.floor(this.state.moveTo.x/ 10) * 10;
           var unoffsetMoveToY = Math.floor(this.state.moveTo.y/ 10) * 10;
           var offsetMoveToX = this.state.moveTo.x - unoffsetMoveToX;
           var offsetMoveToY = this.state.moveTo.y - unoffsetMoveToY;
-          console.log('moveTo');
-          console.log(unoffsetMoveToX, offsetMoveToX, this.state.moveTo.x);
-          console.log(unoffsetMoveToY, offsetMoveToY, this.state.moveTo.y);
+          // console.log('moveTo');
+          // console.log(unoffsetMoveToX, offsetMoveToX, this.state.moveTo.x);
+          // console.log(unoffsetMoveToY, offsetMoveToY, this.state.moveTo.y);
 
           if(unoffsetPosX === unoffsetMoveToX) {
             this.state.pos.x = this.state.moveTo.x;
@@ -683,7 +708,7 @@ grid.update = function() {
 
   // if swapping is done
   if(this.state.swapping && (this.state.swapDone === 2)) {
-    console.log('swapping done');
+    // console.log('swapping done');
     this.state.swapping = null;
     this.state.swapDone = 0;
     this.finishSwap();
@@ -691,7 +716,7 @@ grid.update = function() {
 
   // if fading is done
   if(this.state.fading && (this.state.fadeDone === this.state.tilesToDel.length)) {
-    console.log('fading done');
+    // console.log('fading done');
     this.state.fading = false;
     this.state.fadeDone = 0;
     
@@ -701,7 +726,7 @@ grid.update = function() {
       if(this.state.timeUp === false) {
         this.state.score = this.state.score + ((parseInt(i) + 1) * 10);
       }
-      console.log(this.state.score);
+      // console.log(this.state.score);
       score.state.text = this.state.score;
       this.deleteTile(currTile.state.gridLoc.x, currTile.state.gridLoc.y);
     }
@@ -716,7 +741,7 @@ grid.update = function() {
 
   // if falling is done
   if(this.state.falling && (this.state.fallDone === this.state.fallNum)) {
-    console.log('falling done');
+    // console.log('falling done');
     this.state.falling = false;
     this.state.fallNum = 0;
     this.state.fallDone = 0;
@@ -730,7 +755,7 @@ grid.update = function() {
 
   // if appearing is done
   if(this.state.appearing && (this.state.appearDone === this.state.appearNum)) {
-    console.log('appearing done');
+    // console.log('appearing done');
     this.state.appearing = false;
     this.state.appearNum = 0;
     this.state.appearDone = 0;
@@ -894,7 +919,6 @@ scoreGraph.render = function() {
 
   AE.ctx.clip();
   var scorepercent = score.state.text / highScore;
-  console.log(scorepercent);
   if (scorepercent <= 1) {
     this.state.graphVal = scorepercent * MAXGRAPHFILL;
     AE.ctx.fillStyle = '#ee3e33';
