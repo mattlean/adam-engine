@@ -69,6 +69,20 @@
      </tbody>
    </table>
    <button id="delete-winners-table" class="btn btn-danger">DELETE WINNERS TABLE</button>
+   <h2>Random Number Generator</h2>
+   <div class="form-group">
+      <label for="rng-min">Min #</label>
+      <input type="number" class="form-control" id="rng-min">
+   </div>
+   <div class="form-group">
+      <label for="rng-max">Max #</label>
+      <input type="number" class="form-control" id="rng-max">
+   </div>
+   <div class="form-group">
+      <label for="rng">Randomly Generated Number</label>
+      <input type="number" class="form-control" id="rng" disabled>
+   </div>
+   <button id="rng-btn" class="btn btn-primary">Generate Number</button>
   </div>
   <script src="/static/bower_components/jquery/dist/jquery.js"></script>
   <script src="/static/bower_components/bootstrap/dist/js/bootstrap.js"></script>
@@ -151,6 +165,13 @@
             }
           });
         }
+      });
+
+      $('#rng-btn').click(function() {
+        var min = parseInt($('#rng-min').val());
+        var max = parseInt($('#rng-max').val());
+        var rng = Math.floor(Math.random() * (max - min + 1)) + min;
+        $('#rng').val(rng);
       });
     });
   </script>
