@@ -23,6 +23,7 @@
     <table class="table table-bordered">
       <thead>
         <tr>
+          <th>#</th>
           <th>Badge ID</th>
           <th>Alias</th>
           <th>Score</th>
@@ -31,14 +32,17 @@
         </tr>
       </thead>
       <tbody>
+       {% set i = 1 %}
        {% for lbEntry in lbEntries %}
        <tr>
+          <td>{{i}}</td>
           <td>{{lbEntry.badgeId}}
           <td>{{lbEntry.alias}}</td>
           <td>{{lbEntry.score}}</td>
           <td class="datetime">{{lbEntry.created}}</td>
           <td><button data-addWinner data-badgeId={{lbEntry.badgeId}} data-alias="{{lbEntry.alias}}" class="btn btn-success">Add Winner</button></td>
        </tr>
+       {% set i = i + 1 %}
        {% endfor %}
      </tbody>
    </table>
