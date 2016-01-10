@@ -962,7 +962,7 @@ $('[data-replay]').click(function() {
   /*grid.spawnGrid();
   $('#start-modal').modal('show');
   $('#error').hide();*/
-  document.location.reload(true);
+  location.reload(true);
 });
 
 $('#score-submit-form').submit(function(e) {
@@ -979,7 +979,7 @@ $('#score-submit-form').submit(function(e) {
       $('#game-over-modal').modal('hide');
       $('#submit-success-modal').modal('show');
       setInterval(function() {
-        document.location.reload(true)
+        location.reload(true)
       }, 60000);
     },
     error: function() {
