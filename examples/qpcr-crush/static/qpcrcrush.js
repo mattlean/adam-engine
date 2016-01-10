@@ -873,7 +873,7 @@ scoreGraph.setup = function() {
 };
 
 scoreGraph.render = function() {
-  var highScore = 1000;
+  var highScore = 4000;
   var MAXGRAPHFILL = 290;
   var offsetX = 680;
   var offsetY = 60;
