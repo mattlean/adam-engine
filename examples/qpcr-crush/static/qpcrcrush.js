@@ -2,6 +2,11 @@ var canvasId = 'qpcr-crush';
 var AE = new AdamEngine(canvasId);
 var startTime = 60;
 
+// prevent shifting bug
+document.addEventListener('touchmove', function(e) {
+  e.preventDefault();
+});
+
 //AE.inputMan.addMBInput(0, 'LEFTCLICK');
 AE.inputMan.addTouchInput();
 AE.inputMan.setup();

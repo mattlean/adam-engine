@@ -54,7 +54,7 @@
       <thead>
         <th>Alias</th>
         <th>Score</th>
-        <th>Date: Time</th>
+        <th>Time</th>
       </thead>
       <tbody>
         {% for lbEntry in lbEntries %}
@@ -88,7 +88,7 @@
     $(function() {
       $('.datetime').each(function() {
         var rawDatetime = $(this).text();
-        var formDatetime = moment(rawDatetime + ' Z').format('M/D: h:mm A');
+        var formDatetime = moment(rawDatetime + ' Z').format('h:mm A');
         $(this).text(formDatetime);
       });
     });
