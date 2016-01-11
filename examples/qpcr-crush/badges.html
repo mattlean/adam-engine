@@ -38,9 +38,9 @@
           <td class="datetime">{{participant.modified}}</td>
           <td>
           {% if participant.prizeWon %}
-            <input type="checkbox" data-badgeId={{participant.key().name()}} data-prizeWon checked="checked">
+            <input type="checkbox" data-badgeId="{{participant.key().name()}}" data-prizeWon checked="checked">
           {% else %}
-            <input type="checkbox" data-badgeId={{participant.key().name()}} data-prizeWon>
+            <input type="checkbox" data-badgeId="{{participant.key().name()}}" data-prizeWon>
           {% endif %}
           </td>
        </tr>

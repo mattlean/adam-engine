@@ -40,7 +40,7 @@
           <td>{{lbEntry.alias}}</td>
           <td>{{lbEntry.score}}</td>
           <td class="datetime">{{lbEntry.created}}</td>
-          <td><button data-addWinner data-badgeId={{lbEntry.badgeId}} data-alias="{{lbEntry.alias}}" class="btn btn-success">Add Winner</button></td>
+          <td><button data-addWinner data-badgeId="{{lbEntry.badgeId}}" data-alias="{{lbEntry.alias}}" class="btn btn-success">Add Winner</button></td>
        </tr>
        {% set i = i + 1 %}
        {% endfor %}
@@ -63,7 +63,7 @@
           <td>{{winner.key().name()}}</td>
           <td>{{winner.alias}}</td>
           <td class="datetime">{{winner.created}}</td>
-          <td><button data-removeWinner data-badgeId={{winner.key().name()}} data-alias="{{winner.alias}}" class="btn btn-danger">Remove Winner</button></td>
+          <td><button data-removeWinner data-badgeId="{{winner.key().name()}}" data-alias="{{winner.alias}}" class="btn btn-danger">Remove Winner</button></td>
        </tr>
        {% endfor %}
      </tbody>
