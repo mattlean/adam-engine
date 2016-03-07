@@ -1,0 +1,14 @@
+{
+  "name": "qpcr-crush",
+  "description": "",
+  "main": "main.py",
+  "authors": [
+    "Matthew Isaac Lean"
+  ],
+  "homepage": "https://github.com/IsaacLean/adam-engine",
+  "moduleType": [],
+  "private": true,
+  "dependencies": {
+    "bootstrap": "^3.3.6"
+  }
+}
