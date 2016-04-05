@@ -46,6 +46,11 @@
       background-color: #FFF;
     }
 
+    th {
+      background-color: #561762;
+      color: #FFF;
+    }
+
     .table-striped > tbody > tr:nth-of-type(odd) {
       background-color: #A6DDDD;
     }
@@ -115,7 +120,7 @@
     $(function() {
       $('.datetime').each(function() {
         var rawDatetime = $(this).text();
-        var formDatetime = moment(rawDatetime + ' Z').format('h:mm A');
+        var formDatetime = moment(rawDatetime + ' Z').format('MM-DD-YYYY HH:mm');
         $(this).text(formDatetime);
       });
     });
