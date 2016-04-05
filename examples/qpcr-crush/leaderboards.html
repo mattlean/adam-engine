@@ -15,19 +15,13 @@
     }
 
     h1 {
-      margin: 30px 0;
-      float: left;
+      margin: 20px 0 6px;
+      display: block;
     }
 
     img {
-      margin-bottom: 10px;
-      width: 20%;
-      height: 20%;
+      width: 100%;
       float: right;
-    }
-
-    th {
-      background-color: #FEFEFE;
     }
 
     #description {
@@ -37,20 +31,53 @@
     }
 
     #header {
+      background-color: #0D6577;
+      color: #FFF;
+    }
+
+    #header p {
+      margin-bottom: 0;
+      float: left;
+      font-weight: bold;
+    }
+
+    #logo-box {
+      padding-bottom: 2px;
       background-color: #FFF;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) {
+      background-color: #A6DDDD;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(even) {
+      background-color: #58BEBA;
+    }
+
+    #winners.table-striped > tbody > tr:nth-of-type(odd) {
+      background-color: #B8D024;
+    }
+
+    #winners.table-striped > tbody > tr:nth-of-type(even) {
+      background-color: #DAE98A;
     }
   </style>
 </head>
 <body>
   <div id="header" class="col-xs-12">
-    <h1>qPCR Crush Leaderboards</h1>
-     <img src="/static/logo.jpg">
+    <div class="col-xs-9">
+      <h1>qPCR Crush Leaderboards</h1>
+      <p>High scorers are entered into a prize raffle where winners are randomly selected. Check back to see whether you’ve won.</p>
+    </div>
+    <div id="logo-box" class="col-xs-3">
+      <img src="/static/logo.jpg">
+    </div>
   </div>
   <div class="col-xs-12">
-    <p id="description">High scorers are entered into a prize raffle where winners are randomly selected. Check back to see whether you’ve won.</p>
+    <p id="description"></p>
   </div>
   <div class="col-xs-6">
-    <table class="table table-striped table-bordered">
+    <table class="table table-striped">
       <thead>
         <th>Alias</th>
         <th>Score</th>
@@ -68,7 +95,7 @@
     </table>
   </div>
   <div class="col-xs-6">
-    <table class="table table-striped table-bordered">
+    <table id="winners" class="table table-striped">
       <thead>
         <th>Winners</th>
       </thead>
