@@ -965,6 +965,10 @@ $('[data-replay]').click(function() {
   location.reload(true);
 });
 
+$('#retry').click(function() {
+  location.reload(true);
+});
+
 $('#score-submit-form').submit(function(e) {
   e.preventDefault();
 
