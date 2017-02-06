@@ -18,13 +18,23 @@ AE.assetMan.newSound('swap', '/static/sfx/swap.wav');
 AE.assetMan.newSound('select', '/static/sfx/select.wav');
 AE.assetMan.newSound('illegal', '/static/sfx/illegalmove.wav');
 
+var CONSTANTS = {
+  tileSize: 70,
+  gridSize: 650,
+  canvasSize: {
+    width: 1020,
+    height: 650
+  },
+  scale: 1.2
+};
+
 var grid = AE.createWorldObj('grid');
 
 grid.setup = function() {
   this.state.pos.x = 0;
   this.state.pos.y = 0;
-  this.state.size.w = 650;
-  this.state.size.h = 650;
+  this.state.size.w = CONSTANTS.gridSize * CONSTANTS.scale;
+  this.state.size.h = CONSTANTS.gridSize * CONSTANTS.scale;
   this.state.score = 0;
   this.state.timeUp = true;
   this.state.worldObjType = 'invis';
@@ -63,7 +73,7 @@ grid.createGrid = function() {
   this.state.appearDone = 0;
 
   var currY = 0;
-  var tileSize = 70;
+  var tileSize = CONSTANTS.tileSize * CONSTANTS.scale;
   var marginYOffset = 2;
   var tileNames = ['BHQ2.png', 'FAM2.png', 'GOLD2.png', 'ORANGE2.png', 'QUASAR2.png', 'RED2.png'];
 
@@ -517,7 +527,7 @@ grid.calcFall = function() {
           var tile = this.state.grid[y][x];
 
           // update tile state
-          tile.state.moveTo = {x: tile.state.pos.x, y: ((y + 1) * 70) + (y * 2)};
+          tile.state.moveTo = {x: tile.state.pos.x, y: ((y + 1) * (CONSTANTS.tileSize * CONSTANTS.scale)) + (y * 2)};
           ++tile.state.gridLoc.y;
 
           // swap tile locs in grid
@@ -547,7 +557,7 @@ grid.calcFall = function() {
 grid.spawnNewTiles = function() {
   var gridSize = this.state.grid.length;
   var tileNames = ['BHQ2.png', 'FAM2.png', 'GOLD2.png', 'ORANGE2.png', 'QUASAR2.png', 'RED2.png'];
-  var tileSize = 70;
+  var tileSize = CONSTANTS.tileSize * CONSTANTS.scale;
 
   for(var y=0; y < gridSize; ++y) {
     for(var x=0; x < gridSize; ++x) {
@@ -557,8 +567,8 @@ grid.spawnNewTiles = function() {
 
         // default state vals
         newTile.state.atlas = AE.assetMan.getAtlas('tiles');
-        newTile.state.pos.x = (x * 70) + (x * 2);
-        newTile.state.pos.y = (y * 70) + (y * 2);
+        newTile.state.pos.x = (x * (CONSTANTS.tileSize * CONSTANTS.scale)) + (x * 2);
+        newTile.state.pos.y = (y * (CONSTANTS.tileSize * CONSTANTS.scale)) + (y * 2);
         newTile.state.size.w = tileSize;
         newTile.state.size.h = tileSize;
         newTile.state.zIndex = 2;
@@ -788,8 +798,8 @@ bg.setup = function() {
   this.state.img = AE.assetMan.getImg('bg');
   this.state.pos.x = 0;
   this.state.pos.y = 0;
-  this.state.size.w = 1020;
-  this.state.size.h = 650;
+  this.state.size.w = CONSTANTS.canvasSize.width * CONSTANTS.scale;
+  this.state.size.h = CONSTANTS.canvasSize.height * CONSTANTS.scale;
   this.state.zIndex = 1;
   this.state.alpha = null;
   this.state.worldObjType = 'img';
@@ -798,8 +808,8 @@ bg.setup = function() {
 var scoreTitle = AE.createWorldObj('scoreTitle');
 
 scoreTitle.setup = function() {
-  this.state.pos.x = 850;
-  this.state.pos.y = 350;
+  this.state.pos.x = 850 * CONSTANTS.scale;
+  this.state.pos.y = 350 * CONSTANTS.scale;
   this.state.color = '#FFF';
   this.state.font = '24px Arial';
   this.state.textAlign = 'center';
@@ -811,8 +821,8 @@ scoreTitle.setup = function() {
 var score = AE.createWorldObj('score');
 
 score.setup = function() {
-  this.state.pos.x = 850;
-  this.state.pos.y = 410;
+  this.state.pos.x = 850 * CONSTANTS.scale;
+  this.state.pos.y = 410 * CONSTANTS.scale;
   this.state.color = '#FFF';
   this.state.font = '48px Arial';
   this.state.textAlign = 'center';
@@ -824,8 +834,8 @@ score.setup = function() {
 var timerTitle = AE.createWorldObj('timerTitle');
 
 timerTitle.setup = function() {
-  this.state.pos.x = 850;
-  this.state.pos.y = 550;
+  this.state.pos.x = 850 * CONSTANTS.scale;
+  this.state.pos.y = 550 * CONSTANTS.scale;
   this.state.color = '#FFF';
   this.state.font = '24px Arial';
   this.state.textAlign = 'center';
@@ -837,8 +847,8 @@ timerTitle.setup = function() {
 var timer = AE.createWorldObj('timer');
 
 timer.setup = function() {
-  this.state.pos.x = 850;
-  this.state.pos.y = 610;
+  this.state.pos.x = 850 * CONSTANTS.scale;
+  this.state.pos.y = 610 * CONSTANTS.scale;
   this.state.color = '#FFF';
   this.state.font = '48px Arial';
   this.state.textAlign = 'center';
@@ -870,8 +880,8 @@ timer.update = function() {
 var scoreGraph = AE.createWorldObj('scoreGraph');
 
 scoreGraph.setup = function() {
-  this.state.pos.x = 750;
-  this.state.pos.y = 540;
+  this.state.pos.x = 750 * CONSTANTS.scale;
+  this.state.pos.y = 540 * CONSTANTS.scale;
   this.state.zIndex = 2;
   this.state.worldObjType = 'custom';
   this.state.graphVal = 0;
@@ -880,25 +890,25 @@ scoreGraph.setup = function() {
 scoreGraph.render = function() {
   var highScore = 4000;
   var MAXGRAPHFILL = 290;
-  var offsetX = 680;
-  var offsetY = 60;
+  var offsetX = 680 * CONSTANTS.scale;
+  var offsetY = 60 * CONSTANTS.scale;
 
   AE.ctx.beginPath();
-  AE.ctx.moveTo(700, 20);
-  AE.ctx.lineTo(700, 300);
+  AE.ctx.moveTo(700 * CONSTANTS.scale, 20);
+  AE.ctx.lineTo(700 * CONSTANTS.scale, 300);
   AE.ctx.lineWidth = 2;
   AE.ctx.strokeStyle = '#FFF';
   AE.ctx.stroke();
 
   AE.ctx.beginPath();
-  AE.ctx.moveTo(700, 300);
-  AE.ctx.lineTo(1000, 300);
+  AE.ctx.moveTo(700 * CONSTANTS.scale, 300);
+  AE.ctx.lineTo(1000 * CONSTANTS.scale, 300);
   AE.ctx.lineWidth = 2;
   AE.ctx.strokeStyle = '#FFF';
   AE.ctx.stroke();
 
   AE.ctx.save();
-  AE.ctx.scale(0.9, 0.9);
+  AE.ctx.scale(0.95, 0.8);
   AE.ctx.beginPath();
   AE.ctx.moveTo(129.5, 205.5);
   AE.ctx.bezierCurveTo(127.2 + offsetX, 205.5 + offsetY, 125.8 + offsetX, 205.5 + offsetY, 125.5 + offsetX, 205.5 + offsetY);
