@@ -111,7 +111,7 @@ var canvas = document.getElementById('canvas');
 		}
 	};
 
-var meter = new FPSMeter({ graph: true, position: 'relative', width: 100 });
+// var meter = new FPSMeter({ graph: true, position: 'relative', width: 100 });
 
 /*
  * UPDATING
@@ -185,7 +185,7 @@ var now,
 	step = 1 / FPS;
 
 function main_loop() {
-	meter.tickStart();
+	// meter.tickStart();
 	now = window.performance.now();
 	dt = dt + (now - last) / 1000;
 
@@ -198,7 +198,7 @@ function main_loop() {
 
 	last = now;
 	requestAnimationFrame(main_loop); //request next frame
-	meter.tick();
+	// meter.tick();
 }
 
 game_start();

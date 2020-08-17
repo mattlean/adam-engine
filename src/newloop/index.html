@@ -2,17 +2,20 @@
 <head>
 	<title>Snake - Adam Engine Example</title>
 	<style>
-		body { background-color: #ccc; }
+		body { background-color: #ccc; font-family: sans-serif; }
+		h1 { font-size: 1.5em; }
+		#wrap { width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; flex-direction: column; transform: translateY(-2.84em) }
 	</style>
 </head>
 <body>
-	<h1>Snake powered by Adam Engine</h1>
-	<canvas id="canvas" width="480" height="320">
-		Please use a modern browser with JavaScript enabled to play the game!
-		Canvas is not supported on your current browser.
-	</canvas>
-	<p><small>v0.1.0</small></p>
-	<script src="fpsmeter.js"></script>
+	<div id="wrap">
+		<h1>Snake powered by Adam Engine</h1>
+		<canvas id="canvas" width="480" height="320">
+			Please use a modern browser with JavaScript enabled to play the game!
+			Canvas is not supported on your current browser.
+		</canvas>
+	</div>
+	<!-- <script src="fpsmeter.js"></script> -->
 	<script src="snake.js"></script>
 </body>
 </html>
